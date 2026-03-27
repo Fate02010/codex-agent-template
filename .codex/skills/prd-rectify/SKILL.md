@@ -7,7 +7,7 @@
 ## 输入
 
 1. `docs/01-requirements/PRD_REVIEW_ISSUES.md` — 评审问题清单
-2. 原始 PRD 文档
+2. `docs/01-requirements/PRD_RAW.md` — 原始 PRD 文档
 
 ## 输出
 
@@ -18,7 +18,7 @@
 ### 步骤 1：读取输入
 
 1. 读取 `docs/01-requirements/PRD_REVIEW_ISSUES.md`，提取所有 🔴 阻塞和 🟡 重要问题
-2. 读取原始 PRD 文档
+2. 读取 `docs/01-requirements/PRD_RAW.md`
 
 ### 步骤 2：逐项整改
 
@@ -51,9 +51,12 @@
 # 整改后需求文档（PRD）
 
 ## 文档信息
+- 文档类型：产物
+- 生成 Skill：`prd-rectify`
+- 上游输入：`PRD_RAW.md`、`PRD_REVIEW_ISSUES.md`
 - 版本：v1.0
 - 日期：YYYY-MM-DD
-- 状态：已整改
+- 状态：已冻结
 
 ## 1. 项目概述
 ### 1.1 项目背景
@@ -104,10 +107,19 @@
 - [ ] 每个功能点都有异常场景
 - [ ] 字段清单完整
 
-### 步骤 6：提示下一步
+### 步骤 6：执行需求基线冻结
+
+在通过步骤 5 后执行冻结确认：
+
+1. 若仍有未关闭的 🔴 阻塞问题，保持状态为`已整改`并中止下游阶段
+2. 若阻塞问题全部关闭，将 `PRD_RECTIFIED.md` 文档信息中的状态更新为`已冻结`
+3. 在变更记录中增加冻结记录（示例：`v1.0 / YYYY-MM-DD / 完成评审整改并冻结需求基线`）
+
+### 步骤 7：提示下一步
 
 整改完成后提示用户：
-- 下一步使用 `solution-design` 生成架构、接口、数据模型设计
+- 若 `PRD_RECTIFIED.md` 已冻结，下一步使用 `solution-design` 生成架构、接口、数据模型设计
+- 若仍为`已整改`，先回到评审问题清单继续关闭阻塞项
 - 注意：`qa-design` 依赖设计文档作为输入，必须先完成 `solution-design`
 
 ## 注意事项

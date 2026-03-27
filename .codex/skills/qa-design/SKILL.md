@@ -33,8 +33,12 @@
 # 测试计划
 
 ## 文档信息
+- 文档类型：产物
+- 生成 Skill：`qa-design`
+- 上游输入：`PRD_RECTIFIED.md`、`API_CONTRACT.md`、`DATA_MODEL.md`
 - 版本：v1.0
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 - 关联需求：PRD_RECTIFIED.md
 
 ## 1. 测试目标
@@ -99,8 +103,12 @@
 # 测试用例
 
 ## 文档信息
+- 文档类型：产物
+- 生成 Skill：`qa-design`
+- 上游输入：`TEST_PLAN.md`、`PRD_RECTIFIED.md`、`API_CONTRACT.md`
 - 版本：v1.0
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 - 关联需求：PRD_RECTIFIED.md
 
 ## 用例统计
@@ -174,6 +182,7 @@
 - [ ] TC 编号模块部分与关联接口模块部分一致
 - [ ] 每个 TC 编号在映射表中都有对应的测试代码位置
 - [ ] 映射表中的方法名符合 `tests/AGENTS.md` § 3.1 的命名规范
+- [ ] `TEST_PLAN.md` 与 `TEST_CASES.md` 文档信息状态均已更新为`已冻结`
 
 ### 步骤 7：提示结果
 

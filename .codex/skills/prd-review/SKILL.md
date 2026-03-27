@@ -6,7 +6,7 @@
 
 ## 输入
 
-- 原始 PRD 文档（用户提供的需求文档）
+- `docs/01-requirements/PRD_RAW.md` — 原始 PRD 文档
 
 ## 输出
 
@@ -16,7 +16,7 @@
 
 ### 步骤 1：读取 PRD
 
-读取用户提供的 PRD 文档，理解业务背景和需求范围。
+读取 `docs/01-requirements/PRD_RAW.md`，理解业务背景和需求范围。
 
 ### 步骤 2：逐项评审
 
@@ -52,9 +52,17 @@
 ```markdown
 # PRD 评审问题清单
 
+## 文档信息
+- 文档类型：产物
+- 生成 Skill：`prd-review`
+- 上游输入：`PRD_RAW.md`
+- 版本：v1.0
+- 日期：YYYY-MM-DD
+- 状态：评审中 / 已冻结
+
 ## 评审信息
 - 评审日期：YYYY-MM-DD
-- PRD 来源：[文档名称/路径]
+- PRD 来源：`docs/01-requirements/PRD_RAW.md`
 - 评审结论：[通过 / 有条件通过 / 不通过]
 
 ## 问题统计

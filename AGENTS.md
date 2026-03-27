@@ -79,8 +79,8 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 | `biz-research` | 已拿到原始业务资料 | Word/PDF/设计稿/访谈记录/竞品材料 | 归纳目标、角色、场景、规则、矛盾和缺口 | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` | 输入材料全部登记，矛盾项被澄清或明确标记为待确认 |
 | `prd-compose` | 调研与澄清已形成结论 | 调研摘要 + 澄清记录 + 设计稿 | 结构化输出原始 PRD，沉淀功能、流程、字段、验收标准 | `docs/01-requirements/PRD_RAW.md` | 每个功能点具备编号、描述、规则、异常和验收标准 |
 | `prd-review` | 原始 PRD 完成 | `PRD_RAW.md` | 从完整性、一致性、可实现性、可测试性角度审查 | `PRD_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类 |
-| `prd-rectify` | 评审存在问题 | `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 逐项整改并形成冻结基线 | `PRD_RECTIFIED.md` | 阻塞问题全部关闭，需求基线可供设计使用 |
-| `solution-design` | 需求基线冻结 | `PRD_RECTIFIED.md` | 完成架构、接口、数据设计并建立追溯关系 | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 接口、数据表、模块职责与需求一一对应 |
+| `prd-rectify` | 评审存在问题 | `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 逐项整改并执行基线冻结（将状态从`已整改`推进为`已冻结`） | `PRD_RECTIFIED.md` | 阻塞问题全部关闭且 `PRD_RECTIFIED.md` 状态=`已冻结` |
+| `solution-design` | `PRD_RECTIFIED.md` 已冻结 | `PRD_RECTIFIED.md` | 完成架构、接口、数据设计并建立追溯关系 | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 接口、数据表、模块职责与需求一一对应 |
 | `qa-design` | 设计文档冻结，准备进入开发 | `PRD_RECTIFIED.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 设计测试策略和测试用例，预分配 TC 编号并建立测试代码映射 | `TEST_PLAN.md` + `TEST_CASES.md` | P0/P1/P2 用例齐备，TC 编号可直接供开发绑定测试代码 |
 | `dev-implement` | 设计与测试基线已齐备 | 整改后 PRD + 设计文档 + `TEST_PLAN.md` + `TEST_CASES.md` + 局部 `AGENTS.md` | 按文档实现代码，并按 TC 编号补测试 | `backend/`、`frontend/` 代码 | 代码可编译，可说明每个改动对应的需求、设计和 TC |
 | `qa-execute` | 测试计划与用例已齐备 | `TEST_PLAN.md` + `TEST_CASES.md` + 源代码 | 执行测试并回写结果、覆盖率、风险和准出建议 | `TEST_REPORT.md` | 结果真实可追溯，可明确是否准出 |
@@ -127,6 +127,8 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 ### 7.2 冻结规则
 
 - `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`RELEASE_BASELINE.md` 默认属于基线文档
+- `prd-rectify` 负责需求基线冻结：整改完成后必须将 `PRD_RECTIFIED.md` 状态更新为 `已冻结`，否则不得进入 `solution-design`
+- `solution-design` 负责设计基线冻结：输出 `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 后需更新为 `已冻结`，否则不得进入 `qa-design` / `dev-implement`
 - 修改基线文档时，必须在正文中使用【修改】或【变更】标记，并同步更新变更记录
 - 接口、表结构、业务规则变更必须先更新对应文档，再改代码
 

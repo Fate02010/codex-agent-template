@@ -2,7 +2,7 @@
 
 ## 触发条件
 
-当整改后的 PRD 已确认（`PRD_RECTIFIED.md` 已完成），需要生成架构设计、接口契约、数据模型时使用。
+当整改后的 PRD 基线已冻结（`PRD_RECTIFIED.md` 状态为`已冻结`），需要生成架构设计、接口契约、数据模型时使用。
 
 ## 输入
 
@@ -15,6 +15,13 @@
 3. `docs/02-architecture/DATA_MODEL.md` — 数据模型
 
 ## 执行流程
+
+### 步骤 0：校验需求基线状态
+
+先检查 `docs/01-requirements/PRD_RECTIFIED.md` 文档信息中的状态：
+
+- 必须为`已冻结`
+- 若为`模板` / `草稿` / `评审中` / `已整改`，则中止并回到 `prd-rectify` 完成冻结
 
 ### 步骤 1：读取需求
 
@@ -30,8 +37,12 @@
 # 架构设计
 
 ## 文档信息
+- 文档类型：产物
+- 生成 Skill：`solution-design`
+- 上游输入：`PRD_RECTIFIED.md`
 - 版本：v1.0
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 - 关联需求：PRD_RECTIFIED.md
 
 ## 1. 目标
@@ -92,8 +103,12 @@
 # 接口契约
 
 ## 文档信息
+- 文档类型：产物
+- 生成 Skill：`solution-design`
+- 上游输入：`PRD_RECTIFIED.md`、`ARCHITECTURE.md`
 - 版本：v1.0
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 - 关联需求：PRD_RECTIFIED.md
 
 ## 全局约定
@@ -177,8 +192,12 @@ Bearer Token（JWT），通过 Header `Authorization: Bearer <token>` 传递。
 # 数据模型
 
 ## 文档信息
+- 文档类型：产物
+- 生成 Skill：`solution-design`
+- 上游输入：`PRD_RECTIFIED.md`、`ARCHITECTURE.md`
 - 版本：v1.0
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 - 关联需求：PRD_RECTIFIED.md
 
 ## 全局约定

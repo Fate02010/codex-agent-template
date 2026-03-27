@@ -105,9 +105,12 @@
 # 原始 PRD
 
 ## 文档信息
-- 源文件：REQUIREMENTS_CLARIFIED.md + RESEARCH_SUMMARY.md
-- 编写日期：YYYY-MM-DD
-- 状态：待评审
+- 文档类型：产物
+- 生成 Skill：`prd-compose`
+- 上游输入：`REQUIREMENTS_CLARIFIED.md`、`RESEARCH_SUMMARY.md`
+- 版本：v1.0
+- 日期：YYYY-MM-DD
+- 状态：评审中
 
 ## 1. 项目概述
 ### 1.1 项目背景

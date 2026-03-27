@@ -7,7 +7,7 @@
 ## 前置条件
 
 - `backend/pom.xml` 或 `frontend/web/package.json` / `frontend/uniapp/package.json` 存在（否则先执行 `project-init`）
-- 设计文档已冻结（`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 已生成）
+- 需求与设计基线已冻结（`PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`）
 
 ## 完成标准
 
@@ -41,7 +41,7 @@
    - 如不存在，**中止执行**并提示："请先执行 `project-init` 初始化项目骨架"
 2. **检查设计文档状态**：
    - `PRD_RECTIFIED.md` 状态是否为"已冻结"？
-   - `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 是否已生成？
+   - `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 状态是否为"已冻结"？
    - 如未冻结或不存在，**中止执行**并提示缺失的前置文档
 
 ### 步骤 1：读取设计文档

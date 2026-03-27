@@ -46,9 +46,11 @@
 
 ## 文档信息
 - 文档类型：产物
-- 生成 Skill：change-intake
+- 生成 Skill：`change-intake`
+- 上游输入：增量需求资料、`PRD_RECTIFIED.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`RELEASE_BASELINE.md`
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 
 ## 变更请求列表
 
@@ -61,7 +63,7 @@
 - **验收标准**：
   1. 验收条件 1
   2. 验收条件 2
-- **状态**：待评审 / 已批准 / 已拒绝 / 已实现
+- **状态**：待分析 / 已批准 / 已拒绝 / 已取消
 
 ## 变更记录
 | 版本 | 日期 | 说明 |
@@ -91,9 +93,11 @@
 
 ## 文档信息
 - 文档类型：产物
-- 生成 Skill：change-intake
+- 生成 Skill：`change-intake`
+- 上游输入：`CHANGE_REQUEST.md`、`PRD_RECTIFIED.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`RELEASE_BASELINE.md`
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 
 ## 1. 变更概览
 | CR 编号 | 标题 | 类型 | 优先级 | 影响范围 |
