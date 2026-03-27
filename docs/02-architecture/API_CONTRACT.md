@@ -11,6 +11,14 @@
 
 > 严格冻结，接口变更必须先改文档。
 
+## 目标
+
+定义系统所有 REST 接口的请求/响应契约，作为前后端联调的唯一依据。
+
+## 范围
+
+> 由 `solution-design` Skill 根据 PRD_RECTIFIED.md 的功能范围确定。
+
 ## 全局约定
 
 ### Base URL
@@ -77,6 +85,10 @@ Authorization: Bearer <token>
 ## 接口清单
 
 > 由 `solution-design` Skill 根据 PRD 功能点自动生成。
+
+## 异常与边界
+
+> 接口级异常处理：限流策略、熔断机制、超时重试、幂等保证等。
 
 ## 变更记录
 
