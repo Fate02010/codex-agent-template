@@ -1,3 +1,8 @@
+---
+name: solution-design
+description: 方案设计
+---
+
 # Skill: solution-design — 方案设计
 
 ## 触发条件

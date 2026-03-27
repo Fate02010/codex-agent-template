@@ -1,3 +1,8 @@
+---
+name: qa-execute
+description: 测试执行
+---
+
 # Skill: qa-execute — 测试执行
 
 ## 触发条件

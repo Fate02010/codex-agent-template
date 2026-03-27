@@ -1,3 +1,8 @@
+---
+name: prd-review
+description: PRD 评审
+---
+
 # Skill: prd-review — PRD 评审
 
 ## 触发条件

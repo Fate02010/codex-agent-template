@@ -1,3 +1,8 @@
+---
+name: project-init
+description: 项目脚手架初始化
+---
+
 # Skill: project-init — 项目脚手架初始化
 
 ## 触发条件

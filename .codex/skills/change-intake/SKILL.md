@@ -1,3 +1,8 @@
+---
+name: change-intake
+description: 增量变更受理
+---
+
 # Skill: change-intake — 增量变更受理
 
 ## 触发条件

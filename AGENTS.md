@@ -216,5 +216,6 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 
 - `AGENTS.md` 负责目录级长期稳定约束
 - `SKILL.md` 负责按任务触发的执行流程
+- 所有 `SKILL.md` 顶部必须包含 YAML Front Matter，至少含 `name` 与 `description`
 - 目录规则按范围拆分，不按角色拆分
 - 未经流程确认的临时结论，不得写入冻结基线文档

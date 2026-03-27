@@ -1,3 +1,8 @@
+---
+name: defect-fix
+description: 缺陷修复闭环
+---
+
 # Skill: defect-fix — 缺陷修复闭环
 
 ## 触发条件

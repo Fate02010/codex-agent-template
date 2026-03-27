@@ -1,3 +1,8 @@
+---
+name: dev-implement
+description: 开发实现
+---
+
 # Skill: dev-implement — 开发实现
 
 ## 触发条件

@@ -1,3 +1,8 @@
+---
+name: biz-research
+description: 需求调研与信息归纳
+---
+
 # Skill: biz-research — 需求调研与信息归纳
 
 ## 触发条件

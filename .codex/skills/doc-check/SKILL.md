@@ -1,3 +1,8 @@
+---
+name: doc-check
+description: 文档追溯性校验
+---
+
 # Skill: doc-check — 文档追溯性校验
 
 ## 触发条件

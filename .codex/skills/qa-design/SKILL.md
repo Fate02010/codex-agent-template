@@ -1,3 +1,8 @@
+---
+name: qa-design
+description: 测试设计
+---
+
 # Skill: qa-design — 测试设计
 
 ## 触发条件

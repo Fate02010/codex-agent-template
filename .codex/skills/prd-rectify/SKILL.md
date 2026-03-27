@@ -1,3 +1,8 @@
+---
+name: prd-rectify
+description: PRD 整改
+---
+
 # Skill: prd-rectify — PRD 整改
 
 ## 触发条件

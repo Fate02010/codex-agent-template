@@ -1,3 +1,8 @@
+---
+name: prd-compose
+description: 详细需求文档编写
+---
+
 # Skill: prd-compose — 详细需求文档编写
 
 ## 触发条件

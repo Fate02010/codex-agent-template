@@ -1,3 +1,8 @@
+---
+name: iteration-plan
+description: 版本迭代管理
+---
+
 # Skill: iteration-plan — 版本迭代管理
 
 ## 触发条件
