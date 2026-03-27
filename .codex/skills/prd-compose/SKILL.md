@@ -2,12 +2,12 @@
 
 ## 触发条件
 
-当需求已完成澄清（`REQUIREMENTS_CLARIFIED.md` 已生成），需要将澄清后的需求结构化为正式 PRD 时使用。
+当 RESEARCH_SUMMARY.md 和 REQUIREMENTS_CLARIFIED.md 均已生成，需要将需求结构化为正式 PRD 时使用。
 
 ## 前置条件
 
 - `docs/00-research/RESEARCH_SUMMARY.md` 已生成（非模板状态）
-- 如存在 `REQUIREMENTS_CLARIFIED.md`，其中所有 CQ 问题已有决策结果
+- `docs/00-research/REQUIREMENTS_CLARIFIED.md` 已生成（非模板状态），其中所有 CQ 问题已有决策结果（或标注为"无待澄清事项"）
 
 ## 完成标准
 

@@ -118,7 +118,7 @@ public class Result<T> {
 **BusinessException.java**（`domain/`）：
 ```java
 public class BusinessException extends RuntimeException {
-    private String errorCode;
+    private int errorCode;
     private String message;
 }
 ```
@@ -126,7 +126,7 @@ public class BusinessException extends RuntimeException {
 **SystemException.java**（`infrastructure/`）：
 ```java
 public class SystemException extends RuntimeException {
-    private String errorCode;
+    private int errorCode;
     private String message;
 }
 ```
@@ -136,9 +136,9 @@ public class SystemException extends RuntimeException {
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // 处理 BusinessException → Result.fail(errorCode, message)
-    // 处理 SystemException → Result.fail("SYSTEM_ERROR", message)
-    // 处理 MethodArgumentNotValidException → Result.fail("VALIDATION_ERROR", ...)
-    // 处理 Exception → Result.fail("UNKNOWN_ERROR", ...)
+    // 处理 SystemException → Result.fail(50000, message)
+    // 处理 MethodArgumentNotValidException → Result.fail(40001, ...)
+    // 处理 Exception → Result.fail(99999, ...)
 }
 ```
 

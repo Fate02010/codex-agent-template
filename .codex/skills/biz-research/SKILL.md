@@ -29,7 +29,7 @@
 
 - `RESEARCH_SUMMARY.md` 所有章节已填写，无空章节
 - 如存在矛盾或缺口，`REQUIREMENTS_CLARIFIED.md` 中所有 CQ 问题已有决策结果
-- 如无矛盾或缺口，`REQUIREMENTS_CLARIFIED.md` 可不生成
+- `REQUIREMENTS_CLARIFIED.md` 始终生成（如无待澄清项，标注"无待澄清事项，全部功能要点直接确认"）
 
 ## 执行流程
 
@@ -111,7 +111,7 @@
 
 #### 步骤 6：判断是否需要澄清
 
-- 如果第 8 章（矛盾与缺口）和第 9 章（待澄清事项）均为空，**跳过阶段二**，直接提示进入 `prd-compose`
+- 如果第 8 章（矛盾与缺口）和第 9 章（待澄清事项）均为空，**生成最小化的 REQUIREMENTS_CLARIFIED.md**：标注"无待澄清事项，全部功能要点直接确认"，将 RESEARCH_SUMMARY.md 第 5 章的功能要点表原样复制到 REQUIREMENTS_CLARIFIED.md 第 2 章，状态全部标记为"已确认"。然后提示进入 `prd-compose`
 - 如果存在待澄清项，**进入阶段二**
 
 ---

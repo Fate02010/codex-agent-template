@@ -145,7 +145,7 @@ public class Result<T> {
     private T data;          // 业务数据
 
     public static <T> Result<T> success(T data) { ... }
-    public static <T> Result<T> fail(String code, String message) { ... }
+    public static <T> Result<T> fail(int code, String message) { ... }
 }
 ```
 

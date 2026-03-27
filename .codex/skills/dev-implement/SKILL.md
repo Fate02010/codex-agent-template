@@ -122,6 +122,10 @@
 - Domain Service 必须有单元测试
 - 关键 Application Service 编排逻辑需要测试
 - 前端关键组件需要组件测试
+- 测试方法的 `@DisplayName` 注解必须包含关联的 TC 编号，格式：`@DisplayName("TC-XXX-NNN: 用例标题")`
+  - 示例：`@DisplayName("TC-USER-001: 正常创建用户")`
+- 前端测试的 `describe`/`it` 描述必须包含 TC 编号
+  - 示例：`it('TC-USER-001: 正常创建用户', () => { ... })`
 
 ### 步骤 5：自检验证
 

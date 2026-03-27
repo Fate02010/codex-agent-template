@@ -106,7 +106,7 @@ frontend/uniapp/
 
 ```typescript
 // api/user.ts
-import { request } from '@/utils/request'
+import { request } from '@/api/request'
 import type { CreateUserRequest, UserResponse } from '@/types/user'
 
 export function createUser(data: CreateUserRequest): Promise<Result<UserResponse>> {
