@@ -7,16 +7,24 @@
 ## 2. 工作主链
 
 ```
-PRD 评审 → PRD 整改 → 方案设计 → 开发实现 → 测试验证
+[project-init] → prd-ingest → prd-review → prd-rectify → solution-design
+    → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
 ```
+
+> `project-init` 为可选前置步骤（新项目首次执行）；`doc-check` 为可在任意节点执行的校验工具；`defect-fix` 在测试失败时触发循环。
 
 | 阶段 | Skill | 输入 | 输出 |
 |---|---|---|---|
-| PRD 评审 | `prd-review` | 原始 PRD | `docs/01-requirements/PRD_REVIEW_ISSUES.md` |
+| 项目初始化 | `project-init` | AGENTS.md 规范文件 | 后端/前端项目脚手架 |
+| 需求导入 | `prd-ingest` | Word/PDF/设计稿图片 | `docs/01-requirements/PRD_RAW.md` |
+| PRD 评审 | `prd-review` | 原始 PRD（PRD_RAW.md 或 Markdown） | `docs/01-requirements/PRD_REVIEW_ISSUES.md` |
 | PRD 整改 | `prd-rectify` | 评审问题清单 + 原始 PRD | `docs/01-requirements/PRD_RECTIFIED.md` |
 | 方案设计 | `solution-design` | 整改后 PRD | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` |
 | 开发实现 | `dev-implement` | 整改后 PRD + 设计文档 | `backend/` 或 `frontend/` 下代码 |
-| 测试验证 | `qa-design` | 整改后 PRD + `API_CONTRACT.md` + `DATA_MODEL.md` | `TEST_PLAN.md` + `TEST_CASES.md` |
+| 测试设计 | `qa-design` | 整改后 PRD + `API_CONTRACT.md` + `DATA_MODEL.md` | `TEST_PLAN.md` + `TEST_CASES.md` |
+| 测试执行 | `qa-execute` | `TEST_PLAN.md` + `TEST_CASES.md` + 源代码 | `docs/03-testing/TEST_REPORT.md` |
+| 缺陷修复 | `defect-fix` | `TEST_REPORT.md` + 源代码 + 设计文档 | 修复代码 + `docs/03-testing/DEFECT_LOG.md` |
+| 文档校验 | `doc-check` | 全部文档 | `docs/DOC_CHECK_REPORT.md` |
 
 ## 3. 必读顺序
 
@@ -72,16 +80,23 @@ PRD 评审 → PRD 整改 → 方案设计 → 开发实现 → 测试验证
 - [ ] 接口契约与实现一致
 - [ ] 数据模型与实现一致
 - [ ] 文档已同步更新
+- [ ] `qa-execute` 生成的 `TEST_REPORT.md` 达到准出标准
+- [ ] `doc-check` 生成的 `DOC_CHECK_REPORT.md` 全部 PASS
 
 ## 7. Skill 使用指引
 
 | 任务场景 | 推荐 Skill |
 |---|---|
+| 新项目，需要初始化代码骨架 | `project-init` |
+| 拿到 Word/PDF/设计稿，需要转为结构化 PRD | `prd-ingest` |
 | 拿到新 PRD，需要评审 | `prd-review` |
 | PRD 评审完，需要整改 | `prd-rectify` |
 | 需求明确，需要出设计方案 | `solution-design` |
 | 设计完成，需要写代码 | `dev-implement` |
 | 需要生成测试计划和用例 | `qa-design` |
+| 用例就绪，需要执行测试 | `qa-execute` |
+| 测试有失败，需要修复缺陷 | `defect-fix` |
+| 需要校验文档一致性和追溯链 | `doc-check` |
 
 ## 8. 文档标记规范
 
@@ -92,6 +107,8 @@ PRD 评审 → PRD 整改 → 方案设计 → 开发实现 → 测试验证
 - 【删除】— 删除的内容
 - 【待确认】— 需要确认的内容
 - 【风险】— 存在风险的内容
+- 【设计推断】— 从设计稿推断的内容（`prd-ingest` 使用）
+- 【冲突】— 文档与设计稿之间的矛盾（`prd-ingest` 使用）
 
 ## 9. 目录规则
 

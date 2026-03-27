@@ -9,7 +9,9 @@
 ```
 docs/
 ├── AGENTS.md                      # 本文件：文档规范
+├── DOC_CHECK_REPORT.md            # 文档追溯性校验报告
 ├── 01-requirements/               # 需求文档
+│   ├── PRD_RAW.md                 # 原始 PRD（从 Word/PDF/设计稿导入）
 │   ├── PRD_REVIEW_ISSUES.md       # PRD 评审问题清单
 │   └── PRD_RECTIFIED.md           # 整改后 PRD
 ├── 02-architecture/               # 设计文档
@@ -18,7 +20,9 @@ docs/
 │   └── DATA_MODEL.md              # 数据模型
 └── 03-testing/                    # 测试文档
     ├── TEST_PLAN.md               # 测试计划
-    └── TEST_CASES.md              # 测试用例
+    ├── TEST_CASES.md              # 测试用例
+    ├── TEST_REPORT.md             # 测试报告
+    └── DEFECT_LOG.md              # 缺陷记录
 ```
 
 ## 3. 文档命名规范
@@ -38,6 +42,8 @@ docs/
 | 【删除】 | 删除内容 | 移除的需求、接口、字段 |
 | 【待确认】 | 待确认 | 需要产品/业务方确认的内容 |
 | 【风险】 | 风险项 | 技术风险、业务风险、依赖风险 |
+| 【设计推断】 | 设计稿推断 | 从设计稿图片推断的需求（`prd-ingest` 产出） |
+| 【冲突】 | 矛盾项 | 文档文字与设计稿之间的矛盾（`prd-ingest` 产出） |
 
 ## 5. 文档结构要求
 
@@ -54,11 +60,19 @@ docs/
 ## 6. 文档引用关系
 
 ```
-PRD_RECTIFIED.md（需求）
+PRD_RAW.md（原始导入）
+    ↓ prd-review + prd-rectify
+PRD_RECTIFIED.md（需求基线）
     ↓
 ARCHITECTURE.md（架构） → API_CONTRACT.md（接口） → DATA_MODEL.md（数据）
     ↓
 TEST_PLAN.md（测试计划） → TEST_CASES.md（测试用例）
+    ↓ qa-execute
+TEST_REPORT.md（测试报告）
+    ↓ defect-fix（失败时）
+DEFECT_LOG.md（缺陷记录） ⟲ 回到代码修复 → 回归测试
+    ↓ doc-check（任意节点）
+DOC_CHECK_REPORT.md（追溯性校验报告）
 ```
 
 - 设计文档必须引用需求文档中的功能编号

@@ -12,7 +12,7 @@
 | 集成测试 | Application Service、Repository、Controller | `backend/src/test/` |
 | 接口测试 | REST API 端到端 | `tests/api/` |
 | 前端测试 | 组件测试、E2E 测试 | `frontend/*/tests/` |
-| 测试文档 | 测试计划、测试用例 | `docs/03-testing/` |
+| 测试文档 | 测试计划、测试用例、测试报告、缺陷记录 | `docs/03-testing/` |
 
 ## 3. 用例模板
 
@@ -67,6 +67,8 @@
 | 风险项 | 影响发布的质量风险 |
 | 结论 | 是否具备发布条件 |
 
+> 测试报告由 `qa-execute` Skill 自动生成，输出到 `docs/03-testing/TEST_REPORT.md`。报告格式和内容必须满足以上要求。
+
 ## 7. 回归要求
 
 - 每次修复缺陷后，必须补充对应的回归测试用例
@@ -84,6 +86,8 @@
 | 预期结果 | 应该的行为 |
 | 实际结果 | 实际的行为 |
 | 状态 | 新建 / 修复中 / 已修复 / 已验证 / 已关闭 |
+
+> 缺陷由 `defect-fix` Skill 自动登记和管理，记录在 `docs/03-testing/DEFECT_LOG.md` 中。缺陷格式和状态流转必须满足以上规范。
 
 ## 9. 禁止事项
 
