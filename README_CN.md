@@ -2,7 +2,7 @@
 
 [English](./README.md)
 
-一个由 AI Agent 驱动的文档驱动开发模板。本模板定义了从需求导入到测试执行和缺陷修复的完整工作流，包含分层项目规则和可复用的 Skill。
+一个由 AI Agent 驱动的文档驱动开发模板。本模板定义了从需求调研到测试执行和缺陷修复的完整工作流，包含分层项目规则和可复用的 Skill。
 
 ## 项目结构
 
@@ -10,7 +10,9 @@
 ├── AGENTS.md                          # 项目总规则与工作流
 ├── .codex/skills/                     # 可复用 Skill 定义
 │   ├── project-init/SKILL.md          # 项目脚手架初始化
-│   ├── prd-ingest/SKILL.md           # 原始需求导入（Word/PDF/设计稿）
+│   ├── biz-research/SKILL.md          # 需求调研与信息归纳
+│   ├── requirement-clarify/SKILL.md   # 需求澄清
+│   ├── prd-compose/SKILL.md           # 详细需求文档编写
 │   ├── prd-review/SKILL.md            # PRD 评审
 │   ├── prd-rectify/SKILL.md           # PRD 整改
 │   ├── solution-design/SKILL.md       # 架构/接口/数据设计
@@ -22,8 +24,11 @@
 ├── docs/                              # 文档（文档驱动）
 │   ├── AGENTS.md                      # 文档规范
 │   ├── DOC_CHECK_REPORT.md            # 追溯性校验报告
+│   ├── 00-research/                   # 调研与澄清文档
+│   │   ├── RESEARCH_SUMMARY.md        # 需求调研摘要
+│   │   └── REQUIREMENTS_CLARIFIED.md  # 需求澄清记录
 │   ├── 01-requirements/               # 需求文档
-│   │   ├── PRD_RAW.md                 # 原始 PRD（从 Word/PDF/设计稿导入）
+│   │   ├── PRD_RAW.md                 # 原始 PRD（由 prd-compose 编写）
 │   │   ├── PRD_REVIEW_ISSUES.md       # PRD 评审问题清单
 │   │   └── PRD_RECTIFIED.md           # 整改后 PRD
 │   ├── 02-architecture/               # 设计文档
@@ -45,17 +50,19 @@
 
 ## 工作流
 
-核心工作流遵循扩展链路，包含反馈闭环：
+核心工作流遵循从调研到交付的扩展链路，包含反馈闭环：
 
 ```
-[project-init] → prd-ingest → prd-review → prd-rectify → solution-design
-    → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+[project-init] → biz-research → requirement-clarify → prd-compose → prd-review → prd-rectify
+    → solution-design → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
 ```
 
 | 阶段 | Skill | 输入 | 输出 |
 |---|---|---|---|
 | 项目初始化 | `project-init` | AGENTS.md 规范文件 | 后端/前端项目脚手架 |
-| 需求导入 | `prd-ingest` | Word/PDF/设计稿图片 | `PRD_RAW.md` |
+| 需求调研 | `biz-research` | 业务资料（Word/PDF/设计稿/调研材料） | `RESEARCH_SUMMARY.md` |
+| 需求澄清 | `requirement-clarify` | 调研摘要 | `REQUIREMENTS_CLARIFIED.md` |
+| 需求编写 | `prd-compose` | 澄清记录 + 可选设计稿 | `PRD_RAW.md` |
 | PRD 评审 | `prd-review` | 原始 PRD | `PRD_REVIEW_ISSUES.md` |
 | PRD 整改 | `prd-rectify` | 评审问题清单 + 原始 PRD | `PRD_RECTIFIED.md` |
 | 方案设计 | `solution-design` | 整改后 PRD | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` |
@@ -112,9 +119,11 @@
 
 1. 克隆本仓库
 2. 执行 `project-init` 初始化后端和前端项目骨架（可选，新项目首次执行）
-3. 将原始 PRD 文档放入项目中（Word、PDF 或设计稿图片）
+3. 将原始业务资料放入项目中（Word、PDF、设计稿图片、调研材料、访谈记录）
 4. 按顺序执行 Skill：
-   - `prd-ingest` — 将 Word/PDF/设计稿转换为结构化 PRD（如 PRD 已是 Markdown 则跳过）
+   - `biz-research` — 调研归纳原始业务资料，生成结构化摘要
+   - `requirement-clarify` — 澄清矛盾和缺口，与利益相关者确认
+   - `prd-compose` — 将澄清后的需求编写为正式 PRD
    - `prd-review` — 评审 PRD，生成问题清单
    - `prd-rectify` — 根据评审结果整改 PRD
    - `solution-design` — 生成架构设计、接口契约、数据模型

@@ -10,8 +10,11 @@
 docs/
 ├── AGENTS.md                      # 本文件：文档规范
 ├── DOC_CHECK_REPORT.md            # 文档追溯性校验报告
+├── 00-research/                   # 调研与澄清文档
+│   ├── RESEARCH_SUMMARY.md        # 需求调研摘要
+│   └── REQUIREMENTS_CLARIFIED.md  # 需求澄清记录
 ├── 01-requirements/               # 需求文档
-│   ├── PRD_RAW.md                 # 原始 PRD（从 Word/PDF/设计稿导入）
+│   ├── PRD_RAW.md                 # 原始 PRD（由 prd-compose 编写）
 │   ├── PRD_REVIEW_ISSUES.md       # PRD 评审问题清单
 │   └── PRD_RECTIFIED.md           # 整改后 PRD
 ├── 02-architecture/               # 设计文档
@@ -28,7 +31,7 @@ docs/
 ## 3. 文档命名规范
 
 - 使用全大写 + 下划线命名：`PRD_RECTIFIED.md`、`API_CONTRACT.md`
-- 目录使用序号前缀：`01-requirements`、`02-architecture`、`03-testing`
+- 目录使用序号前缀：`00-research`、`01-requirements`、`02-architecture`、`03-testing`
 - 禁止中文文件名
 
 ## 4. 文档标记规范
@@ -42,8 +45,9 @@ docs/
 | 【删除】 | 删除内容 | 移除的需求、接口、字段 |
 | 【待确认】 | 待确认 | 需要产品/业务方确认的内容 |
 | 【风险】 | 风险项 | 技术风险、业务风险、依赖风险 |
-| 【设计推断】 | 设计稿推断 | 从设计稿图片推断的需求（`prd-ingest` 产出） |
-| 【冲突】 | 矛盾项 | 文档文字与设计稿之间的矛盾（`prd-ingest` 产出） |
+| 【设计推断】 | 设计稿推断 | 从设计稿图片推断的需求（`biz-research` / `prd-compose` 产出） |
+| 【冲突】 | 矛盾项 | 不同材料之间的矛盾（`biz-research` / `prd-compose` 产出） |
+| 【澄清结论】 | 澄清决策 | 需求澄清阶段的最终决策（`requirement-clarify` 产出） |
 
 ## 5. 文档结构要求
 
@@ -60,7 +64,11 @@ docs/
 ## 6. 文档引用关系
 
 ```
-PRD_RAW.md（原始导入）
+RESEARCH_SUMMARY.md（调研归纳）
+    ↓ requirement-clarify
+REQUIREMENTS_CLARIFIED.md（需求澄清）
+    ↓ prd-compose
+PRD_RAW.md（初始 PRD）
     ↓ prd-review + prd-rectify
 PRD_RECTIFIED.md（需求基线）
     ↓
@@ -80,6 +88,7 @@ DOC_CHECK_REPORT.md（追溯性校验报告）
 - 需求引用格式：`关联需求：F001`（在 Skill 输出和用例中使用）
 - 接口引用格式：`关联接口：API-XXX-001`
 - 跨文档引用格式：`参见 PRD_RECTIFIED.md § F001`
+- 澄清引用格式：`关联澄清：CQ-001`
 
 ## 7. 文档优先级
 

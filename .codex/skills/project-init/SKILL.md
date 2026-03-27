@@ -271,8 +271,9 @@ class ApplicationTests {
 ### 步骤 7：提示下一步
 
 脚手架创建完成后提示用户：
-- 如已有 PRD：进入 `prd-review`（Markdown 格式）或 `prd-ingest`（Word/PDF/设计稿）
-- 如尚无 PRD：等待需求输入
+- 如已有业务资料（Word/PDF/设计稿/调研材料）：进入 `biz-research`
+- 如已有结构化 Markdown PRD：可直接进入 `prd-review`
+- 如尚无 PRD 或业务资料：等待需求输入
 
 ## 注意事项
 

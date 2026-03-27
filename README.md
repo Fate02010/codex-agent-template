@@ -2,7 +2,7 @@
 
 [中文文档](./README_CN.md)
 
-A document-driven development template powered by AI Agents. This template defines the full workflow from PRD ingestion to test execution and defect resolution, with layered project rules and reusable skills.
+A document-driven development template powered by AI Agents. This template defines the full workflow from business research to test execution and defect resolution, with layered project rules and reusable skills.
 
 ## Project Structure
 
@@ -10,7 +10,9 @@ A document-driven development template powered by AI Agents. This template defin
 ├── AGENTS.md                          # Root project rules & workflow
 ├── .codex/skills/                     # Reusable skill definitions
 │   ├── project-init/SKILL.md          # Project scaffolding
-│   ├── prd-ingest/SKILL.md           # Raw document ingestion (Word/PDF/Sketch)
+│   ├── biz-research/SKILL.md          # Business research & synthesis
+│   ├── requirement-clarify/SKILL.md   # Requirement clarification
+│   ├── prd-compose/SKILL.md           # PRD composition
 │   ├── prd-review/SKILL.md            # PRD review
 │   ├── prd-rectify/SKILL.md           # PRD rectification
 │   ├── solution-design/SKILL.md       # Architecture / API / Data design
@@ -22,8 +24,11 @@ A document-driven development template powered by AI Agents. This template defin
 ├── docs/                              # Documentation (document-driven)
 │   ├── AGENTS.md                      # Documentation standards
 │   ├── DOC_CHECK_REPORT.md            # Traceability check report
+│   ├── 00-research/                   # Research & clarification
+│   │   ├── RESEARCH_SUMMARY.md        # Research summary
+│   │   └── REQUIREMENTS_CLARIFIED.md  # Clarified requirements
 │   ├── 01-requirements/               # Requirements
-│   │   ├── PRD_RAW.md                 # Raw PRD (ingested from Word/PDF/images)
+│   │   ├── PRD_RAW.md                 # Raw PRD (composed from research)
 │   │   ├── PRD_REVIEW_ISSUES.md       # PRD review issue list
 │   │   └── PRD_RECTIFIED.md           # Rectified PRD
 │   ├── 02-architecture/               # Design
@@ -45,17 +50,19 @@ A document-driven development template powered by AI Agents. This template defin
 
 ## Workflow
 
-The core workflow follows an extended chain with feedback loop:
+The core workflow follows an extended chain from research to delivery, with feedback loop:
 
 ```
-[project-init] → prd-ingest → prd-review → prd-rectify → solution-design
-    → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+[project-init] → biz-research → requirement-clarify → prd-compose → prd-review → prd-rectify
+    → solution-design → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
 ```
 
 | Phase | Skill | Input | Output |
 |---|---|---|---|
 | Project Init | `project-init` | AGENTS.md spec files | Backend/frontend scaffold |
-| PRD Ingestion | `prd-ingest` | Word/PDF/design images | `PRD_RAW.md` |
+| Business Research | `biz-research` | Business docs (Word/PDF/images/research) | `RESEARCH_SUMMARY.md` |
+| Requirement Clarification | `requirement-clarify` | Research summary | `REQUIREMENTS_CLARIFIED.md` |
+| PRD Composition | `prd-compose` | Clarified requirements + optional designs | `PRD_RAW.md` |
 | PRD Review | `prd-review` | Raw PRD | `PRD_REVIEW_ISSUES.md` |
 | PRD Rectification | `prd-rectify` | Review issues + Raw PRD | `PRD_RECTIFIED.md` |
 | Solution Design | `solution-design` | Rectified PRD | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` |
@@ -112,9 +119,11 @@ The core workflow follows an extended chain with feedback loop:
 
 1. Clone this repository
 2. Run `project-init` to scaffold the backend and frontend projects (optional, for new projects)
-3. Place your raw PRD document in the project (Word, PDF, or design images)
+3. Place your raw business materials in the project (Word, PDF, design images, research notes, interview transcripts)
 4. Run the skills in order:
-   - `prd-ingest` — Convert Word/PDF/design images to structured PRD (skip if PRD is already Markdown)
+   - `biz-research` — Research and synthesize raw business materials into structured summary
+   - `requirement-clarify` — Clarify ambiguities and conflicts with stakeholders
+   - `prd-compose` — Compose a structured PRD from clarified requirements
    - `prd-review` — Review the PRD and generate an issue list
    - `prd-rectify` — Rectify the PRD based on review findings
    - `solution-design` — Generate architecture, API contract, and data model
