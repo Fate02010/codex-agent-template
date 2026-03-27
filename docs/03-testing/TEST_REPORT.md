@@ -2,13 +2,15 @@
 
 ## 文档信息
 
+- 文档类型：模板（首次执行 Skill 后覆盖）
+- 生成 Skill：`qa-execute`
 - 版本：—
 - 日期：—
 - 关联需求：PRD_RECTIFIED.md
 - 测试计划：TEST_PLAN.md
 - 状态：待生成
 
-> 本文档由 `qa-execute` Skill 在执行测试后自动生成。
+> 生成后不可手动修改。
 
 ## 1. 执行概要
 

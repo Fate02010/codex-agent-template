@@ -10,8 +10,7 @@
 ├── AGENTS.md                          # 项目总规则与工作流
 ├── .codex/skills/                     # 可复用 Skill 定义
 │   ├── project-init/SKILL.md          # 项目脚手架初始化
-│   ├── biz-research/SKILL.md          # 需求调研与信息归纳
-│   ├── requirement-clarify/SKILL.md   # 需求澄清
+│   ├── biz-research/SKILL.md          # 需求调研、信息归纳与需求澄清
 │   ├── prd-compose/SKILL.md           # 详细需求文档编写
 │   ├── prd-review/SKILL.md            # PRD 评审
 │   ├── prd-rectify/SKILL.md           # PRD 整改
@@ -21,7 +20,7 @@
 │   ├── qa-execute/SKILL.md            # 测试执行与报告
 │   ├── defect-fix/SKILL.md            # 缺陷修复闭环
 │   └── doc-check/SKILL.md             # 文档追溯性校验
-├── docs/                              # 文档（文档驱动）
+├── docs/                              # 文档（文档驱动，预置模板）
 │   ├── AGENTS.md                      # 文档规范
 │   ├── DOC_CHECK_REPORT.md            # 追溯性校验报告
 │   ├── 00-research/                   # 调研与澄清文档
@@ -30,8 +29,8 @@
 │   ├── 01-requirements/               # 需求文档
 │   │   ├── PRD_RAW.md                 # 原始 PRD（由 prd-compose 编写）
 │   │   ├── PRD_REVIEW_ISSUES.md       # PRD 评审问题清单
-│   │   └── PRD_RECTIFIED.md           # 整改后 PRD
-│   ├── 02-architecture/               # 设计文档
+│   │   └── PRD_RECTIFIED.md           # 整改后 PRD（冻结基线）
+│   ├── 02-architecture/               # 设计文档（生成后冻结）
 │   │   ├── ARCHITECTURE.md            # 架构设计
 │   │   ├── API_CONTRACT.md            # 接口契约
 │   │   └── DATA_MODEL.md              # 数据模型
@@ -48,21 +47,22 @@
     └── AGENTS.md                      # 测试规范
 ```
 
+> **模板说明**：`docs/` 目录下的文件是**仓库预置模板**，不是已完成的 Skill 产出。首次执行对应 Skill 后，模板内容将被真实产物覆盖。
+
 ## 工作流
 
-核心工作流遵循从调研到交付的扩展链路，包含反馈闭环：
+核心工作流遵循从调研到交付的链路，包含反馈闭环：
 
 ```
-[project-init] → biz-research → requirement-clarify → prd-compose → prd-review → prd-rectify
+project-init → biz-research → prd-compose → prd-review → prd-rectify
     → solution-design → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
 ```
 
 | 阶段 | Skill | 输入 | 输出 |
 |---|---|---|---|
 | 项目初始化 | `project-init` | AGENTS.md 规范文件 | 后端/前端项目脚手架 |
-| 需求调研 | `biz-research` | 业务资料（Word/PDF/设计稿/调研材料） | `RESEARCH_SUMMARY.md` |
-| 需求澄清 | `requirement-clarify` | 调研摘要 | `REQUIREMENTS_CLARIFIED.md` |
-| 需求编写 | `prd-compose` | 澄清记录 + 可选设计稿 | `PRD_RAW.md` |
+| 需求调研 | `biz-research` | 业务资料（Word/PDF/设计稿/调研材料） | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` |
+| 需求编写 | `prd-compose` | 调研摘要 + 澄清记录 + 可选设计稿 | `PRD_RAW.md` |
 | PRD 评审 | `prd-review` | 原始 PRD | `PRD_REVIEW_ISSUES.md` |
 | PRD 整改 | `prd-rectify` | 评审问题清单 + 原始 PRD | `PRD_RECTIFIED.md` |
 | 方案设计 | `solution-design` | 整改后 PRD | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` |
@@ -110,7 +110,7 @@
 | 文件 | 管理范围 |
 |---|---|
 | 根 `AGENTS.md` | 项目总规则、工作流、技术栈 |
-| `docs/AGENTS.md` | 文档命名、结构、标记规范 |
+| `docs/AGENTS.md` | 文档命名、结构、标记、编号体系规范 |
 | `backend/AGENTS.md` | 后端分层、编码、异常处理规范 |
 | `frontend/AGENTS.md` | 前端组件、状态管理、接口对接规范 |
 | `tests/AGENTS.md` | 测试用例模板、覆盖要求、报告规范 |
@@ -118,11 +118,10 @@
 ## 快速开始
 
 1. 克隆本仓库
-2. 执行 `project-init` 初始化后端和前端项目骨架（可选，新项目首次执行）
+2. 若 `backend/` 和 `frontend/` 下无工程文件，先执行 `project-init` 初始化项目骨架
 3. 将原始业务资料放入项目中（Word、PDF、设计稿图片、调研材料、访谈记录）
 4. 按顺序执行 Skill：
-   - `biz-research` — 调研归纳原始业务资料，生成结构化摘要
-   - `requirement-clarify` — 澄清矛盾和缺口，与利益相关者确认
+   - `biz-research` — 调研归纳原始业务资料，澄清矛盾和缺口
    - `prd-compose` — 将澄清后的需求编写为正式 PRD
    - `prd-review` — 评审 PRD，生成问题清单
    - `prd-rectify` — 根据评审结果整改 PRD

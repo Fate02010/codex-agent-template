@@ -4,21 +4,24 @@
 
 本项目是一个 Agent 驱动的开发模板工程，采用**文档驱动开发**模式。所有开发活动以文档为输入和输出，确保调研、需求、设计、实现、测试全链路可追溯。
 
+> **模板说明**：`docs/` 目录下的文件是**仓库预置模板**，不是已完成的 Skill 产出。首次执行对应 Skill 后，模板内容将被真实产物覆盖。每份模板文件的"文档信息"区域标注了文档类型和生成 Skill。
+
 ## 2. 工作主链
 
 ```
-[project-init] → biz-research → requirement-clarify → prd-compose → prd-review → prd-rectify
+project-init → biz-research → prd-compose → prd-review → prd-rectify
     → solution-design → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
 ```
 
-> `project-init` 为可选前置步骤（新项目首次执行）；`doc-check` 为可在任意节点执行的校验工具；`defect-fix` 在测试失败时触发循环。
+> - 若 `backend/` 和 `frontend/` 下无工程文件（如 `pom.xml`、`package.json`），进入 `dev-implement` 前**必须**先执行 `project-init`
+> - `biz-research` 包含两个阶段：阶段一为调研归纳，阶段二为需求澄清（存在矛盾或缺口时触发）
+> - `doc-check` 为可在任意节点执行的校验工具；`defect-fix` 在测试失败时触发循环
 
 | 阶段 | Skill | 输入 | 输出 |
 |---|---|---|---|
 | 项目初始化 | `project-init` | AGENTS.md 规范文件 | 后端/前端项目脚手架 |
-| 需求调研 | `biz-research` | 业务资料（Word/PDF/设计稿/调研材料） | `docs/00-research/RESEARCH_SUMMARY.md` |
-| 需求澄清 | `requirement-clarify` | 调研摘要 | `docs/00-research/REQUIREMENTS_CLARIFIED.md` |
-| 需求编写 | `prd-compose` | 澄清记录 + 可选设计稿 | `docs/01-requirements/PRD_RAW.md` |
+| 需求调研 | `biz-research` | 业务资料（Word/PDF/设计稿/调研材料） | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` |
+| 需求编写 | `prd-compose` | 调研摘要 + 澄清记录 + 可选设计稿 | `docs/01-requirements/PRD_RAW.md` |
 | PRD 评审 | `prd-review` | 原始 PRD | `docs/01-requirements/PRD_REVIEW_ISSUES.md` |
 | PRD 整改 | `prd-rectify` | 评审问题清单 + 原始 PRD | `docs/01-requirements/PRD_RECTIFIED.md` |
 | 方案设计 | `solution-design` | 整改后 PRD | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` |
@@ -91,8 +94,7 @@
 | 任务场景 | 推荐 Skill |
 |---|---|
 | 新项目，需要初始化代码骨架 | `project-init` |
-| 拿到业务资料/调研材料，需要调研归纳 | `biz-research` |
-| 调研完成，需要澄清需求疑问 | `requirement-clarify` |
+| 拿到业务资料/调研材料，需要调研归纳和澄清 | `biz-research` |
 | 需求已澄清，需要编写正式 PRD | `prd-compose` |
 | 拿到 PRD，需要评审 | `prd-review` |
 | PRD 评审完，需要整改 | `prd-rectify` |
@@ -114,7 +116,7 @@
 - 【风险】— 存在风险的内容
 - 【设计推断】— 从设计稿推断的内容（`biz-research` / `prd-compose` 使用）
 - 【冲突】— 材料之间的矛盾（`biz-research` / `prd-compose` 使用）
-- 【澄清结论】— 需求澄清阶段的决策结果（`requirement-clarify` 使用）
+- 【澄清结论】— 需求澄清阶段的决策结果（`biz-research` 阶段二使用）
 
 ## 9. 目录规则
 

@@ -4,6 +4,17 @@
 
 当设计文档已完成（`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 齐备），需要编写代码时使用。
 
+## 前置条件
+
+- `backend/pom.xml` 或 `frontend/web/package.json` 存在（否则先执行 `project-init`）
+- 设计文档已冻结（`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 已生成）
+
+## 完成标准
+
+- 代码编译通过，无 warning
+- Domain Service 有单元测试覆盖
+- Controller 接口与 `API_CONTRACT.md` 一致
+
 ## 输入
 
 1. `docs/01-requirements/PRD_RECTIFIED.md` — 整改后需求文档
@@ -19,6 +30,17 @@
 - 前端代码：`frontend/` 目录下
 
 ## 执行流程
+
+### 步骤 0：验证前置条件
+
+1. **检查工程骨架**：
+   - 后端：`backend/pom.xml` 是否存在？
+   - 前端：`frontend/web/package.json` 是否存在？
+   - 如不存在，**中止执行**并提示："请先执行 `project-init` 初始化项目骨架"
+2. **检查设计文档状态**：
+   - `PRD_RECTIFIED.md` 状态是否为"已冻结"？
+   - `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 是否已生成？
+   - 如未冻结或不存在，**中止执行**并提示缺失的前置文档
 
 ### 步骤 1：读取设计文档
 

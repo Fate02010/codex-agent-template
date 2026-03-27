@@ -4,6 +4,16 @@
 
 当需求已完成澄清（`REQUIREMENTS_CLARIFIED.md` 已生成），需要将澄清后的需求结构化为正式 PRD 时使用。
 
+## 前置条件
+
+- `docs/00-research/RESEARCH_SUMMARY.md` 已生成（非模板状态）
+- 如存在 `REQUIREMENTS_CLARIFIED.md`，其中所有 CQ 问题已有决策结果
+
+## 完成标准
+
+- `docs/01-requirements/PRD_RAW.md` 所有 F 编号有完整结构（描述、角色、前置条件、主流程、字段清单、业务规则、异常场景、边界条件）
+- F 编号连续无缺
+
 ## 输入
 
 1. `docs/00-research/REQUIREMENTS_CLARIFIED.md` — 需求澄清记录

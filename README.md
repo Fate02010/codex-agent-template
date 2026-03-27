@@ -10,8 +10,7 @@ A document-driven development template powered by AI Agents. This template defin
 ├── AGENTS.md                          # Root project rules & workflow
 ├── .codex/skills/                     # Reusable skill definitions
 │   ├── project-init/SKILL.md          # Project scaffolding
-│   ├── biz-research/SKILL.md          # Business research & synthesis
-│   ├── requirement-clarify/SKILL.md   # Requirement clarification
+│   ├── biz-research/SKILL.md          # Business research, synthesis & clarification
 │   ├── prd-compose/SKILL.md           # PRD composition
 │   ├── prd-review/SKILL.md            # PRD review
 │   ├── prd-rectify/SKILL.md           # PRD rectification
@@ -21,7 +20,7 @@ A document-driven development template powered by AI Agents. This template defin
 │   ├── qa-execute/SKILL.md            # Test execution & reporting
 │   ├── defect-fix/SKILL.md            # Defect resolution loop
 │   └── doc-check/SKILL.md             # Document traceability validation
-├── docs/                              # Documentation (document-driven)
+├── docs/                              # Documentation (document-driven, templates)
 │   ├── AGENTS.md                      # Documentation standards
 │   ├── DOC_CHECK_REPORT.md            # Traceability check report
 │   ├── 00-research/                   # Research & clarification
@@ -30,8 +29,8 @@ A document-driven development template powered by AI Agents. This template defin
 │   ├── 01-requirements/               # Requirements
 │   │   ├── PRD_RAW.md                 # Raw PRD (composed from research)
 │   │   ├── PRD_REVIEW_ISSUES.md       # PRD review issue list
-│   │   └── PRD_RECTIFIED.md           # Rectified PRD
-│   ├── 02-architecture/               # Design
+│   │   └── PRD_RECTIFIED.md           # Rectified PRD (frozen baseline)
+│   ├── 02-architecture/               # Design (frozen after generation)
 │   │   ├── ARCHITECTURE.md            # Architecture design
 │   │   ├── API_CONTRACT.md            # API contract
 │   │   └── DATA_MODEL.md              # Data model
@@ -48,21 +47,22 @@ A document-driven development template powered by AI Agents. This template defin
     └── AGENTS.md                      # Testing standards
 ```
 
+> **Note**: Files under `docs/` are **pre-set templates**, not completed skill outputs. Templates are overwritten with real artifacts when the corresponding skill is first executed.
+
 ## Workflow
 
 The core workflow follows an extended chain from research to delivery, with feedback loop:
 
 ```
-[project-init] → biz-research → requirement-clarify → prd-compose → prd-review → prd-rectify
+project-init → biz-research → prd-compose → prd-review → prd-rectify
     → solution-design → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
 ```
 
 | Phase | Skill | Input | Output |
 |---|---|---|---|
 | Project Init | `project-init` | AGENTS.md spec files | Backend/frontend scaffold |
-| Business Research | `biz-research` | Business docs (Word/PDF/images/research) | `RESEARCH_SUMMARY.md` |
-| Requirement Clarification | `requirement-clarify` | Research summary | `REQUIREMENTS_CLARIFIED.md` |
-| PRD Composition | `prd-compose` | Clarified requirements + optional designs | `PRD_RAW.md` |
+| Business Research | `biz-research` | Business docs (Word/PDF/images/research) | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` |
+| PRD Composition | `prd-compose` | Research summary + clarified requirements | `PRD_RAW.md` |
 | PRD Review | `prd-review` | Raw PRD | `PRD_REVIEW_ISSUES.md` |
 | PRD Rectification | `prd-rectify` | Review issues + Raw PRD | `PRD_RECTIFIED.md` |
 | Solution Design | `solution-design` | Rectified PRD | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` |
@@ -110,7 +110,7 @@ The core workflow follows an extended chain from research to delivery, with feed
 | File | Scope |
 |---|---|
 | Root `AGENTS.md` | Project-wide rules, workflow, tech stack |
-| `docs/AGENTS.md` | Documentation naming, structure, markup standards |
+| `docs/AGENTS.md` | Documentation naming, structure, markup, numbering standards |
 | `backend/AGENTS.md` | Backend layering, coding, exception handling |
 | `frontend/AGENTS.md` | Frontend components, state management, API integration |
 | `tests/AGENTS.md` | Test case templates, coverage requirements, reporting |
@@ -118,12 +118,11 @@ The core workflow follows an extended chain from research to delivery, with feed
 ## Getting Started
 
 1. Clone this repository
-2. Run `project-init` to scaffold the backend and frontend projects (optional, for new projects)
+2. If `backend/` and `frontend/` have no project files, run `project-init` first to scaffold the projects
 3. Place your raw business materials in the project (Word, PDF, design images, research notes, interview transcripts)
 4. Run the skills in order:
-   - `biz-research` — Research and synthesize raw business materials into structured summary
-   - `requirement-clarify` — Clarify ambiguities and conflicts with stakeholders
-   - `prd-compose` — Compose a structured PRD from clarified requirements
+   - `biz-research` — Research, synthesize, and clarify requirements from raw materials
+   - `prd-compose` — Compose a structured PRD from research results
    - `prd-review` — Review the PRD and generate an issue list
    - `prd-rectify` — Rectify the PRD based on review findings
    - `solution-design` — Generate architecture, API contract, and data model

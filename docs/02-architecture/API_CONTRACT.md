@@ -2,11 +2,14 @@
 
 ## 文档信息
 
+- 文档类型：模板（首次执行 Skill 后覆盖）
+- 生成 Skill：`solution-design`
 - 版本：—
 - 日期：—
 - 关联需求：PRD_RECTIFIED.md
+- 状态：待生成 → 草稿 → 已冻结
 
-> 本文档由 `solution-design` Skill 基于整改后 PRD 自动生成。
+> 严格冻结，接口变更必须先改文档。
 
 ## 全局约定
 

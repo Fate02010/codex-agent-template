@@ -2,11 +2,12 @@
 
 ## 文档信息
 
+- 文档类型：模板（首次执行 Skill 后覆盖）
+- 生成 Skill：`qa-design`
 - 版本：—
 - 日期：—
 - 关联需求：PRD_RECTIFIED.md
-
-> 本文档由 `qa-design` Skill 基于整改后 PRD 和设计文档自动生成。
+- 状态：待生成
 
 ## 1. 测试目标
 

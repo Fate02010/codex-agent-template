@@ -2,11 +2,11 @@
 
 ## 文档信息
 
+- 文档类型：模板（首次执行 Skill 后覆盖）
+- 生成 Skill：`biz-research`（阶段二）
 - 来源：RESEARCH_SUMMARY.md
 - 澄清日期：—
-- 状态：待澄清
-
-> 本文档由 `requirement-clarify` Skill 生成，记录澄清过程与最终决策。
+- 状态：待生成
 
 ## 1. 澄清问题清单
 

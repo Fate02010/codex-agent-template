@@ -2,11 +2,14 @@
 
 ## 文档信息
 
+- 文档类型：模板（首次执行 Skill 后覆盖）
+- 生成 Skill：`qa-design`
 - 版本：—
 - 日期：—
 - 关联需求：PRD_RECTIFIED.md
+- 状态：待生成
 
-> 本文档由 `qa-design` Skill 基于整改后 PRD 和接口契约自动生成。
+> 执行时由 `qa-execute` 回写结果。
 
 ## 用例统计
 

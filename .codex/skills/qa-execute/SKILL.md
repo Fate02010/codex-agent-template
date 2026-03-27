@@ -4,6 +4,16 @@
 
 当测试计划和测试用例已就绪（`TEST_PLAN.md` 和 `TEST_CASES.md` 已生成），且代码已完成开发实现时，使用本 Skill 执行测试并生成测试报告。
 
+## 前置条件
+
+- `docs/03-testing/TEST_PLAN.md` 和 `TEST_CASES.md` 已生成（非模板状态）
+- 后端代码可编译（`mvn compile` 通过）或前端代码可构建（`npm run build` 通过）
+- 如果 `pom.xml` / `package.json` 不存在，结论只能是**阻塞**
+
+## 完成标准
+
+- `docs/03-testing/TEST_REPORT.md` 已生成，包含完整的执行统计和准出结论
+
 ## 输入
 
 1. `docs/03-testing/TEST_PLAN.md` — 测试策略和范围
