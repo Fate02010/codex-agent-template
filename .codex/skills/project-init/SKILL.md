@@ -16,6 +16,7 @@
 - `backend/` 目录下的可编译后端项目脚手架
 - `frontend/web/` 目录下的可运行前端项目脚手架（默认）
 - `frontend/uniapp/` 目录下的跨端脚手架（仅在架构设计或用户明确要求时生成）
+- `frontend/miniprogram/` 目录下的原生小程序脚手架（仅在用户明确要求原生小程序时生成）
 - `tests/api/` 目录下的测试基础结构
 
 ## 执行流程
@@ -76,7 +77,7 @@ public class Application {
 
 #### 3.3 DDD 分包结构
 
-按 `backend/AGENTS.md` 第 2 章创建空包（含 `package-info.java`）：
+按 `backend/AGENTS.md` 的“分层架构”章节创建空包（含 `package-info.java`）：
 
 ```
 [base]/
@@ -188,7 +189,7 @@ class ApplicationTests {
 
 #### 4.1 package.json
 
-默认在 `frontend/web/` 下生成 `package.json`。若 `ARCHITECTURE.md` 或用户明确要求 UniApp / 小程序交付，则额外生成 `frontend/uniapp/` 基础脚手架。
+默认在 `frontend/web/` 下生成 `package.json`。若 `ARCHITECTURE.md` 或用户明确要求 UniApp 交付，则额外生成 `frontend/uniapp/` 基础脚手架；若用户明确要求**原生微信小程序**，则生成 `frontend/miniprogram/` 基础脚手架。
 
 在 `frontend/web/` 下生成 `package.json`：
 
@@ -235,7 +236,7 @@ class ApplicationTests {
 
 #### 4.4 目录结构与基础文件
 
-按 `frontend/AGENTS.md` 第 2 章创建：
+按 `frontend/AGENTS.md` 的“目录结构”章节创建：
 
 | 文件 | 说明 |
 |---|---|
@@ -254,6 +255,20 @@ class ApplicationTests {
 - `.prettierrc` — Prettier 配置
 - `.gitignore` — 忽略 node_modules、dist 等
 
+#### 4.6 原生小程序脚手架（可选）
+
+当用户明确要求原生微信小程序交付时，在 `frontend/miniprogram/` 下生成最小可运行骨架：
+
+| 文件 | 说明 |
+|---|---|
+| `app.js` | 小程序入口逻辑 |
+| `app.json` | 全局配置（页面路由、window、sitemap） |
+| `app.wxss` | 全局样式 |
+| `pages/index/index.js` | 示例页面逻辑 |
+| `pages/index/index.wxml` | 示例页面模板 |
+| `pages/index/index.wxss` | 示例页面样式 |
+| `project.config.json` | 开发者工具项目配置（占位） |
+
 ### 步骤 5：生成测试目录结构
 
 - 创建 `tests/api/` 空目录（用于接口测试）
@@ -269,10 +284,11 @@ class ApplicationTests {
 
 - [ ] `backend/pom.xml` 存在且 XML 结构正确
 - [ ] Application 启动类包含 `@SpringBootApplication`
-- [ ] DDD 四层包结构已按 `backend/AGENTS.md` 第 2 章创建
+- [ ] DDD 四层包结构已按 `backend/AGENTS.md` 的“分层架构”章节创建
 - [ ] `Result<T>`、`BusinessException`、`GlobalExceptionHandler` 已创建
 - [ ] `frontend/web/package.json` 存在且依赖正确
 - [ ] 若启用跨端交付，`frontend/uniapp/package.json`、`pages.json`、`manifest.json` 已创建
+- [ ] 若启用原生小程序交付，`frontend/miniprogram/app.json` 与示例页面已创建
 - [ ] 前端请求封装的 `Result<T>` 类型与后端一致
 - [ ] Router 和 Pinia 已初始化
 - [ ] 已有的 `AGENTS.md` 文件未被覆盖

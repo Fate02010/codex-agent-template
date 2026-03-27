@@ -31,7 +31,7 @@
 
 ### 步骤 1：读取输入文档
 
-1. 读取 `tests/AGENTS.md` 第 6 章获取报告模板要求
+1. 读取 `tests/AGENTS.md` 中“报告模板”相关章节，获取报告结构要求
 2. 读取 `docs/03-testing/TEST_PLAN.md` 获取测试策略和执行顺序
 3. 读取 `docs/03-testing/TEST_CASES.md` 获取全部待执行用例
 
@@ -62,7 +62,7 @@
 
 在映射结果之前，先执行映射完整性校验：
 
-1. 读取 `TEST_CASES.md` 末尾的"测试代码映射表"（由 `qa-design` 生成）
+1. 读取 `TEST_CASES.md` 中 `3. TC 与测试代码绑定规则` 下的 `3.1 测试代码映射表`（由 `qa-design` 生成）
 2. 扫描测试代码中所有 `@DisplayName` / `it()` / `test()` 中的 TC 编号
 3. 执行以下校验并记录结果：
 
@@ -102,14 +102,18 @@
 
 ### 步骤 8：输出 TEST_REPORT.md
 
-按 `tests/AGENTS.md` 第 6 章报告模板，将结果写入 `docs/03-testing/TEST_REPORT.md`：
+按 `tests/AGENTS.md` 的报告模板约束，将结果写入 `docs/03-testing/TEST_REPORT.md`：
 
 ```markdown
 # 测试报告
 
 ## 文档信息
+- 文档类型：产物
+- 生成 Skill：`qa-execute`
+- 上游输入：`TEST_PLAN.md`、`TEST_CASES.md`、源代码
 - 版本：v1.0
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 - 关联需求：PRD_RECTIFIED.md
 - 测试计划：TEST_PLAN.md
 

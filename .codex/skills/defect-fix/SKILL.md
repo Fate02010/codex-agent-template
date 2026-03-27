@@ -24,7 +24,7 @@
 
 ### 步骤 1：读取失败上下文
 
-1. 读取 `TEST_REPORT.md` 第 4 章（失败用例）
+1. 按章节标题读取 `TEST_REPORT.md` 中“失败与阻塞明细”（或等价失败用例章节）
 2. 对每个失败用例，从 `TEST_CASES.md` 中读取完整用例信息
 3. 读取关联需求（FXXX）对应的 `PRD_RECTIFIED.md` 章节
 4. 读取关联接口（API-XXX-NNN）对应的 `API_CONTRACT.md` 章节
@@ -59,7 +59,7 @@
 （文档优先：需要哪些文档/代码变更）
 ```
 
-缺陷编号格式严格遵循 `tests/AGENTS.md` 第 8 章规范：`BUG-模块-序号`。
+缺陷编号格式严格遵循 `tests/AGENTS.md` 的“缺陷记录规则”：`BUG-模块-序号`。
 
 ### 步骤 3：根因分析
 
@@ -108,7 +108,7 @@
 | 修复日期 | YYYY-MM-DD |
 | 回归结果 | 通过 / 失败 |
 
-补充回归用例标记：`[回归] TC-XXX-NNN-R1`（遵循 `tests/AGENTS.md` 第 7 章规范）。
+补充回归用例标记：`[回归] TC-XXX-NNN-R1`（遵循 `tests/AGENTS.md` 的“回归要求”）。
 
 ### 步骤 8：追加回归轮次到 TEST_REPORT.md
 

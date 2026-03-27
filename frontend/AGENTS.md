@@ -12,7 +12,7 @@
 | 包管理 | pnpm / npm |
 | HTTP 请求 | axios（Web）/ uni.request（UniApp） |
 
-> 默认脚手架初始化目标为 `frontend/web/`。若架构设计或用户明确要求跨端交付，再增量启用 `frontend/uniapp/`。
+> 默认脚手架初始化目标为 `frontend/web/`。若架构设计或用户明确要求跨端交付，再增量启用 `frontend/uniapp/`。若用户明确要求原生小程序，再启用 `frontend/miniprogram/`。
 
 ## 2. 目录结构
 
@@ -56,6 +56,21 @@ frontend/uniapp/
 │   ├── pages.json        # 页面路由配置
 │   └── uni.scss          # 全局样式变量
 └── package.json
+```
+
+### 原生微信小程序项目（可选）
+
+```
+frontend/miniprogram/
+├── app.js
+├── app.json
+├── app.wxss
+├── pages/
+│   └── index/
+│       ├── index.js
+│       ├── index.wxml
+│       └── index.wxss
+└── project.config.json
 ```
 
 ## 3. 组件规范

@@ -67,9 +67,11 @@
 
 ## 文档信息
 - 文档类型：产物
-- 生成 Skill：iteration-plan
+- 生成 Skill：`iteration-plan`
+- 上游输入：首次交付模式=`TEST_REPORT.md`+冻结文档+代码状态；增量模式=`CHANGE_REQUEST.md`+`CHANGE_IMPACT.md`+当前版本基线
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 
 ## 迭代总览
 | 迭代 | 版本号 | 状态 | 开始日期 | 完成日期 | 包含 CR |
@@ -125,9 +127,11 @@
 
 ## 文档信息
 - 文档类型：产物
-- 生成 Skill：iteration-plan
+- 生成 Skill：`iteration-plan`
+- 上游输入：`ITERATION_PLAN.md`、冻结文档、`TEST_REPORT.md`、代码状态
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 
 ## 当前版本
 - **版本号**：vX.Y.Z
@@ -173,9 +177,11 @@
 
 ## 文档信息
 - 文档类型：产物
-- 生成 Skill：iteration-plan
+- 生成 Skill：`iteration-plan`
+- 上游输入：`ITERATION_PLAN.md`、`RELEASE_BASELINE.md`
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
+- 状态：草稿 / 已冻结
 
 ## [vX.Y.Z] - YYYY-MM-DD
 

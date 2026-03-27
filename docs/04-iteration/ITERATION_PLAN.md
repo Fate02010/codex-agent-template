@@ -4,7 +4,7 @@
 
 - 文档类型：模板（首次执行 Skill 后覆盖）
 - 生成 Skill：`iteration-plan`
-- 上游输入：`CHANGE_REQUEST.md`、`CHANGE_IMPACT.md`、当前版本基线
+- 上游输入：首次交付模式=`TEST_REPORT.md`+冻结文档+代码状态；增量模式=`CHANGE_REQUEST.md`、`CHANGE_IMPACT.md`、当前版本基线
 - 版本：v0.0
 - 日期：—
 - 状态：模板
