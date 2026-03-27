@@ -2,7 +2,7 @@
 
 [English](./README.md)
 
-一个由 AI Agent 驱动的文档驱动开发模板。本模板定义了从需求调研到测试执行和缺陷修复的完整工作流，包含分层项目规则和可复用的 Skill。
+一个由 AI Agent 驱动的文档驱动开发模板。本模板定义了从需求调研到交付和持续迭代的完整工作流，包含分层项目规则和可复用的 Skill。支持从 0 到 1 的全新开发，也支持已交付系统的增量演进（变更受理、版本迭代、基线管理）。
 
 ## 项目结构
 
@@ -19,7 +19,9 @@
 │   ├── qa-design/SKILL.md             # 测试计划与用例生成
 │   ├── qa-execute/SKILL.md            # 测试执行与报告
 │   ├── defect-fix/SKILL.md            # 缺陷修复闭环
-│   └── doc-check/SKILL.md             # 文档追溯性校验
+│   ├── doc-check/SKILL.md             # 文档追溯性校验
+│   ├── change-intake/SKILL.md         # 增量变更受理与影响分析
+│   └── iteration-plan/SKILL.md        # 版本迭代与基线管理
 ├── docs/                              # 文档（文档驱动，预置模板）
 │   ├── AGENTS.md                      # 文档规范
 │   ├── DOC_CHECK_REPORT.md            # 追溯性校验报告
@@ -34,11 +36,17 @@
 │   │   ├── ARCHITECTURE.md            # 架构设计
 │   │   ├── API_CONTRACT.md            # 接口契约
 │   │   └── DATA_MODEL.md              # 数据模型
-│   └── 03-testing/                    # 测试文档
-│       ├── TEST_PLAN.md               # 测试计划
-│       ├── TEST_CASES.md              # 测试用例
-│       ├── TEST_REPORT.md             # 测试执行报告
-│       └── DEFECT_LOG.md              # 缺陷记录
+│   ├── 03-testing/                    # 测试文档
+│   │   ├── TEST_PLAN.md               # 测试计划
+│   │   ├── TEST_CASES.md              # 测试用例
+│   │   ├── TEST_REPORT.md             # 测试执行报告
+│   │   └── DEFECT_LOG.md              # 缺陷记录
+│   └── 04-iteration/                  # 迭代与版本管理
+│       ├── CHANGE_REQUEST.md          # 变更请求记录
+│       ├── CHANGE_IMPACT.md           # 变更影响分析报告
+│       ├── ITERATION_PLAN.md          # 迭代计划
+│       ├── RELEASE_BASELINE.md        # 版本基线
+│       └── CHANGELOG.md               # 变更日志
 ├── backend/                           # 后端代码
 │   └── AGENTS.md                      # 后端编码规范
 ├── frontend/                          # 前端代码
@@ -51,11 +59,20 @@
 
 ## 工作流
 
-核心工作流遵循从调研到交付的链路，包含反馈闭环：
+### 首次交付（0 → 1）
 
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
     → solution-design → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → iteration-plan（冻结 v1.0.0 基线）
+```
+
+### 增量迭代
+
+```
+change-intake → iteration-plan → prd-rectify → solution-design（局部更新）
+    → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → iteration-plan（冻结新版本基线）
 ```
 
 | 阶段 | Skill | 输入 | 输出 |
@@ -71,6 +88,8 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 | 测试执行 | `qa-execute` | 测试计划 + 测试用例 + 源代码 | `TEST_REPORT.md` |
 | 缺陷修复 | `defect-fix` | 测试报告 + 源代码 + 设计文档 | 修复代码 + `DEFECT_LOG.md` |
 | 文档校验 | `doc-check` | 全部文档 | `DOC_CHECK_REPORT.md` |
+| 变更受理 | `change-intake` | 增量需求资料 + 现有基线文档 | `CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` |
+| 版本迭代 | `iteration-plan` | 已批准 CR + 影响分析 + 现有基线 | `ITERATION_PLAN.md` + `RELEASE_BASELINE.md` + `CHANGELOG.md` |
 
 ## 技术栈
 
@@ -131,6 +150,10 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
    - `qa-execute` — 执行测试，生成测试报告
    - `defect-fix` — 如有失败用例，修复缺陷（循环直至通过）
    - `doc-check` — 校验文档追溯性和一致性（可在任意节点执行）
+5. 已交付系统的增量迭代：
+   - `change-intake` — 接收新增需求或变更单，执行影响分析
+   - `iteration-plan` — 规划迭代范围，迭代完成后冻结版本基线
+   - 然后按需执行 `prd-rectify → solution-design → dev-implement → qa-design → qa-execute`
 
 ## 许可证
 

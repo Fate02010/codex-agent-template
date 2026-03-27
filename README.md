@@ -2,7 +2,7 @@
 
 [中文文档](./README_CN.md)
 
-A document-driven development template powered by AI Agents. This template defines the full workflow from business research to test execution and defect resolution, with layered project rules and reusable skills.
+A document-driven development template powered by AI Agents. This template defines the full workflow from business research to delivery and continuous iteration, with layered project rules and reusable skills. Supports both greenfield development (from 0 to 1) and incremental evolution of delivered systems (change intake, version iteration, baseline management).
 
 ## Project Structure
 
@@ -19,7 +19,9 @@ A document-driven development template powered by AI Agents. This template defin
 │   ├── qa-design/SKILL.md             # Test plan & case generation
 │   ├── qa-execute/SKILL.md            # Test execution & reporting
 │   ├── defect-fix/SKILL.md            # Defect resolution loop
-│   └── doc-check/SKILL.md             # Document traceability validation
+│   ├── doc-check/SKILL.md             # Document traceability validation
+│   ├── change-intake/SKILL.md         # Incremental change intake & impact analysis
+│   └── iteration-plan/SKILL.md        # Version iteration & baseline management
 ├── docs/                              # Documentation (document-driven, templates)
 │   ├── AGENTS.md                      # Documentation standards
 │   ├── DOC_CHECK_REPORT.md            # Traceability check report
@@ -34,11 +36,17 @@ A document-driven development template powered by AI Agents. This template defin
 │   │   ├── ARCHITECTURE.md            # Architecture design
 │   │   ├── API_CONTRACT.md            # API contract
 │   │   └── DATA_MODEL.md              # Data model
-│   └── 03-testing/                    # Testing
-│       ├── TEST_PLAN.md               # Test plan
-│       ├── TEST_CASES.md              # Test cases
-│       ├── TEST_REPORT.md             # Test execution report
-│       └── DEFECT_LOG.md              # Defect log
+│   ├── 03-testing/                    # Testing
+│   │   ├── TEST_PLAN.md               # Test plan
+│   │   ├── TEST_CASES.md              # Test cases
+│   │   ├── TEST_REPORT.md             # Test execution report
+│   │   └── DEFECT_LOG.md              # Defect log
+│   └── 04-iteration/                  # Iteration & version management
+│       ├── CHANGE_REQUEST.md          # Change request log
+│       ├── CHANGE_IMPACT.md           # Change impact analysis
+│       ├── ITERATION_PLAN.md          # Iteration plan
+│       ├── RELEASE_BASELINE.md        # Version baseline
+│       └── CHANGELOG.md               # Changelog
 ├── backend/                           # Backend code
 │   └── AGENTS.md                      # Backend coding standards
 ├── frontend/                          # Frontend code
@@ -51,11 +59,20 @@ A document-driven development template powered by AI Agents. This template defin
 
 ## Workflow
 
-The core workflow follows an extended chain from research to delivery, with feedback loop:
+### First Delivery (0 → 1)
 
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
     → solution-design → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → iteration-plan (freeze v1.0.0 baseline)
+```
+
+### Incremental Iteration
+
+```
+change-intake → iteration-plan → prd-rectify → solution-design (partial update)
+    → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → iteration-plan (freeze new version baseline)
 ```
 
 | Phase | Skill | Input | Output |
@@ -71,6 +88,8 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 | Test Execution | `qa-execute` | Test plan + Test cases + Code | `TEST_REPORT.md` |
 | Defect Fix | `defect-fix` | Test report + Code + Design docs | Fixed code + `DEFECT_LOG.md` |
 | Doc Check | `doc-check` | All documents | `DOC_CHECK_REPORT.md` |
+| Change Intake | `change-intake` | Incremental requirements + Existing baselines | `CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` |
+| Iteration Plan | `iteration-plan` | Approved CRs + Impact analysis + Baselines | `ITERATION_PLAN.md` + `RELEASE_BASELINE.md` + `CHANGELOG.md` |
 
 ## Tech Stack
 
@@ -131,6 +150,10 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
    - `qa-execute` — Execute tests and generate test report
    - `defect-fix` — Fix defects if test failures exist (loops until resolved)
    - `doc-check` — Validate document traceability and consistency (run at any checkpoint)
+5. For incremental iterations on delivered systems:
+   - `change-intake` — Receive new requirements or change requests, analyze impact
+   - `iteration-plan` — Plan iteration scope, freeze version baseline after completion
+   - Then follow `prd-rectify → solution-design → dev-implement → qa-design → qa-execute` as needed
 
 ## License
 

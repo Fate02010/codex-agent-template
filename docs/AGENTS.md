@@ -23,17 +23,23 @@ docs/
 │   ├── ARCHITECTURE.md            # 架构设计（冻结）
 │   ├── API_CONTRACT.md            # 接口契约（严格冻结）
 │   └── DATA_MODEL.md              # 数据模型（严格冻结）
-└── 03-testing/                    # 测试文档
-    ├── TEST_PLAN.md               # 测试计划
-    ├── TEST_CASES.md              # 测试用例
-    ├── TEST_REPORT.md             # 测试报告
-    └── DEFECT_LOG.md              # 缺陷记录
+├── 03-testing/                    # 测试文档
+│   ├── TEST_PLAN.md               # 测试计划
+│   ├── TEST_CASES.md              # 测试用例
+│   ├── TEST_REPORT.md             # 测试报告
+│   └── DEFECT_LOG.md              # 缺陷记录
+└── 04-iteration/                  # 迭代与版本管理
+    ├── CHANGE_REQUEST.md          # 变更请求记录
+    ├── CHANGE_IMPACT.md           # 变更影响分析报告
+    ├── ITERATION_PLAN.md          # 迭代计划
+    ├── RELEASE_BASELINE.md        # 版本基线
+    └── CHANGELOG.md               # 变更日志
 ```
 
 ## 3. 文档命名规范
 
 - 使用全大写 + 下划线命名：`PRD_RECTIFIED.md`、`API_CONTRACT.md`
-- 目录使用序号前缀：`00-research`、`01-requirements`、`02-architecture`、`03-testing`
+- 目录使用序号前缀：`00-research`、`01-requirements`、`02-architecture`、`03-testing`、`04-iteration`
 - 禁止中文文件名
 
 ## 4. 文档标记规范
@@ -62,6 +68,8 @@ docs/
 | 接口 | API-模块-NNN | 接口编号，模块如 USER、ORDER | API-USER-001: POST /api/v1/users |
 | 测试用例 | TC-模块-NNN | 测试用例编号，模块与接口对应 | TC-USER-001: 用户注册成功（P0） |
 | 缺陷 | BUG-模块-NNN | 缺陷编号，按发现顺序 | BUG-USER-001: 注册后未发送验证邮件 |
+| 变更请求 | CR-NNN | 变更请求编号，全局递增 | CR-001: 新增微信登录 |
+| 迭代 | ITER-NNN | 迭代编号，从 001 开始 | ITER-001: v1.0.0 首次交付 |
 
 **编号规则**：
 - NNN 从 001 开始，在模块内连续递增
@@ -101,12 +109,20 @@ TEST_REPORT.md（测试报告）
 DEFECT_LOG.md（缺陷记录） ⟲ 回到代码修复 → 回归测试
     ↓ doc-check（任意节点）
 DOC_CHECK_REPORT.md（追溯性校验报告）
+    ↓ iteration-plan（首次交付 / 迭代完成）
+RELEASE_BASELINE.md（版本基线冻结） + CHANGELOG.md（变更日志）
+    ↓ change-intake（增量需求到达时）
+CHANGE_REQUEST.md（变更请求） + CHANGE_IMPACT.md（影响分析）
+    ↓ iteration-plan（规划新迭代）
+ITERATION_PLAN.md（迭代计划） → 回到 prd-rectify 更新基线 → 复用主链
 ```
 
 - 需求引用格式：`关联需求：F001`
 - 接口引用格式：`关联接口：API-XXX-001`
 - 跨文档引用格式：`参见 PRD_RECTIFIED.md § F001`
 - 澄清引用格式：`关联澄清：CQ-001`
+- 变更引用格式：`关联变更：CR-001`
+- 迭代引用格式：`关联迭代：ITER-001`
 
 ## 8. 文档优先级
 

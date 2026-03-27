@@ -33,6 +33,64 @@
 
 **测试代码绑定**：编写测试代码时，必须通过 `@DisplayName`（JUnit 5）或 `describe`/`it` 描述（Vitest）携带对应的 TC 编号，确保测试执行结果可自动映射回用例文档。
 
+## 3.1 测试代码与 TC 编号强绑定规范
+
+测试代码**必须**与 `TEST_CASES.md` 中的 TC 编号建立一一对应关系，实现文档用例 → 测试代码 → 测试报告的全链路追溯。
+
+### 后端（JUnit 5）绑定规则
+
+```java
+// 测试类命名：TC 编号模块部分 + Test
+// 例：TC-USER-001 → UserTest.java
+
+@DisplayName("TC-USER-001: 正常创建用户")
+@Test
+void tc_user_001_createUserSuccess() {
+    // 方法名必须以 tc_模块_序号 开头（小写下划线）
+}
+
+@DisplayName("TC-USER-002: 用户名为空时创建失败")
+@Test
+void tc_user_002_createUserWithEmptyName() {
+    // ...
+}
+```
+
+**规则**：
+- `@DisplayName` 必须以 `TC-XXX-NNN:` 开头，与 `TEST_CASES.md` 中的编号完全一致
+- 方法名必须以 `tc_模块_序号` 开头（小写 + 下划线），保证代码级可检索
+- 一个测试方法对应一个 TC 编号，不允许一个方法覆盖多个 TC
+- 回归用例方法名追加 `_r1`、`_r2` 后缀，如 `tc_user_001_r1_regressionAfterFix()`
+
+### 前端（Vitest）绑定规则
+
+```typescript
+describe('USER', () => {
+  it('TC-USER-001: 正常创建用户', () => {
+    // ...
+  })
+
+  it('TC-USER-002: 用户名为空时创建失败', () => {
+    // ...
+  })
+})
+```
+
+**规则**：
+- `it()` / `test()` 的描述字符串必须以 `TC-XXX-NNN:` 开头
+- `describe()` 按模块分组，模块名与 TC 编号模块部分一致
+- 测试文件命名：`模块名.test.ts`（如 `user.test.ts`）
+
+### 映射校验清单
+
+| 校验项 | 要求 |
+|---|---|
+| TC 编号覆盖率 | `TEST_CASES.md` 中每个 TC 编号在测试代码中都有对应的测试方法 |
+| 编号一致性 | `@DisplayName` / `it()` 中的 TC 编号与 `TEST_CASES.md` 完全一致 |
+| 模块一致性 | TC 编号模块部分与关联接口 API 编号模块部分一致 |
+| 无孤立测试 | 测试代码中不存在无 TC 编号的测试方法（工具类单测除外） |
+| 无遗漏用例 | `TEST_CASES.md` 中不存在无对应测试代码的 TC 编号（标记为 BLOCKED 的除外） |
+
 ## 4. 覆盖要求
 
 每个功能模块至少覆盖以下场景：
@@ -97,3 +155,5 @@
 - 禁止跳过 P0 用例发布
 - 禁止修复缺陷后不补回归用例
 - 禁止测试用例不关联需求编号
+- 禁止测试方法不携带 TC 编号（`@DisplayName` / `it()` 必须以 `TC-XXX-NNN:` 开头）
+- 禁止一个测试方法覆盖多个 TC 编号
