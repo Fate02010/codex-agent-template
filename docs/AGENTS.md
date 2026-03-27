@@ -131,6 +131,7 @@ docs/
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `API_CONTRACT.md` | `3. 接口清单` / `4. 接口明细` | 接口必须显式关联 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `DATA_MODEL.md` | `4. 表结构明细` | 数据表主标识符使用 `T-模块-NNN` |
 | `TEST_CASES.md` | `2. 用例清单` / `3. TC 与测试代码绑定规则` | 测试代码 | `@DisplayName` / `it()` | 测试代码必须绑定已分配的 TC 编号 |
+| `CHANGE_REQUEST.md` | `1. 变更请求列表` / `2. 变更明细` | `ITERATION_PLAN.md` | `2.1 纳入项` | 仅已批准且`纳入迭代=未纳入`的 CR 可被纳入当前迭代，并回写 `纳入迭代=ITER-NNN` |
 | `ITERATION_PLAN.md` / `RELEASE_BASELINE.md` | 版本、迭代、基线信息 | `CHANGELOG.md` / `DOC_CHECK_REPORT.md` | 版本记录 / 版本基线校验 | 发布闭环必须覆盖版本维度 |
 
 ## 10. 跨文档引用规则
@@ -143,6 +144,7 @@ docs/
 - 缺陷引用：`关联缺陷：BUG-USER-001`
 - 变更引用：`关联变更：CR-001`
 - 迭代引用：`关联迭代：ITER-001`
+- 迭代归属引用：`纳入迭代：ITER-001`
 
 跨文档引用优先使用“编号 + 文件”组合，例如：
 
