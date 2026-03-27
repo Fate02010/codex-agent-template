@@ -4,7 +4,7 @@
 
 - 文档类型：模板（首次执行 Skill 后覆盖）
 - 生成 Skill：`iteration-plan`
-- 上游输入：首次交付模式=`TEST_REPORT.md`+冻结文档+代码状态；增量模式=`CHANGE_REQUEST.md`、`CHANGE_IMPACT.md`、当前版本基线
+- 上游输入：首次交付模式=`TEST_REPORT.md`+`DOC_CHECK_REPORT.md`+`ITERATION_REVIEW.md`+冻结文档+代码状态；增量模式=`CHANGE_REQUEST.md`、`CHANGE_IMPACT.md`、当前版本基线、`IMPROVEMENT_BACKLOG.md`
 - 版本：v0.0
 - 日期：—
 - 状态：模板
@@ -43,6 +43,7 @@
 | 设计冻结 | — | 架构/接口/数据模型已冻结 |
 | 开发完成 | — | 代码合入并可测试 |
 | 测试完成 | — | 测试报告达到准出标准 |
+| 复盘完成 | — | `ITERATION_REVIEW.md` 门禁结论=`PASS/PASS WITH WAIVER` |
 | 版本冻结 | — | `RELEASE_BASELINE.md` 已更新 |
 
 ## 4. 风险与依赖
@@ -55,6 +56,8 @@
 - [ ] 范围内 CR 已交付
 - [ ] 测试通过并完成回归
 - [ ] 文档追溯校验通过
+- [ ] 迭代复盘门禁通过（`PASS` 或 `PASS WITH WAIVER`）
+- [ ] 逾期 `IMP-NNN` 已关闭或登记有效豁免
 - [ ] 版本基线和变更日志已更新
 
 ## 异常与边界
@@ -69,6 +72,7 @@
 - [ ] 风险明确
 - [ ] `CHANGE_REQUEST.md` 的 `纳入迭代` 已回写一致
 - [ ] 冻结场景下 `DOC_CHECK_REPORT.md` 总体结果为 PASS
+- [ ] 冻结场景下 `ITERATION_REVIEW.md` 门禁结论为 `PASS` 或 `PASS WITH WAIVER`
 - [ ] 可直接指导本轮执行和收尾
 
 ## 变更记录

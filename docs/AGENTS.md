@@ -30,12 +30,15 @@ docs/
 │   ├── TEST_CASES.md
 │   ├── TEST_REPORT.md
 │   └── DEFECT_LOG.md
-└── 04-iteration/
-    ├── CHANGE_REQUEST.md
-    ├── CHANGE_IMPACT.md
-    ├── ITERATION_PLAN.md
-    ├── RELEASE_BASELINE.md
-    └── CHANGELOG.md
+├── 04-iteration/
+│   ├── CHANGE_REQUEST.md
+│   ├── CHANGE_IMPACT.md
+│   ├── ITERATION_PLAN.md
+│   ├── RELEASE_BASELINE.md
+│   └── CHANGELOG.md
+└── 05-retrospective/
+    ├── ITERATION_REVIEW.md
+    └── IMPROVEMENT_BACKLOG.md
 ```
 
 ## 3. 文档命名规范
@@ -98,6 +101,9 @@ docs/
 | 缺陷 | `BUG-模块-NNN` | `BUG-ORDER-001` |
 | 变更请求 | `CR-NNN` | `CR-001` |
 | 迭代 | `ITER-NNN` | `ITER-001` |
+| 复盘根因 | `RCA-NNN` | `RCA-001` |
+| 改进项 | `IMP-NNN` | `IMP-001` |
+| 豁免单 | `WV-ITER-NNN-NN` | `WV-ITER-002-01` |
 
 编号规则：
 
@@ -132,6 +138,10 @@ docs/
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `DATA_MODEL.md` | `4. 表结构明细` | 数据表主标识符使用 `T-模块-NNN` |
 | `TEST_CASES.md` | `2. 用例清单` / `3. TC 与测试代码绑定规则` | 测试代码 | `@DisplayName` / `it()` | 测试代码必须绑定已分配的 TC 编号 |
 | `CHANGE_REQUEST.md` | `1. 变更请求列表` / `2. 变更明细` | `ITERATION_PLAN.md` | `2.1 纳入项` | 仅已批准且`纳入迭代=未纳入`的 CR 可被纳入当前迭代，并回写 `纳入迭代=ITER-NNN` |
+| `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` | 迭代范围、测试结果、缺陷状态、阻塞项 | `ITERATION_REVIEW.md` | `1. 迭代信息` / `2. KPI 快照` / `3. 根因分析` / `4. 门禁结论` | 复盘结论必须可追溯到迭代、测试和校验结果 |
+| `ITERATION_REVIEW.md` | `3. 根因分析` / `5. 改进项映射` | `IMPROVEMENT_BACKLOG.md` | `1. 改进项总表` | 每条 `RCA-NNN` 至少映射一个 `IMP-NNN` |
+| `IMPROVEMENT_BACKLOG.md` | `1. 改进项总表` | `ITERATION_PLAN.md` | `4. 风险与阻塞` / `5. 准出标准` | 逾期改进项必须在下一迭代显式处理或豁免 |
+| `ITERATION_REVIEW.md` | `4. 门禁结论` / `5. 豁免记录` | `RELEASE_BASELINE.md` | `5. 复盘门禁` | 版本冻结时必须记录复盘结论和豁免引用 |
 | `ITERATION_PLAN.md` / `RELEASE_BASELINE.md` | 版本、迭代、基线信息 | `CHANGELOG.md` / `DOC_CHECK_REPORT.md` | 版本记录 / 版本基线校验 | 发布闭环必须覆盖版本维度 |
 
 ## 10. 跨文档引用规则
@@ -145,6 +155,9 @@ docs/
 - 变更引用：`关联变更：CR-001`
 - 迭代引用：`关联迭代：ITER-001`
 - 迭代归属引用：`纳入迭代：ITER-001`
+- 根因引用：`关联根因：RCA-001`
+- 改进项引用：`关联改进项：IMP-001`
+- 豁免引用：`关联豁免：WV-ITER-002-01`
 
 跨文档引用优先使用“编号 + 文件”组合，例如：
 
@@ -164,6 +177,8 @@ TEST_CASES → 测试代码
 TEST_CASES / 测试代码 → TEST_REPORT
 TEST_REPORT → DEFECT_LOG
 CHANGE_REQUEST / CHANGE_IMPACT → ITERATION_PLAN / RELEASE_BASELINE / CHANGELOG
+ITERATION_PLAN / TEST_REPORT / DEFECT_LOG / DOC_CHECK_REPORT → ITERATION_REVIEW
+ITERATION_REVIEW → IMPROVEMENT_BACKLOG → 下一轮 ITERATION_PLAN
 ```
 
 任何一环缺失，都必须在文档中显式写明原因，不允许静默跳过。

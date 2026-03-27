@@ -21,12 +21,15 @@ description: 版本迭代管理
 1. **首次交付冻结模式**
    - `docs/03-testing/TEST_REPORT.md`
    - `docs/DOC_CHECK_REPORT.md`（结果须为 PASS）
+   - `docs/05-retrospective/ITERATION_REVIEW.md`（结论须为 `PASS` 或 `PASS WITH WAIVER`）
    - 当前冻结文档：`PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`
    - 当前代码状态（如可获得）
 2. **增量迭代规划/冻结模式**
    - `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求记录（状态为"已批准"的 CR）
    - `docs/04-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
+   - `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` — 历史改进项（如已存在）
    - `docs/DOC_CHECK_REPORT.md`（收尾冻结时必需，结果须为 PASS）
+   - `docs/05-retrospective/ITERATION_REVIEW.md`（收尾冻结时必需，结论须为 `PASS` 或 `PASS WITH WAIVER`）
    - `docs/04-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
    - `docs/04-iteration/ITERATION_PLAN.md` — 已有迭代计划（如已存在）
    - `docs/01-requirements/PRD_RECTIFIED.md` — 当前需求基线
@@ -53,8 +56,10 @@ description: 版本迭代管理
 1. 读取 `docs/04-iteration/RELEASE_BASELINE.md` — 了解当前版本号和基线状态（如存在）
 2. 读取 `docs/04-iteration/ITERATION_PLAN.md` — 了解已有迭代历史（如存在）
 3. 若为“首次交付冻结模式”或“增量收尾冻结模式”，读取 `docs/DOC_CHECK_REPORT.md` — 校验结果必须为 PASS
-4. 首次交付冻结模式下，读取 `TEST_REPORT.md` 和当前冻结文档
-5. 增量模式下，读取 `CHANGE_REQUEST.md` 与 `CHANGE_IMPACT.md`
+4. 若为“首次交付冻结模式”或“增量收尾冻结模式”，读取 `docs/05-retrospective/ITERATION_REVIEW.md` — 门禁结论必须为 `PASS` 或 `PASS WITH WAIVER`
+5. 首次交付冻结模式下，读取 `TEST_REPORT.md` 和当前冻结文档
+6. 增量模式下，读取 `CHANGE_REQUEST.md` 与 `CHANGE_IMPACT.md`
+7. 增量规划模式下，如存在 `IMPROVEMENT_BACKLOG.md`，读取未关闭/逾期改进项并纳入风险清单
 
 ### 步骤 2：确定迭代范围或冻结对象
 
@@ -63,14 +68,17 @@ description: 版本迭代管理
   - 默认目标版本为 `v1.0.0`
   - 范围描述为“首次交付范围，以当前冻结需求和测试结论为准”
   - 冻结前提：`DOC_CHECK_REPORT.md` 总体结果必须为 PASS
+  - 冻结前提：`ITERATION_REVIEW.md` 门禁结论必须为 `PASS` 或 `PASS WITH WAIVER`
 - 增量迭代规划模式：
   - 从 `CHANGE_REQUEST.md` 中筛选状态为"已批准"且未纳入任何迭代的 CR
   - 根据 `CHANGE_IMPACT.md` 中的工作量预估和优先级，确定本轮迭代纳入哪些 CR
   - 原则：优先纳入 P0、P1 级 CR；单轮迭代工作量不宜过大
   - 对已纳入本轮的 CR，回写 `CHANGE_REQUEST.md` 中对应条目的 `纳入迭代=ITER-NNN`
+  - 若存在逾期 `IMP-NNN`，必须写入 `6. 风险与阻塞` 并指定处理动作
 - 增量迭代收尾冻结模式：
   - 根据当前迭代计划、测试结果和缺陷状态确定是否满足发布条件
   - 冻结前提：`DOC_CHECK_REPORT.md` 总体结果必须为 PASS
+  - 冻结前提：`ITERATION_REVIEW.md` 门禁结论必须为 `PASS` 或 `PASS WITH WAIVER`
 
 ### 步骤 3：输出迭代计划（ITERATION_PLAN.md）
 
@@ -80,7 +88,7 @@ description: 版本迭代管理
 ## 文档信息
 - 文档类型：产物
 - 生成 Skill：`iteration-plan`
-- 上游输入：首次交付模式=`TEST_REPORT.md`+`DOC_CHECK_REPORT.md`+冻结文档+代码状态；增量模式=`CHANGE_REQUEST.md`+`CHANGE_IMPACT.md`+当前版本基线（收尾冻结需 `DOC_CHECK_REPORT.md`）
+- 上游输入：首次交付模式=`TEST_REPORT.md`+`DOC_CHECK_REPORT.md`+`ITERATION_REVIEW.md`+冻结文档+代码状态；增量模式=`CHANGE_REQUEST.md`+`CHANGE_IMPACT.md`+当前版本基线+`IMPROVEMENT_BACKLOG.md`（收尾冻结需 `DOC_CHECK_REPORT.md`+`ITERATION_REVIEW.md`）
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
 - 状态：草稿 / 已冻结
@@ -123,7 +131,8 @@ description: 版本迭代管理
 | 5 | 测试执行 | qa-execute | TEST_REPORT.md | — |
 | 6 | 缺陷修复 | defect-fix | 修复代码 / DEFECT_LOG.md | — |
 | 7 | 文档校验 | doc-check | DOC_CHECK_REPORT.md | — |
-| 8 | 版本冻结 | iteration-plan | RELEASE_BASELINE.md / CHANGELOG.md | — |
+| 8 | 迭代复盘 | iteration-retro | ITERATION_REVIEW.md / IMPROVEMENT_BACKLOG.md | — |
+| 9 | 版本冻结 | iteration-plan | RELEASE_BASELINE.md / CHANGELOG.md | — |
 
 ## 5. 里程碑
 | 里程碑 | 目标日期 | 完成标准 |
@@ -132,6 +141,7 @@ description: 版本迭代管理
 | 设计冻结 | YYYY-MM-DD | 架构/接口/数据模型已冻结 |
 | 开发完成 | YYYY-MM-DD | 代码可编译并通过基础测试 |
 | 测试完成 | YYYY-MM-DD | `TEST_REPORT.md` 达到准出标准 |
+| 复盘完成 | YYYY-MM-DD | `ITERATION_REVIEW.md` 门禁结论=`PASS/PASS WITH WAIVER` |
 | 版本冻结 | YYYY-MM-DD | `RELEASE_BASELINE.md` 与 `CHANGELOG.md` 已更新 |
 
 ## 6. 风险与阻塞
@@ -153,6 +163,7 @@ description: 版本迭代管理
 - [ ] 里程碑与准出标准可执行
 - [ ] `CHANGE_REQUEST.md` 的 `纳入迭代` 已按本轮回写
 - [ ] 冻结场景下 `DOC_CHECK_REPORT.md` 总体结果为 PASS
+- [ ] 冻结场景下 `ITERATION_REVIEW.md` 门禁结论为 `PASS` 或 `PASS WITH WAIVER`
 - [ ] 可直接指导本轮执行与收尾
 
 ## 变更记录
@@ -164,7 +175,7 @@ description: 版本迭代管理
 
 ### 步骤 4：冻结版本基线（RELEASE_BASELINE.md）
 
-当首次交付或某轮迭代所有步骤完成，且测试通过并完成 `doc-check PASS` 后，更新版本基线：
+当首次交付或某轮迭代所有步骤完成，且测试通过、`doc-check PASS`、`iteration-retro` 门禁通过后，更新版本基线：
 
 ```markdown
 # 版本基线
@@ -172,7 +183,7 @@ description: 版本迭代管理
 ## 文档信息
 - 文档类型：产物
 - 生成 Skill：`iteration-plan`
-- 上游输入：`ITERATION_PLAN.md`、冻结文档、`TEST_REPORT.md`、`DOC_CHECK_REPORT.md`、代码状态
+- 上游输入：`ITERATION_PLAN.md`、冻结文档、`TEST_REPORT.md`、`DOC_CHECK_REPORT.md`、`ITERATION_REVIEW.md`、代码状态
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
 - 状态：草稿 / 已冻结
@@ -211,6 +222,11 @@ description: 版本迭代管理
 | backend/ | vX.Y.Z | 已标记 |
 | frontend/ | vX.Y.Z | 已标记 |
 
+## 复盘门禁
+- **门禁结论**：PASS / PASS WITH WAIVER
+- **关联复盘**：`ITERATION_REVIEW.md` § ITER-NNN
+- **关联豁免**：WV-ITER-NNN-NN（如有）
+
 ## 版本历史
 | 版本 | 迭代 | 发布日期 | 说明 |
 |---|---|---|---|
@@ -225,6 +241,7 @@ description: 版本迭代管理
 - [ ] 代码基线明确
 - [ ] 测试结论明确
 - [ ] `DOC_CHECK_REPORT.md` 总体结果为 PASS
+- [ ] `ITERATION_REVIEW.md` 门禁结论为 `PASS` 或 `PASS WITH WAIVER`
 - [ ] 可作为下一轮增量迭代输入
 
 ## 变更记录
@@ -296,6 +313,7 @@ description: 版本迭代管理
 - 如果是新建迭代计划：按执行计划中的步骤顺序开始，通常从 `prd-rectify` 开始更新需求基线
 - 如果是冻结版本：迭代完成，可启动下一轮 `change-intake` 或进入运维阶段
 - 若 `DOC_CHECK_REPORT.md` 非 PASS，必须先回到相关阶段整改，禁止冻结版本
+- 若 `ITERATION_REVIEW.md` 门禁结论为 `FAIL`，必须先执行整改或登记有效豁免，禁止冻结版本
 
 ## 注意事项
 
@@ -307,3 +325,4 @@ description: 版本迭代管理
 - CHANGELOG.md 按版本倒序排列（最新版本在最前）
 - 迭代计划中的执行步骤复用主链 Skill，不重新定义流程
 - 仅允许回写 `CHANGE_REQUEST.md` 的 `纳入迭代` 字段，不得在本 Skill 中改写 CR 业务内容
+- `PASS WITH WAIVER` 的豁免必须在 `ITERATION_REVIEW.md` 中具备 `WV-ITER-NNN-NN` 编号、补偿措施与失效迭代

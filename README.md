@@ -28,7 +28,8 @@ Expected outputs:
 │   ├── 01-requirements/
 │   ├── 02-architecture/
 │   ├── 03-testing/
-│   └── 04-iteration/
+│   ├── 04-iteration/
+│   └── 05-retrospective/
 ├── backend/
 │   └── AGENTS.md
 ├── frontend/
@@ -46,7 +47,7 @@ Files under `docs/` are templates by default. The first real execution of the co
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
     → solution-design → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
-    → iteration-plan
+    → iteration-retro → iteration-plan
 ```
 
 ### Incremental Iteration
@@ -54,7 +55,7 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 ```
 change-intake → iteration-plan → prd-rectify → solution-design
     → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
-    → iteration-plan
+    → iteration-retro → iteration-plan
 ```
 
 ## Quick Start
@@ -112,6 +113,7 @@ Implement the changes in backend/ and frontend/, and add tests mapped to TC IDs.
 | `defect-fix` | defect lifecycle record and regression result |
 | `doc-check` | traceability validation report |
 | `change-intake` | CR log and impact analysis |
+| `iteration-retro` | iteration retrospective report and continuous-improvement backlog |
 | `iteration-plan` | iteration plan, release baseline, changelog |
 
 ## Hard Rules
@@ -122,6 +124,7 @@ Implement the changes in backend/ and frontend/, and add tests mapped to TC IDs.
 - update `DATA_MODEL.md` before changing schema
 - update `PRD_RECTIFIED.md` before changing business rules
 - bind tests to TC IDs so docs and test code remain traceable
+- pass `iteration-retro` gate (`PASS` or `PASS WITH WAIVER`) before freezing a version
 
 ## Recommended Reading Order
 

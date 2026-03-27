@@ -37,6 +37,7 @@
 ### 2.4 追溯优先
 
 - 需求、接口、数据表、测试用例、缺陷、变更请求、迭代版本必须使用统一编号
+- 复盘根因、改进项、豁免单必须使用统一编号
 - 任何功能上线前，必须能从版本基线反向追溯到需求、设计、测试和变更记录
 
 ## 3. 进入项目后的必读顺序
@@ -59,6 +60,7 @@
 - [ ] 原始材料已经放入仓库内可追溯位置，且将在文档中登记来源
 - [ ] 已确认后端/前端工程是否存在，不存在则先执行 `project-init`
 - [ ] 已确认本次工作是否涉及接口变更、表结构变更、业务规则变更或版本变更
+- [ ] 若为迭代收尾，已确认 `IMPROVEMENT_BACKLOG.md` 是否存在逾期改进项
 - [ ] 已确认本次输出要覆盖哪些文档和代码目录
 
 ## 5. 首次交付主链
@@ -68,7 +70,7 @@
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
     → solution-design → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
-    → iteration-plan（冻结 v1.0.0 基线）
+    → iteration-retro → iteration-plan（冻结 v1.0.0 基线）
 ```
 
 ### 5.2 阶段执行表
@@ -86,7 +88,8 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 | `qa-execute` | 测试计划与用例已齐备 | `TEST_PLAN.md` + `TEST_CASES.md` + 源代码 | 执行测试并回写结果、覆盖率、风险和准出建议 | `TEST_REPORT.md` | 结果真实可追溯，可明确是否准出 |
 | `defect-fix` | 测试失败或缺陷新增 | `TEST_REPORT.md` + 代码 + 设计文档 | 修复缺陷、补回归测试、更新缺陷状态 | 修复代码 + `DEFECT_LOG.md` | 缺陷闭环，回归结果已记录 |
 | `doc-check` | 任意关键节点 | 全部文档 | 校验追溯链、元数据、冻结状态和引用有效性 | `DOC_CHECK_REPORT.md` | 所有阻塞性文档问题关闭 |
-| `iteration-plan` | 首次交付完成 | 已通过的测试报告 + 当前冻结文档 + 代码状态 | 冻结版本、记录计划和变更日志 | `ITERATION_PLAN.md` + `RELEASE_BASELINE.md` + `CHANGELOG.md` | 版本基线明确，可作为后续增量迭代起点 |
+| `iteration-retro` | 文档校验通过，准备收尾冻结 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` | 产出复盘结论、RCA、改进项和豁免记录 | `docs/05-retrospective/ITERATION_REVIEW.md` + `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` | 复盘门禁结论为 `PASS` 或 `PASS WITH WAIVER` |
+| `iteration-plan` | 首次交付完成并通过复盘门禁 | 已通过测试报告 + `DOC_CHECK_REPORT.md` + `ITERATION_REVIEW.md` + 当前冻结文档 + 代码状态 | 冻结版本、记录计划和变更日志 | `ITERATION_PLAN.md` + `RELEASE_BASELINE.md` + `CHANGELOG.md` | 版本基线明确，可作为后续增量迭代起点 |
 
 ## 6. 增量迭代支链
 
@@ -95,7 +98,7 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 ```
 change-intake → iteration-plan → prd-rectify → solution-design（局部更新）
     → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
-    → iteration-plan（冻结新版本基线）
+    → iteration-retro → iteration-plan（冻结新版本基线）
 ```
 
 ### 6.2 阶段执行表
@@ -103,13 +106,14 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 阶段 | 核心目标 | 必备输入 | 标准输出 | 完成判定 |
 |---|---|---|---|---|
 | `change-intake` | 接收新增需求、缺陷、调整项并完成受理 | 增量资料 + 当前版本基线 | `CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` | 每个 CR 都有范围、优先级、影响面和建议 |
-| `iteration-plan` | 决定本轮迭代做什么、不做什么 | 已批准 CR + 影响分析 + 当前基线 | `ITERATION_PLAN.md` | 迭代目标、范围、里程碑和准出标准明确 |
+| `iteration-plan` | 决定本轮迭代做什么、不做什么 | 已批准 CR + 影响分析 + 当前基线 + `IMPROVEMENT_BACKLOG.md`（如存在） | `ITERATION_PLAN.md` | 迭代目标、范围、里程碑和准出标准明确 |
 | `prd-rectify` | 只更新受影响需求基线 | 已批准 CR + 当前 `PRD_RECTIFIED.md` | 更新后的 `PRD_RECTIFIED.md` | 变更项被清晰标记，未受影响需求保持稳定 |
 | `solution-design` | 局部更新架构/接口/数据设计 | 更新后的需求基线 | 更新后的设计文档 | 每项变更均有受影响设计说明 |
 | `qa-design` | 为增量范围预分配 TC 并补测试策略 | 增量需求 + 受影响接口/数据模型 | 更新测试文档 | 新增功能和回归范围均具备可执行 TC |
 | `dev-implement` | 仅修改批准范围内的代码 | 更新后的设计文档 + 更新后的 `TEST_CASES.md` + 代码基线 | 代码与增量测试 | 变更范围受控，无越权开发，测试代码绑定有效 TC |
 | `qa-execute` | 覆盖新增功能、受影响回归和高风险路径 | 更新测试文档 + 源代码 | 新测试结果 | 新功能通过，受影响旧功能回归通过 |
-| `iteration-plan`（收尾） | 冻结新版本 | 全量通过结果 + 当前基线 | 更新版本基线和变更日志 | 新版本可发布、可追溯 |
+| `iteration-retro` | 迭代执行收尾复盘 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` + 现有改进项清单 | 输出 KPI、根因、改进行动与豁免记录 | `docs/05-retrospective/ITERATION_REVIEW.md` + `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` | 复盘门禁结论可追溯，阻塞项已关闭或豁免 |
+| `iteration-plan`（收尾） | 冻结新版本 | 全量通过结果 + `DOC_CHECK_REPORT.md` + `ITERATION_REVIEW.md` + 当前基线 | 更新版本基线和变更日志 | 新版本可发布、可追溯 |
 
 ## 7. 文档状态与冻结规则
 
@@ -166,6 +170,7 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 业务规则变更 | `docs/01-requirements/PRD_RECTIFIED.md` | 对应业务代码 |
 | 架构调整 | `docs/02-architecture/ARCHITECTURE.md` | 对应模块代码 |
 | 新增需求/变更 | `docs/04-iteration/CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` | 受影响文档和代码 |
+| 过程改进/复盘豁免 | `docs/05-retrospective/ITERATION_REVIEW.md` + `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` | 下轮迭代计划、对应整改文档与代码 |
 | 发布基线变化 | `docs/04-iteration/RELEASE_BASELINE.md` + `CHANGELOG.md` | Tag / 版本号 / 发布说明 |
 
 ## 10. 质量门槛
@@ -179,6 +184,8 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 - [ ] 单元测试、集成测试、关键回归测试通过
 - [ ] `TEST_REPORT.md` 达到准出标准
 - [ ] `DOC_CHECK_REPORT.md` 无阻塞项
+- [ ] `ITERATION_REVIEW.md` 门禁结论为 `PASS` 或 `PASS WITH WAIVER`
+- [ ] `IMPROVEMENT_BACKLOG.md` 逾期项已关闭或登记有效豁免
 - [ ] 测试代码与 TC 编号映射校验通过
 - [ ] 版本基线已冻结，变更日志已登记
 
@@ -198,6 +205,7 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 测试有失败，需要修复缺陷 | `defect-fix` |
 | 需要校验文档一致性和追溯链 | `doc-check` |
 | 已交付系统收到新需求/变更单/增量资料 | `change-intake` |
+| 需要做迭代复盘、沉淀改进项并判断冻结门禁 | `iteration-retro` |
 | 需要规划迭代、冻结版本基线、记录发布 | `iteration-plan` |
 
 ## 12. 文档标记规范

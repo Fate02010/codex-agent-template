@@ -33,7 +33,9 @@ description: 文档追溯性校验
 13. `docs/04-iteration/ITERATION_PLAN.md`（如存在）
 14. `docs/04-iteration/RELEASE_BASELINE.md`（如存在）
 15. `docs/04-iteration/CHANGELOG.md`（如存在）
-16. `docs/AGENTS.md` — 引用规则参考
+16. `docs/05-retrospective/ITERATION_REVIEW.md`（如存在）
+17. `docs/05-retrospective/IMPROVEMENT_BACKLOG.md`（如存在）
+18. `docs/AGENTS.md` — 引用规则参考
 
 ## 输出
 
@@ -57,6 +59,9 @@ description: 文档追溯性校验
 | 变更请求编号 | CR-001、CR-002、… | CHANGE_REQUEST.md / CHANGE_IMPACT.md / ITERATION_PLAN.md |
 | 迭代编号 | ITER-001、ITER-002、… | ITERATION_PLAN.md / RELEASE_BASELINE.md |
 | 版本号 | v1.0.0、v1.1.0、… | RELEASE_BASELINE.md / CHANGELOG.md |
+| 根因编号 | RCA-001、RCA-002、… | ITERATION_REVIEW.md |
+| 改进项编号 | IMP-001、IMP-002、… | ITERATION_REVIEW.md / IMPROVEMENT_BACKLOG.md |
+| 豁免编号 | WV-ITER-001-01、… | ITERATION_REVIEW.md / IMPROVEMENT_BACKLOG.md |
 
 ### 步骤 2：校验 调研→需求 覆盖
 
@@ -119,7 +124,18 @@ description: 文档追溯性校验
 - **检查**：`ITERATION_PLAN.md` 中是否存在对应的 ITER 编号和里程碑记录
 - **结果**：列出版本基线断裂项
 
-### 步骤 9：校验 文档元数据完整性
+### 步骤 9：校验 复盘闭环一致性（如 05-retrospective 文档存在）
+
+对 `ITERATION_REVIEW.md`、`IMPROVEMENT_BACKLOG.md`、`ITERATION_PLAN.md`、`RELEASE_BASELINE.md` 执行以下检查：
+
+- **检查**：每个冻结版本对应的 `ITER-NNN`，是否存在同编号复盘记录
+- **检查**：`ITERATION_REVIEW.md` 的门禁结论是否为 `PASS / PASS WITH WAIVER / FAIL`
+- **检查**：`PASS WITH WAIVER` 场景是否存在有效 `WV-ITER-NNN-NN` 记录，并带失效迭代
+- **检查**：每个 `RCA-NNN` 是否映射至少一个 `IMP-NNN`
+- **检查**：`IMPROVEMENT_BACKLOG.md` 中逾期改进项是否在当前迭代计划风险清单中体现
+- **结果**：列出复盘断链项、无主改进项、失效豁免项
+
+### 步骤 10：校验 文档元数据完整性
 
 对每份文档检查：
 
@@ -133,7 +149,7 @@ description: 文档追溯性校验
 | 状态 | 必须存在，且属于生命周期定义（模板/草稿/评审中/已整改/已冻结/已废弃） |
 | 变更记录 | 至少有一条非占位条目 |
 
-### 步骤 10：校验 缺陷引用（如 DEFECT_LOG.md 存在）
+### 步骤 11：校验 缺陷引用（如 DEFECT_LOG.md 存在）
 
 对每个 BUG-XXX-NNN：
 
@@ -141,7 +157,7 @@ description: 文档追溯性校验
 - **检查**：关联的 F 编号是否在 `PRD_RECTIFIED.md` 中存在
 - **结果**：列出引用断裂的缺陷记录
 
-### 步骤 11：生成 DOC_CHECK_REPORT.md
+### 步骤 12：生成 DOC_CHECK_REPORT.md
 
 ```markdown
 # 文档追溯性校验报告
@@ -167,6 +183,7 @@ description: 文档追溯性校验
 | 用例→需求引用有效性 | N | N | N |
 | 用例→接口引用有效性 | N | N | N |
 | CR→迭代纳入一致性（如适用） | N | N | N |
+| 复盘闭环一致性（如适用） | N | N | N |
 | 文档元数据完整性 | N | N | N |
 | 数据模型→需求覆盖 | N | N | N |
 | 缺陷引用有效性（如适用） | N | N | N |
@@ -213,6 +230,10 @@ description: 文档追溯性校验
 | CR 编号 | 问题说明 |
 |---|---|
 
+### 10. 复盘闭环问题
+| 迭代/改进项/豁免 | 问题说明 |
+|---|---|
+
 ## 修复建议
 按优先级列出需要执行的修复动作。
 
@@ -221,7 +242,7 @@ description: 文档追溯性校验
 |---|---|---|
 ```
 
-### 步骤 12：提示后续动作
+### 步骤 13：提示后续动作
 
 - **全部 PASS**：文档一致性良好，可以继续后续工作流
 - **存在 FAIL**：列出具体需要执行的修复动作（如"为 API-USER-003 添加测试用例"、"填写 TEST_PLAN.md 的版本号"）

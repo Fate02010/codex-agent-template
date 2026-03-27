@@ -28,7 +28,8 @@
 │   ├── 01-requirements/
 │   ├── 02-architecture/
 │   ├── 03-testing/
-│   └── 04-iteration/
+│   ├── 04-iteration/
+│   └── 05-retrospective/
 ├── backend/
 │   └── AGENTS.md
 ├── frontend/
@@ -46,7 +47,7 @@
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
     → solution-design → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
-    → iteration-plan
+    → iteration-retro → iteration-plan
 ```
 
 ### 增量迭代
@@ -54,7 +55,7 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 ```
 change-intake → iteration-plan → prd-rectify → solution-design
     → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
-    → iteration-plan
+    → iteration-retro → iteration-plan
 ```
 
 ## 快速开始
@@ -113,6 +114,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 | `defect-fix` | 缺陷闭环记录和回归结果 |
 | `doc-check` | 追溯性校验报告 |
 | `change-intake` | CR 和影响分析 |
+| `iteration-retro` | 迭代复盘报告和持续改进项台账 |
 | `iteration-plan` | 迭代计划、版本基线、变更日志 |
 
 ## 使用这套模板时的硬约束
@@ -123,6 +125,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - 表结构变更必须先改 `DATA_MODEL.md`
 - 业务规则变更必须先改 `PRD_RECTIFIED.md`
 - 测试必须绑定 TC 编号，确保文档和测试代码可追溯
+- 版本冻结前必须通过 `iteration-retro` 门禁（`PASS` 或 `PASS WITH WAIVER`）
 
 ## 推荐阅读顺序
 
