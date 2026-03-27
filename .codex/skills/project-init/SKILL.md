@@ -254,6 +254,11 @@ class ApplicationTests {
 ### 步骤 5：生成测试目录结构
 
 - 创建 `tests/api/` 空目录（用于接口测试）
+- 测试代码命名与组织必须携带 TC 编号，以便执行结果自动映射回 `TEST_CASES.md` 中的用例：
+  - **后端（JUnit 5）**：测试方法使用 `@DisplayName("TC-MODULE-NNN: 用例标题")` 注解
+  - **前端（Vitest）**：使用 `describe("TC-MODULE-NNN: 用例标题", () => { ... })` 或 `it("TC-MODULE-NNN: 用例标题", ...)` 描述
+  - **接口测试**：测试文件或用例同样以 TC 编号为前缀或标注
+- 此约束确保 `qa-design` → `qa-execute` → `defect-fix` 闭环中，测试结果可按 TC 编号自动回写到测试报告
 
 ### 步骤 6：自检验证
 

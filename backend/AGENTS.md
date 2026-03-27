@@ -133,7 +133,7 @@ public class UserApplicationService {
 ### 4.3 异常规范
 
 - 使用统一异常体系：`BusinessException`（业务异常）、`SystemException`（系统异常）
-- 错误码格式：`模块编号 + 错误序号`，如 `USER_001`
+- 错误码格式：`模块编号（整数） + 错误序号`，如 `10001`（10=用户模块，001=序号），类型为 int，与 `Result<T>` 的 code 字段对齐
 - Controller 层通过全局异常处理器统一捕获和返回
 
 ### 4.4 统一返回体
