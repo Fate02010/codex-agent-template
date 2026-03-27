@@ -20,11 +20,13 @@ description: 版本迭代管理
 
 1. **首次交付冻结模式**
    - `docs/03-testing/TEST_REPORT.md`
+   - `docs/DOC_CHECK_REPORT.md`（结果须为 PASS）
    - 当前冻结文档：`PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`
    - 当前代码状态（如可获得）
 2. **增量迭代规划/冻结模式**
    - `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求记录（状态为"已批准"的 CR）
    - `docs/04-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
+   - `docs/DOC_CHECK_REPORT.md`（收尾冻结时必需，结果须为 PASS）
    - `docs/04-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
    - `docs/04-iteration/ITERATION_PLAN.md` — 已有迭代计划（如已存在）
    - `docs/01-requirements/PRD_RECTIFIED.md` — 当前需求基线
@@ -32,8 +34,9 @@ description: 版本迭代管理
 ## 输出
 
 1. `docs/04-iteration/ITERATION_PLAN.md` — 迭代计划（新建或更新）
-2. `docs/04-iteration/RELEASE_BASELINE.md` — 版本基线（迭代冻结时更新）
-3. `docs/04-iteration/CHANGELOG.md` — 变更日志（迭代完成时追加）
+2. `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求（仅回写纳入迭代字段）
+3. `docs/04-iteration/RELEASE_BASELINE.md` — 版本基线（迭代冻结时更新）
+4. `docs/04-iteration/CHANGELOG.md` — 变更日志（迭代完成时追加）
 
 ## 执行流程
 
@@ -49,8 +52,9 @@ description: 版本迭代管理
 
 1. 读取 `docs/04-iteration/RELEASE_BASELINE.md` — 了解当前版本号和基线状态（如存在）
 2. 读取 `docs/04-iteration/ITERATION_PLAN.md` — 了解已有迭代历史（如存在）
-3. 首次交付冻结模式下，读取 `TEST_REPORT.md` 和当前冻结文档
-4. 增量模式下，读取 `CHANGE_REQUEST.md` 与 `CHANGE_IMPACT.md`
+3. 若为“首次交付冻结模式”或“增量收尾冻结模式”，读取 `docs/DOC_CHECK_REPORT.md` — 校验结果必须为 PASS
+4. 首次交付冻结模式下，读取 `TEST_REPORT.md` 和当前冻结文档
+5. 增量模式下，读取 `CHANGE_REQUEST.md` 与 `CHANGE_IMPACT.md`
 
 ### 步骤 2：确定迭代范围或冻结对象
 
@@ -58,6 +62,7 @@ description: 版本迭代管理
   - 默认生成 `ITER-001`
   - 默认目标版本为 `v1.0.0`
   - 范围描述为“首次交付范围，以当前冻结需求和测试结论为准”
+  - 冻结前提：`DOC_CHECK_REPORT.md` 总体结果必须为 PASS
 - 增量迭代规划模式：
   - 从 `CHANGE_REQUEST.md` 中筛选状态为"已批准"且未纳入任何迭代的 CR
   - 根据 `CHANGE_IMPACT.md` 中的工作量预估和优先级，确定本轮迭代纳入哪些 CR
@@ -65,6 +70,7 @@ description: 版本迭代管理
   - 对已纳入本轮的 CR，回写 `CHANGE_REQUEST.md` 中对应条目的 `纳入迭代=ITER-NNN`
 - 增量迭代收尾冻结模式：
   - 根据当前迭代计划、测试结果和缺陷状态确定是否满足发布条件
+  - 冻结前提：`DOC_CHECK_REPORT.md` 总体结果必须为 PASS
 
 ### 步骤 3：输出迭代计划（ITERATION_PLAN.md）
 
@@ -74,7 +80,7 @@ description: 版本迭代管理
 ## 文档信息
 - 文档类型：产物
 - 生成 Skill：`iteration-plan`
-- 上游输入：首次交付模式=`TEST_REPORT.md`+冻结文档+代码状态；增量模式=`CHANGE_REQUEST.md`+`CHANGE_IMPACT.md`+当前版本基线
+- 上游输入：首次交付模式=`TEST_REPORT.md`+`DOC_CHECK_REPORT.md`+冻结文档+代码状态；增量模式=`CHANGE_REQUEST.md`+`CHANGE_IMPACT.md`+当前版本基线（收尾冻结需 `DOC_CHECK_REPORT.md`）
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
 - 状态：草稿 / 已冻结
@@ -146,6 +152,7 @@ description: 版本迭代管理
 - [ ] 迭代范围明确且与已批准 CR 一致
 - [ ] 里程碑与准出标准可执行
 - [ ] `CHANGE_REQUEST.md` 的 `纳入迭代` 已按本轮回写
+- [ ] 冻结场景下 `DOC_CHECK_REPORT.md` 总体结果为 PASS
 - [ ] 可直接指导本轮执行与收尾
 
 ## 变更记录
@@ -157,7 +164,7 @@ description: 版本迭代管理
 
 ### 步骤 4：冻结版本基线（RELEASE_BASELINE.md）
 
-当首次交付或某轮迭代所有步骤完成且测试通过后，更新版本基线：
+当首次交付或某轮迭代所有步骤完成，且测试通过并完成 `doc-check PASS` 后，更新版本基线：
 
 ```markdown
 # 版本基线
@@ -165,7 +172,7 @@ description: 版本迭代管理
 ## 文档信息
 - 文档类型：产物
 - 生成 Skill：`iteration-plan`
-- 上游输入：`ITERATION_PLAN.md`、冻结文档、`TEST_REPORT.md`、代码状态
+- 上游输入：`ITERATION_PLAN.md`、冻结文档、`TEST_REPORT.md`、`DOC_CHECK_REPORT.md`、代码状态
 - 版本：vX.Y
 - 日期：YYYY-MM-DD
 - 状态：草稿 / 已冻结
@@ -217,6 +224,7 @@ description: 版本迭代管理
 - [ ] 文档基线完整
 - [ ] 代码基线明确
 - [ ] 测试结论明确
+- [ ] `DOC_CHECK_REPORT.md` 总体结果为 PASS
 - [ ] 可作为下一轮增量迭代输入
 
 ## 变更记录
@@ -287,7 +295,7 @@ description: 版本迭代管理
 
 - 如果是新建迭代计划：按执行计划中的步骤顺序开始，通常从 `prd-rectify` 开始更新需求基线
 - 如果是冻结版本：迭代完成，可启动下一轮 `change-intake` 或进入运维阶段
-- 建议在冻结版本后执行 `doc-check` 确保文档一致性
+- 若 `DOC_CHECK_REPORT.md` 非 PASS，必须先回到相关阶段整改，禁止冻结版本
 
 ## 注意事项
 
@@ -298,3 +306,4 @@ description: 版本迭代管理
 - 版本基线冻结后，该版本对应的文档不可再修改，新变更必须进入新迭代
 - CHANGELOG.md 按版本倒序排列（最新版本在最前）
 - 迭代计划中的执行步骤复用主链 Skill，不重新定义流程
+- 仅允许回写 `CHANGE_REQUEST.md` 的 `纳入迭代` 字段，不得在本 Skill 中改写 CR 业务内容
