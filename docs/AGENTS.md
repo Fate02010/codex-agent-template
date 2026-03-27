@@ -2,138 +2,193 @@
 
 ## 1. 总则
 
-本项目采用文档驱动开发，文档既是输入也是输出。所有文档以冻结后的版本为准，不脑补业务。
+本项目采用文档驱动开发。文档不是“交付后的说明书”，而是 Agent 执行研发任务时的输入、约束和验收依据。
 
-> **模板说明**：`docs/` 目录下的文件是**仓库预置模板**，不是已完成的 Skill 产出。每份模板文件的"文档信息"区域标注了文档类型（模板/产物）、生成 Skill 和当前状态。首次执行对应 Skill 后，模板内容将被真实产物覆盖。
+- 冻结文档优先于口头描述和代码现状
+- 文档必须支持追溯，不允许只写结论不写来源
+- 文档必须可执行，不允许只写空泛章节标题
 
 ## 2. 目录结构
 
 ```
 docs/
-├── AGENTS.md                      # 本文件：文档规范
-├── DOC_CHECK_REPORT.md            # 文档追溯性校验报告
-├── 00-research/                   # 调研与澄清文档
-│   ├── RESEARCH_SUMMARY.md        # 需求调研摘要
-│   └── REQUIREMENTS_CLARIFIED.md  # 需求澄清记录
-├── 01-requirements/               # 需求文档
-│   ├── PRD_RAW.md                 # 原始 PRD（由 prd-compose 编写）
-│   ├── PRD_REVIEW_ISSUES.md       # PRD 评审问题清单
-│   └── PRD_RECTIFIED.md           # 整改后 PRD（冻结基线）
-├── 02-architecture/               # 设计文档
-│   ├── ARCHITECTURE.md            # 架构设计（冻结）
-│   ├── API_CONTRACT.md            # 接口契约（严格冻结）
-│   └── DATA_MODEL.md              # 数据模型（严格冻结）
-├── 03-testing/                    # 测试文档
-│   ├── TEST_PLAN.md               # 测试计划
-│   ├── TEST_CASES.md              # 测试用例
-│   ├── TEST_REPORT.md             # 测试报告
-│   └── DEFECT_LOG.md              # 缺陷记录
-└── 04-iteration/                  # 迭代与版本管理
-    ├── CHANGE_REQUEST.md          # 变更请求记录
-    ├── CHANGE_IMPACT.md           # 变更影响分析报告
-    ├── ITERATION_PLAN.md          # 迭代计划
-    ├── RELEASE_BASELINE.md        # 版本基线
-    └── CHANGELOG.md               # 变更日志
+├── AGENTS.md
+├── DOC_CHECK_REPORT.md
+├── 00-research/
+│   ├── RESEARCH_SUMMARY.md
+│   └── REQUIREMENTS_CLARIFIED.md
+├── 01-requirements/
+│   ├── PRD_RAW.md
+│   ├── PRD_REVIEW_ISSUES.md
+│   └── PRD_RECTIFIED.md
+├── 02-architecture/
+│   ├── ARCHITECTURE.md
+│   ├── API_CONTRACT.md
+│   └── DATA_MODEL.md
+├── 03-testing/
+│   ├── TEST_PLAN.md
+│   ├── TEST_CASES.md
+│   ├── TEST_REPORT.md
+│   └── DEFECT_LOG.md
+└── 04-iteration/
+    ├── CHANGE_REQUEST.md
+    ├── CHANGE_IMPACT.md
+    ├── ITERATION_PLAN.md
+    ├── RELEASE_BASELINE.md
+    └── CHANGELOG.md
 ```
 
 ## 3. 文档命名规范
 
-- 使用全大写 + 下划线命名：`PRD_RECTIFIED.md`、`API_CONTRACT.md`
-- 目录使用序号前缀：`00-research`、`01-requirements`、`02-architecture`、`03-testing`、`04-iteration`
+- 文件名统一使用全大写 + 下划线，如 `PRD_RECTIFIED.md`
+- 目录统一使用编号前缀，如 `00-research`
 - 禁止中文文件名
+- 新增正式文档时，优先复用现有目录，不新增随意命名的散落文件
 
-## 4. 文档标记规范
+## 4. 文档生命周期
 
-在文档内容中使用以下标记标注变更：
+| 状态 | 说明 | 使用要求 |
+|---|---|---|
+| 模板 | 仓库预置占位内容 | 首次执行相关 Skill 时必须覆盖 |
+| 草稿 | 当前正在编写 | 允许补充，但不得作为开发唯一依据 |
+| 评审中 | 等待评审或澄清 | 应显式记录待确认项 |
+| 已整改 | 评审问题已处理 | 可以进入冻结确认 |
+| 已冻结 | 当前基线 | 只能通过正式流程变更 |
+| 已废弃 | 已被后续版本替代 | 保留追溯价值，不再引用为当前依据 |
+
+## 5. 文档信息必填字段
+
+每份正式文档至少包含以下元数据：
+
+| 字段 | 必填 | 说明 |
+|---|---|---|
+| 文档类型 | 是 | 模板 / 产物 |
+| 生成 Skill | 是 | 当前文档由哪个 Skill 负责生成或维护 |
+| 版本 | 是 | 文档版本号或基线版本 |
+| 日期 | 是 | 最近一次更新日期 |
+| 状态 | 是 | 必须使用生命周期中的标准状态 |
+| 上游输入 | 是 | 本文档依赖的主要输入文档 |
+| 关联需求/接口/变更 | 视情况 | 能建立追溯关系时必须填写 |
+
+若文档没有这些字段，`doc-check` 视为元数据不完整。
+
+## 6. 文档标记规范
 
 | 标记 | 含义 | 使用场景 |
 |---|---|---|
-| 【新增】 | 新增内容 | 首次添加的需求、接口、字段 |
-| 【修改】 | 修改内容 | 对已有内容的调整 |
-| 【删除】 | 删除内容 | 移除的需求、接口、字段 |
-| 【待确认】 | 待确认 | 需要产品/业务方确认的内容 |
-| 【风险】 | 风险项 | 技术风险、业务风险、依赖风险 |
-| 【设计推断】 | 设计稿推断 | 从设计稿图片推断的需求（`biz-research` / `prd-compose` 产出） |
-| 【冲突】 | 矛盾项 | 不同材料之间的矛盾（`biz-research` / `prd-compose` 产出） |
-| 【澄清结论】 | 澄清决策 | 需求澄清阶段的最终决策（`biz-research` 阶段二产出） |
+| 【新增】 | 新增内容 | 首次出现的需求、接口、字段、用例 |
+| 【修改】 | 既有内容调整 | 规格、规则、返回结构、流程改动 |
+| 【删除】 | 删除内容 | 明确不再支持的功能或字段 |
+| 【待确认】 | 尚未定论 | 不能直接作为开发依据 |
+| 【风险】 | 风险项 | 技术、依赖、性能、合规等风险 |
+| 【设计推断】 | 来自设计稿推断 | 调研或 PRD 阶段 |
+| 【冲突】 | 输入材料矛盾 | 调研或 PRD 阶段 |
+| 【澄清结论】 | 已确认结论 | 澄清阶段 |
+| 【变更】 | 增量变化 | 迭代阶段更新基线 |
 
-## 5. 编号体系
+## 7. 统一编号体系
 
-全链路使用以下统一编号，确保追溯性：
+| 编号类型 | 格式 | 示例 |
+|---|---|---|
+| 澄清问题 | `CQ-NNN` | `CQ-001` |
+| 功能需求 | `FNNN` | `F001` |
+| 接口 | `API-模块-NNN` | `API-ORDER-001` |
+| 数据表 | `T-模块-NNN` | `T-ORDER-001` |
+| 测试用例 | `TC-模块-NNN` | `TC-ORDER-001` |
+| 缺陷 | `BUG-模块-NNN` | `BUG-ORDER-001` |
+| 变更请求 | `CR-NNN` | `CR-001` |
+| 迭代 | `ITER-NNN` | `ITER-001` |
 
-| 编号类型 | 格式 | 说明 | 示例 |
-|---|---|---|---|
-| 澄清问题 | CQ-NNN | 需求澄清阶段的问题编号 | CQ-001: 订单状态流转是否支持跳过待付款？ |
-| 功能需求 | FNNN | PRD 中的功能编号 | F001: 用户注册 |
-| 接口 | API-模块-NNN | 接口编号，模块如 USER、ORDER | API-USER-001: POST /api/v1/users |
-| 测试用例 | TC-模块-NNN | 测试用例编号，模块与接口对应 | TC-USER-001: 用户注册成功（P0） |
-| 缺陷 | BUG-模块-NNN | 缺陷编号，按发现顺序 | BUG-USER-001: 注册后未发送验证邮件 |
-| 变更请求 | CR-NNN | 变更请求编号，全局递增 | CR-001: 新增微信登录 |
-| 迭代 | ITER-NNN | 迭代编号，从 001 开始 | ITER-001: v1.0.0 首次交付 |
+编号规则：
 
-**编号规则**：
-- NNN 从 001 开始，在模块内连续递增
-- 模块名使用大写英文缩写（如 USER、ORDER、PAYMENT）
-- 编号一旦分配不可重用，即使对应条目被删除
+- 序号从 `001` 开始，保持连续
+- 模块名使用大写英文缩写
+- 编号一旦分配，不重复使用
+- 同一条内容跨文档引用时必须沿用同一编号
 
-## 6. 文档结构要求
+## 8. 文档结构要求
 
-每份文档至少包含以下章节：
+每份文档至少具备以下章节：
 
-| 章节 | 说明 |
+| 章节 | 要求 |
 |---|---|
-| 文档信息 | 文档类型、生成 Skill、状态、版本、日期 |
-| 目标 | 本文档要解决什么问题 |
-| 范围 | 涉及哪些模块、功能 |
-| 正文 | 具体内容（流程、字段、规则等） |
-| 异常与边界 | 异常场景、边界条件 |
-| 变更记录 | 版本号、日期、变更说明 |
+| 文档信息 | 元数据完整 |
+| 目标 | 说明本文档要解决什么问题 |
+| 范围 | 写清楚包含和不包含的内容 |
+| 正文 | 必须落到可执行信息，如规则、字段、流程、表格 |
+| 异常与边界 | 记录失败路径、限制条件、风险 |
+| 变更记录 | 记录版本、日期、改动说明 |
 
-## 7. 文档引用关系
+## 9. 阶段读写契约
+
+跨阶段传递信息时，默认按“章节标题 + 表名/字段名”读取，不按章节序号硬编码。章节序号可调整，标题语义不可漂移。
+
+| 上游文档 | 读取位置 | 下游文档 | 写入位置 | 契约说明 |
+|---|---|---|---|---|
+| `RESEARCH_SUMMARY.md` | `4. 功能要点归纳` | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | 调研功能条目进入澄清后的功能基线 |
+| `RESEARCH_SUMMARY.md` | `5. 业务规则与约束` | `REQUIREMENTS_CLARIFIED.md` | `4. 更新后的业务规则与边界` | 仅把已确认或带风险说明的规则传入 |
+| `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 从这里分配 F 编号 |
+| `PRD_RECTIFIED.md` | `3. 功能需求基线` | `API_CONTRACT.md` | `3. 接口清单` / `4. 接口明细` | 接口必须显式关联 F 编号 |
+| `PRD_RECTIFIED.md` | `3. 功能需求基线` | `DATA_MODEL.md` | `4. 表结构明细` | 数据表主标识符使用 `T-模块-NNN` |
+| `TEST_CASES.md` | `2. 用例清单` / `3. TC 与测试代码绑定规则` | 测试代码 | `@DisplayName` / `it()` | 测试代码必须绑定已分配的 TC 编号 |
+| `ITERATION_PLAN.md` / `RELEASE_BASELINE.md` | 版本、迭代、基线信息 | `CHANGELOG.md` / `DOC_CHECK_REPORT.md` | 版本记录 / 版本基线校验 | 发布闭环必须覆盖版本维度 |
+
+## 10. 跨文档引用规则
+
+- 需求引用：`关联需求：F001`
+- 澄清引用：`关联澄清：CQ-001`
+- 接口引用：`关联接口：API-USER-001`
+- 数据表引用：`关联数据表：T-USER-001`
+- 测试引用：`关联用例：TC-USER-001`
+- 缺陷引用：`关联缺陷：BUG-USER-001`
+- 变更引用：`关联变更：CR-001`
+- 迭代引用：`关联迭代：ITER-001`
+
+跨文档引用优先使用“编号 + 文件”组合，例如：
+
+- `参见 PRD_RECTIFIED.md § F001`
+- `参见 API_CONTRACT.md § API-ORDER-002`
+
+## 11. 追溯链要求
+
+默认要求建立以下追溯关系：
 
 ```
-RESEARCH_SUMMARY.md（调研归纳）
-    ↓ biz-research 阶段二
-REQUIREMENTS_CLARIFIED.md（需求澄清）
-    ↓ prd-compose
-PRD_RAW.md（初始 PRD）
-    ↓ prd-review + prd-rectify
-PRD_RECTIFIED.md（需求基线，冻结）
-    ↓
-ARCHITECTURE.md（架构） → API_CONTRACT.md（接口） → DATA_MODEL.md（数据）
-    ↓
-TEST_PLAN.md（测试计划） → TEST_CASES.md（测试用例）
-    ↓ qa-execute
-TEST_REPORT.md（测试报告）
-    ↓ defect-fix（失败时）
-DEFECT_LOG.md（缺陷记录） ⟲ 回到代码修复 → 回归测试
-    ↓ doc-check（任意节点）
-DOC_CHECK_REPORT.md（追溯性校验报告）
-    ↓ iteration-plan（首次交付 / 迭代完成）
-RELEASE_BASELINE.md（版本基线冻结） + CHANGELOG.md（变更日志）
-    ↓ change-intake（增量需求到达时）
-CHANGE_REQUEST.md（变更请求） + CHANGE_IMPACT.md（影响分析）
-    ↓ iteration-plan（规划新迭代）
-ITERATION_PLAN.md（迭代计划） → 回到 prd-rectify 更新基线 → 复用主链
+原始材料 → RESEARCH_SUMMARY
+RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED → PRD_RAW / PRD_RECTIFIED
+PRD_RECTIFIED → ARCHITECTURE / API_CONTRACT / DATA_MODEL
+PRD_RECTIFIED / API_CONTRACT → TEST_PLAN / TEST_CASES
+TEST_CASES → 测试代码
+TEST_CASES / 测试代码 → TEST_REPORT
+TEST_REPORT → DEFECT_LOG
+CHANGE_REQUEST / CHANGE_IMPACT → ITERATION_PLAN / RELEASE_BASELINE / CHANGELOG
 ```
 
-- 需求引用格式：`关联需求：F001`
-- 接口引用格式：`关联接口：API-XXX-001`
-- 跨文档引用格式：`参见 PRD_RECTIFIED.md § F001`
-- 澄清引用格式：`关联澄清：CQ-001`
-- 变更引用格式：`关联变更：CR-001`
-- 迭代引用格式：`关联迭代：ITER-001`
+任何一环缺失，都必须在文档中显式写明原因，不允许静默跳过。
 
-## 8. 文档优先级
+## 12. 冻结与变更规则
 
-以冻结后的文档为准。当文档与代码冲突时：
+- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`RELEASE_BASELINE.md` 视为基线文档
+- 基线文档更新时，正文必须带【修改】或【变更】标记，并补充变更记录
+- 增量迭代优先局部更新，不允许整体重写导致基线丢失
+- 如果文档已废弃，需在文档信息中标注状态为 `已废弃`
 
-1. 先确认文档是否为最新版本
-2. 如果文档是最新的，以文档为准修改代码
-3. 如果需要变更需求，先更新文档，再改代码
+## 13. 文档完成定义
 
-## 9. 禁止事项
+一份文档只有满足以下条件，才算“可用”：
 
-- 禁止在文档中写代码实现细节（伪代码和流程图除外）
-- 禁止跳过文档直接写代码
-- 禁止文档和代码不同步
+- [ ] 章节完整，非空壳
+- [ ] 元数据完整
+- [ ] 引用编号有效
+- [ ] 上游输入可追溯
+- [ ] 当前结论可以被下游直接消费
+- [ ] 风险和待确认项明确列出
+
+## 14. 禁止事项
+
+- 禁止跳过上游文档直接写下游文档
+- 禁止在冻结基线里混入未确认内容
+- 禁止文档只保留标题、不填可执行内容
+- 禁止文档和代码长期不一致
+- 禁止测试文档不绑定需求、接口和 TC 编号
+- 禁止 Skill 依赖固定章节序号而不是章节标题

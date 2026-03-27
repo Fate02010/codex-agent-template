@@ -205,7 +205,7 @@ Bearer Token（JWT），通过 Header `Authorization: Bearer <token>` 传递。
 
 ## 表结构
 
-### t_xxx — [表说明]（关联 F001）
+### T-XXX-001: `t_xxx` — [表说明]（关联 F001）
 
 | 字段 | 类型 | 必填 | 默认值 | 说明 |
 |---|---|---|---|---|
@@ -239,6 +239,7 @@ Bearer Token（JWT），通过 Header `Authorization: Bearer <token>` 传递。
 - [ ] 每个 PRD 功能点都有对应的接口
 - [ ] 每个接口的请求/响应字段都能在数据模型中找到来源
 - [ ] 数据模型覆盖了所有业务实体
+- [ ] 每个数据表条目都使用 `T-模块-NNN` 作为文档级标识符，并显式标出物理表名
 - [ ] 接口 URL 全部使用 `/api/v1/` 前缀
 - [ ] 统一返回体和错误码一致
 - [ ] 架构设计与技术栈约束一致（Spring Boot 3.x, MyBatis-Plus, MySQL 8.x, Redis）

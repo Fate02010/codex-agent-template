@@ -11,11 +11,18 @@
 
 ## 输入
 
-1. `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求记录（状态为"已批准"的 CR）
-2. `docs/04-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
-3. `docs/04-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
-4. `docs/04-iteration/ITERATION_PLAN.md` — 已有迭代计划（如已存在）
-5. `docs/01-requirements/PRD_RECTIFIED.md` — 当前需求基线
+分两种模式读取输入：
+
+1. **首次交付冻结模式**
+   - `docs/03-testing/TEST_REPORT.md`
+   - 当前冻结文档：`PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`
+   - 当前代码状态（如可获得）
+2. **增量迭代规划/冻结模式**
+   - `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求记录（状态为"已批准"的 CR）
+   - `docs/04-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
+   - `docs/04-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
+   - `docs/04-iteration/ITERATION_PLAN.md` — 已有迭代计划（如已存在）
+   - `docs/01-requirements/PRD_RECTIFIED.md` — 当前需求基线
 
 ## 输出
 
@@ -25,18 +32,33 @@
 
 ## 执行流程
 
-### 步骤 1：读取输入
+### 步骤 1：判定执行模式并读取输入
 
-1. 读取 `docs/04-iteration/RELEASE_BASELINE.md` — 了解当前版本号和基线状态
-2. 读取 `docs/04-iteration/ITERATION_PLAN.md` — 了解已有迭代历史
-3. 读取 `docs/04-iteration/CHANGE_REQUEST.md` — 获取待纳入的已批准 CR
-4. 读取 `docs/04-iteration/CHANGE_IMPACT.md` — 了解变更影响和工作量
+先判断当前属于哪种模式：
 
-### 步骤 2：确定迭代范围
+- **首次交付冻结模式**：当前已完成主链测试，目标是冻结首发版本 `v1.0.0`，但尚无已批准 CR 作为输入
+- **增量迭代规划模式**：存在已批准 CR，需要确定本轮迭代范围
+- **增量迭代收尾冻结模式**：迭代执行已完成，需要基于当前结果冻结新版本
 
-- 从 `CHANGE_REQUEST.md` 中筛选状态为"已批准"且未纳入任何迭代的 CR
-- 根据 `CHANGE_IMPACT.md` 中的工作量预估和优先级，确定本轮迭代纳入哪些 CR
-- 原则：优先纳入 P0、P1 级 CR；单轮迭代工作量不宜过大
+读取对应输入：
+
+1. 读取 `docs/04-iteration/RELEASE_BASELINE.md` — 了解当前版本号和基线状态（如存在）
+2. 读取 `docs/04-iteration/ITERATION_PLAN.md` — 了解已有迭代历史（如存在）
+3. 首次交付冻结模式下，读取 `TEST_REPORT.md` 和当前冻结文档
+4. 增量模式下，读取 `CHANGE_REQUEST.md` 与 `CHANGE_IMPACT.md`
+
+### 步骤 2：确定迭代范围或冻结对象
+
+- 首次交付冻结模式：
+  - 默认生成 `ITER-001`
+  - 默认目标版本为 `v1.0.0`
+  - 范围描述为“首次交付范围，以当前冻结需求和测试结论为准”
+- 增量迭代规划模式：
+  - 从 `CHANGE_REQUEST.md` 中筛选状态为"已批准"且未纳入任何迭代的 CR
+  - 根据 `CHANGE_IMPACT.md` 中的工作量预估和优先级，确定本轮迭代纳入哪些 CR
+  - 原则：优先纳入 P0、P1 级 CR；单轮迭代工作量不宜过大
+- 增量迭代收尾冻结模式：
+  - 根据当前迭代计划、测试结果和缺陷状态确定是否满足发布条件
 
 ### 步骤 3：输出迭代计划（ITERATION_PLAN.md）
 
@@ -70,8 +92,8 @@
 |---|---|---|---|---|
 | 1 | 更新需求基线 | prd-rectify | PRD_RECTIFIED.md | — |
 | 2 | 更新接口/数据模型 | solution-design | API_CONTRACT.md / DATA_MODEL.md | — |
-| 3 | 开发实现 | dev-implement | backend/ / frontend/ | — |
-| 4 | 测试设计 | qa-design | TEST_PLAN.md / TEST_CASES.md | — |
+| 3 | 测试设计 | qa-design | TEST_PLAN.md / TEST_CASES.md | — |
+| 4 | 开发实现 | dev-implement | backend/ / frontend/ | — |
 | 5 | 测试执行 | qa-execute | TEST_REPORT.md | — |
 | 6 | 缺陷修复 | defect-fix | 修复代码 / DEFECT_LOG.md | — |
 | 7 | 文档校验 | doc-check | DOC_CHECK_REPORT.md | — |
@@ -94,9 +116,9 @@
 
 **迭代编号规则**：ITER-NNN 从 001 开始递增。首次交付为 ITER-001。
 
-### 步骤 4：迭代完成时 — 冻结版本基线（RELEASE_BASELINE.md）
+### 步骤 4：冻结版本基线（RELEASE_BASELINE.md）
 
-当迭代所有步骤完成且测试通过后，更新版本基线：
+当首次交付或某轮迭代所有步骤完成且测试通过后，更新版本基线：
 
 ```markdown
 # 版本基线
@@ -144,7 +166,7 @@
 |---|---|---|
 ```
 
-### 步骤 5：迭代完成时 — 追加变更日志（CHANGELOG.md）
+### 步骤 5：追加变更日志（CHANGELOG.md）
 
 ```markdown
 # 变更日志
@@ -195,6 +217,7 @@
 
 - 版本号遵循语义化版本（SemVer）：MAJOR.MINOR.PATCH
 - 首次交付版本号为 v1.0.0，对应 ITER-001
+- 首次交付冻结模式不依赖 CR，也必须能独立输出 `ITERATION_PLAN.md`、`RELEASE_BASELINE.md`、`CHANGELOG.md`
 - 每轮迭代必须有明确的纳入 CR 列表，不允许"无计划变更"
 - 版本基线冻结后，该版本对应的文档不可再修改，新变更必须进入新迭代
 - CHANGELOG.md 按版本倒序排列（最新版本在最前）

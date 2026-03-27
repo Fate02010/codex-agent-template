@@ -1,69 +1,138 @@
 # AGENTS.md — 项目总规则
 
-## 1. 项目概述
+## 1. 项目定位
 
-本项目是一个 Agent 驱动的开发模板工程，采用**文档驱动开发**模式。所有开发活动以文档为输入和输出，确保调研、需求、设计、实现、测试全链路可追溯。
+本仓库是一套基于 Codex 的 AI Agent 软件研发模板工程，目标不是提供“文档目录示例”，而是提供一套可以直接执行的研发闭环：
 
-> **模板说明**：`docs/` 目录下的文件是**仓库预置模板**，不是已完成的 Skill 产出。首次执行对应 Skill 后，模板内容将被真实产物覆盖。每份模板文件的"文档信息"区域标注了文档类型和生成 Skill。
+- 输入可以是业务资料、调研材料、Word PRD、设计稿、高保真图、增量需求和缺陷信息
+- 输出必须沉淀为可追溯文档、可验证代码、可复用规则和可冻结版本基线
+- 适用范围覆盖从 0 到 1 首次交付，以及已交付系统的新增功能、需求变更、缺陷修复和版本迭代
 
-## 2. 工作主链
+> 模板说明：`docs/` 下所有文件都是预置模板，不代表真实产物。首次执行对应 Skill 后，模板必须被真实内容覆盖。
 
-### 2.1 首次交付主链
+## 2. 核心执行原则
+
+### 2.1 文档优先
+
+- 先确认或更新文档，再修改代码
+- 设计、接口、表结构、测试范围均以冻结文档为准
+- 文档与代码冲突时，先判断文档是否为当前基线，再决定修正文档或代码
+
+### 2.2 不跳阶段
+
+- 上游输入缺失时，不允许直接推进下游阶段
+- 首次交付若 `backend/` 和 `frontend/` 下没有可运行工程文件，进入 `dev-implement` 前必须先执行 `project-init`
+- 增量需求必须先经过 `change-intake` 和 `iteration-plan`，再进入需求/设计/开发主链
+
+### 2.3 单阶段闭环
+
+每次只解决一个明确阶段的问题。任一阶段都必须回答以下 5 个问题：
+
+1. 当前阶段的输入是什么
+2. 当前阶段的产出写入哪些文件
+3. 当前阶段的完成判定是什么
+4. 有哪些待确认项和风险
+5. 下一阶段可以使用哪些冻结产物继续推进
+
+### 2.4 追溯优先
+
+- 需求、接口、数据表、测试用例、缺陷、变更请求、迭代版本必须使用统一编号
+- 任何功能上线前，必须能从版本基线反向追溯到需求、设计、测试和变更记录
+
+## 3. 进入项目后的必读顺序
+
+1. 本文件 `AGENTS.md`
+2. `docs/01-requirements/PRD_RECTIFIED.md`
+3. `docs/02-architecture/ARCHITECTURE.md`
+4. `docs/02-architecture/API_CONTRACT.md`
+5. `docs/02-architecture/DATA_MODEL.md`
+6. 对应目录下的 `AGENTS.md`
+
+若上述文档仍是模板或未冻结，则回到上游阶段补齐，不得继续假设。
+
+## 4. 启动检查清单
+
+开始任何实际工作前，先完成以下检查：
+
+- [ ] 已识别当前是“首次交付”还是“增量迭代”
+- [ ] 已确认本次阶段对应的上游文档是否存在且可用
+- [ ] 原始材料已经放入仓库内可追溯位置，且将在文档中登记来源
+- [ ] 已确认后端/前端工程是否存在，不存在则先执行 `project-init`
+- [ ] 已确认本次工作是否涉及接口变更、表结构变更、业务规则变更或版本变更
+- [ ] 已确认本次输出要覆盖哪些文档和代码目录
+
+## 5. 首次交付主链
+
+### 5.1 标准流程
 
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
-    → solution-design → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → solution-design → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-plan（冻结 v1.0.0 基线）
 ```
 
-> - 若 `backend/` 和 `frontend/` 下无工程文件（如 `pom.xml`、`package.json`），进入 `dev-implement` 前**必须**先执行 `project-init`
-> - `biz-research` 包含两个阶段：阶段一为调研归纳，阶段二为需求澄清（存在矛盾或缺口时触发）
-> - `doc-check` 为可在任意节点执行的校验工具；`defect-fix` 在测试失败时触发循环
+### 5.2 阶段执行表
 
-### 2.2 增量迭代支链
+| 阶段 | 何时触发 | 必备输入 | 必做动作 | 标准输出 | 完成判定 |
+|---|---|---|---|---|---|
+| `project-init` | 仓库没有可运行工程骨架 | 根 `AGENTS.md` + 技术栈约束 | 初始化 `backend/`、`frontend/` 项目骨架，补局部 `AGENTS.md` 约束落点 | 可编译/可安装的工程目录 | 工程可启动，目录结构与规范一致 |
+| `biz-research` | 已拿到原始业务资料 | Word/PDF/设计稿/访谈记录/竞品材料 | 归纳目标、角色、场景、规则、矛盾和缺口 | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` | 输入材料全部登记，矛盾项被澄清或明确标记为待确认 |
+| `prd-compose` | 调研与澄清已形成结论 | 调研摘要 + 澄清记录 + 设计稿 | 结构化输出原始 PRD，沉淀功能、流程、字段、验收标准 | `docs/01-requirements/PRD_RAW.md` | 每个功能点具备编号、描述、规则、异常和验收标准 |
+| `prd-review` | 原始 PRD 完成 | `PRD_RAW.md` | 从完整性、一致性、可实现性、可测试性角度审查 | `PRD_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类 |
+| `prd-rectify` | 评审存在问题 | `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 逐项整改并形成冻结基线 | `PRD_RECTIFIED.md` | 阻塞问题全部关闭，需求基线可供设计使用 |
+| `solution-design` | 需求基线冻结 | `PRD_RECTIFIED.md` | 完成架构、接口、数据设计并建立追溯关系 | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 接口、数据表、模块职责与需求一一对应 |
+| `qa-design` | 设计文档冻结，准备进入开发 | `PRD_RECTIFIED.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 设计测试策略和测试用例，预分配 TC 编号并建立测试代码映射 | `TEST_PLAN.md` + `TEST_CASES.md` | P0/P1/P2 用例齐备，TC 编号可直接供开发绑定测试代码 |
+| `dev-implement` | 设计与测试基线已齐备 | 整改后 PRD + 设计文档 + `TEST_PLAN.md` + `TEST_CASES.md` + 局部 `AGENTS.md` | 按文档实现代码，并按 TC 编号补测试 | `backend/`、`frontend/` 代码 | 代码可编译，可说明每个改动对应的需求、设计和 TC |
+| `qa-execute` | 测试计划与用例已齐备 | `TEST_PLAN.md` + `TEST_CASES.md` + 源代码 | 执行测试并回写结果、覆盖率、风险和准出建议 | `TEST_REPORT.md` | 结果真实可追溯，可明确是否准出 |
+| `defect-fix` | 测试失败或缺陷新增 | `TEST_REPORT.md` + 代码 + 设计文档 | 修复缺陷、补回归测试、更新缺陷状态 | 修复代码 + `DEFECT_LOG.md` | 缺陷闭环，回归结果已记录 |
+| `doc-check` | 任意关键节点 | 全部文档 | 校验追溯链、元数据、冻结状态和引用有效性 | `DOC_CHECK_REPORT.md` | 所有阻塞性文档问题关闭 |
+| `iteration-plan` | 首次交付完成 | 已通过的测试报告 + 当前冻结文档 + 代码状态 | 冻结版本、记录计划和变更日志 | `ITERATION_PLAN.md` + `RELEASE_BASELINE.md` + `CHANGELOG.md` | 版本基线明确，可作为后续增量迭代起点 |
+
+## 6. 增量迭代支链
+
+### 6.1 标准流程
 
 ```
 change-intake → iteration-plan → prd-rectify → solution-design（局部更新）
-    → dev-implement → qa-design → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-plan（冻结新版本基线）
 ```
 
-> - `change-intake` 是增量需求/变更的统一入口，负责变更受理和影响分析
-> - `iteration-plan` 负责迭代规划、版本基线冻结和变更日志记录
-> - 增量迭代复用主链的 Skill（prd-rectify → design → dev → qa），不重新定义流程
+### 6.2 阶段执行表
 
-### 2.3 全量 Skill 清单
+| 阶段 | 核心目标 | 必备输入 | 标准输出 | 完成判定 |
+|---|---|---|---|---|
+| `change-intake` | 接收新增需求、缺陷、调整项并完成受理 | 增量资料 + 当前版本基线 | `CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` | 每个 CR 都有范围、优先级、影响面和建议 |
+| `iteration-plan` | 决定本轮迭代做什么、不做什么 | 已批准 CR + 影响分析 + 当前基线 | `ITERATION_PLAN.md` | 迭代目标、范围、里程碑和准出标准明确 |
+| `prd-rectify` | 只更新受影响需求基线 | 已批准 CR + 当前 `PRD_RECTIFIED.md` | 更新后的 `PRD_RECTIFIED.md` | 变更项被清晰标记，未受影响需求保持稳定 |
+| `solution-design` | 局部更新架构/接口/数据设计 | 更新后的需求基线 | 更新后的设计文档 | 每项变更均有受影响设计说明 |
+| `qa-design` | 为增量范围预分配 TC 并补测试策略 | 增量需求 + 受影响接口/数据模型 | 更新测试文档 | 新增功能和回归范围均具备可执行 TC |
+| `dev-implement` | 仅修改批准范围内的代码 | 更新后的设计文档 + 更新后的 `TEST_CASES.md` + 代码基线 | 代码与增量测试 | 变更范围受控，无越权开发，测试代码绑定有效 TC |
+| `qa-execute` | 覆盖新增功能、受影响回归和高风险路径 | 更新测试文档 + 源代码 | 新测试结果 | 新功能通过，受影响旧功能回归通过 |
+| `iteration-plan`（收尾） | 冻结新版本 | 全量通过结果 + 当前基线 | 更新版本基线和变更日志 | 新版本可发布、可追溯 |
 
-| 阶段 | Skill | 输入 | 输出 |
-|---|---|---|---|
-| 项目初始化 | `project-init` | AGENTS.md 规范文件 | 后端/前端项目脚手架 |
-| 需求调研 | `biz-research` | 业务资料（Word/PDF/设计稿/调研材料） | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` |
-| 需求编写 | `prd-compose` | 调研摘要 + 澄清记录 + 可选设计稿 | `docs/01-requirements/PRD_RAW.md` |
-| PRD 评审 | `prd-review` | 原始 PRD | `docs/01-requirements/PRD_REVIEW_ISSUES.md` |
-| PRD 整改 | `prd-rectify` | 评审问题清单 + 原始 PRD | `docs/01-requirements/PRD_RECTIFIED.md` |
-| 方案设计 | `solution-design` | 整改后 PRD | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` |
-| 开发实现 | `dev-implement` | 整改后 PRD + 设计文档 | `backend/` 或 `frontend/` 下代码 |
-| 测试设计 | `qa-design` | 整改后 PRD + `API_CONTRACT.md` + `DATA_MODEL.md` | `TEST_PLAN.md` + `TEST_CASES.md` |
-| 测试执行 | `qa-execute` | `TEST_PLAN.md` + `TEST_CASES.md` + 源代码 | `docs/03-testing/TEST_REPORT.md` |
-| 缺陷修复 | `defect-fix` | `TEST_REPORT.md` + 源代码 + 设计文档 | 修复代码 + `docs/03-testing/DEFECT_LOG.md` |
-| 文档校验 | `doc-check` | 全部文档 | `docs/DOC_CHECK_REPORT.md` |
-| 变更受理 | `change-intake` | 增量需求资料 + 现有基线文档 | `CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` |
-| 版本迭代 | `iteration-plan` | 已批准 CR + 影响分析 + 现有基线 | `ITERATION_PLAN.md` + `RELEASE_BASELINE.md` + `CHANGELOG.md` |
+## 7. 文档状态与冻结规则
 
-## 3. 必读顺序
+### 7.1 标准状态
 
-进入项目时，按以下顺序读取文档：
+| 状态 | 含义 | 可否继续编辑 |
+|---|---|---|
+| `模板` | 仓库预置占位内容 | 可以 |
+| `草稿` | 正在编写，尚未评审 | 可以 |
+| `评审中` | 等待审查或澄清 | 可以，但必须记录变更 |
+| `已整改` | 问题已处理，待冻结 | 可以 |
+| `已冻结` | 当前唯一有效基线 | 不允许随意编辑，变更必须走流程 |
+| `已废弃` | 已被新版本替代 | 不再作为实现依据 |
 
-1. 本文件（`AGENTS.md`）— 了解项目总规则
-2. `docs/01-requirements/PRD_RECTIFIED.md` — 了解业务需求
-3. `docs/02-architecture/ARCHITECTURE.md` — 了解架构设计
-4. `docs/02-architecture/API_CONTRACT.md` — 了解接口契约
-5. `docs/02-architecture/DATA_MODEL.md` — 了解数据模型
-6. 对应子目录的 `AGENTS.md` — 了解局部规范
+### 7.2 冻结规则
 
-## 4. 技术栈约束
+- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`RELEASE_BASELINE.md` 默认属于基线文档
+- 修改基线文档时，必须在正文中使用【修改】或【变更】标记，并同步更新变更记录
+- 接口、表结构、业务规则变更必须先更新对应文档，再改代码
 
-### 后端
+## 8. 技术栈约束
+
+### 8.1 后端
 
 | 项目 | 技术选型 |
 |---|---|
@@ -74,7 +143,7 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 缓存 | Redis |
 | 代码规范 | 阿里巴巴 Java 开发手册 |
 
-### 前端
+### 8.2 前端
 
 | 项目 | 技术选型 |
 |---|---|
@@ -82,36 +151,36 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 小程序 | 微信小程序原生 / UniApp |
 | 跨端方案 | UniApp |
 
-### 文档格式
+### 8.3 文档格式
 
-所有文档使用 Markdown 格式，存放于 `docs/` 目录下。
+所有正式文档统一使用 Markdown，存放于 `docs/`。
 
-## 5. 变更规则
+## 9. 变更规则
 
-| 变更类型 | 必须先更新的文档 | 再修改的代码 |
+| 变更类型 | 必须先更新的文档 | 再修改的对象 |
 |---|---|---|
 | 接口变更 | `docs/02-architecture/API_CONTRACT.md` | 后端 Controller / 前端 API 调用 |
-| 表结构变更 | `docs/02-architecture/DATA_MODEL.md` | 后端 Entity / Mapper |
+| 表结构变更 | `docs/02-architecture/DATA_MODEL.md` | Entity / Mapper / SQL |
 | 业务规则变更 | `docs/01-requirements/PRD_RECTIFIED.md` | 对应业务代码 |
 | 架构调整 | `docs/02-architecture/ARCHITECTURE.md` | 对应模块代码 |
-| 增量需求/变更 | `docs/04-iteration/CHANGE_REQUEST.md` + 影响分析 | 受影响的文档和代码 |
+| 新增需求/变更 | `docs/04-iteration/CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` | 受影响文档和代码 |
+| 发布基线变化 | `docs/04-iteration/RELEASE_BASELINE.md` + `CHANGELOG.md` | Tag / 版本号 / 发布说明 |
 
-**原则：先改文档，再改代码。文档是唯一事实来源。**
+## 10. 质量门槛
 
-## 6. 质量门槛
+交付前至少满足以下条件：
 
-- [ ] 调研文档已完成（`RESEARCH_SUMMARY.md`、`REQUIREMENTS_CLARIFIED.md`）
-- [ ] 代码编译通过，无 warning
-- [ ] 单元测试通过
-- [ ] 接口契约与实现一致
-- [ ] 数据模型与实现一致
-- [ ] 文档已同步更新
-- [ ] `qa-execute` 生成的 `TEST_REPORT.md` 达到准出标准
-- [ ] `doc-check` 生成的 `DOC_CHECK_REPORT.md` 全部 PASS
-- [ ] 测试代码与 TC 编号映射校验通过（无遗漏、无孤立测试）
-- [ ] 版本基线已冻结（发布前）
+- [ ] 调研文档已完成并可追溯到输入材料
+- [ ] `PRD_RECTIFIED.md` 已冻结
+- [ ] 架构、接口、数据模型已冻结并与代码一致
+- [ ] 代码可编译通过，无阻塞性 warning
+- [ ] 单元测试、集成测试、关键回归测试通过
+- [ ] `TEST_REPORT.md` 达到准出标准
+- [ ] `DOC_CHECK_REPORT.md` 无阻塞项
+- [ ] 测试代码与 TC 编号映射校验通过
+- [ ] 版本基线已冻结，变更日志已登记
 
-## 7. Skill 使用指引
+## 11. Skill 使用指引
 
 | 任务场景 | 推荐 Skill |
 |---|---|
@@ -129,22 +198,21 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 已交付系统收到新需求/变更单/增量资料 | `change-intake` |
 | 需要规划迭代、冻结版本基线、记录发布 | `iteration-plan` |
 
-## 8. 文档标记规范
+## 12. 文档标记规范
 
-所有文档中使用以下标记：
+- 【新增】新增内容
+- 【修改】对已有内容的调整
+- 【删除】删除内容
+- 【待确认】尚未定论，不能直接进入实现
+- 【风险】存在交付、技术、依赖或合规风险
+- 【设计推断】根据设计稿或上下文推断出的需求
+- 【冲突】不同输入材料之间存在矛盾
+- 【澄清结论】需求澄清阶段已确认的结论
+- 【变更】增量迭代中新增或变更的内容
 
-- 【新增】— 新增的内容
-- 【修改】— 修改的内容
-- 【删除】— 删除的内容
-- 【待确认】— 需要确认的内容
-- 【风险】— 存在风险的内容
-- 【设计推断】— 从设计稿推断的内容（`biz-research` / `prd-compose` 使用）
-- 【冲突】— 材料之间的矛盾（`biz-research` / `prd-compose` 使用）
-- 【澄清结论】— 需求澄清阶段的决策结果（`biz-research` 阶段二使用）
-- 【变更】— 增量迭代中的变更内容（`change-intake` / `prd-rectify` 增量更新时使用）
+## 13. 目录规则
 
-## 9. 目录规则
-
-- `AGENTS.md` 管目录级长期稳定约束
-- `Skill` 管按任务触发的流程能力
-- 不按角色拆 `AGENTS.md`，按目录拆
+- `AGENTS.md` 负责目录级长期稳定约束
+- `SKILL.md` 负责按任务触发的执行流程
+- 目录规则按范围拆分，不按角色拆分
+- 未经流程确认的临时结论，不得写入冻结基线文档

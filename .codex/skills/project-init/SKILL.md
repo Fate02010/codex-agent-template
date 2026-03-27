@@ -14,7 +14,8 @@
 ## 输出
 
 - `backend/` 目录下的可编译后端项目脚手架
-- `frontend/web/` 目录下的可运行前端项目脚手架
+- `frontend/web/` 目录下的可运行前端项目脚手架（默认）
+- `frontend/uniapp/` 目录下的跨端脚手架（仅在架构设计或用户明确要求时生成）
 - `tests/api/` 目录下的测试基础结构
 
 ## 执行流程
@@ -187,6 +188,8 @@ class ApplicationTests {
 
 #### 4.1 package.json
 
+默认在 `frontend/web/` 下生成 `package.json`。若 `ARCHITECTURE.md` 或用户明确要求 UniApp / 小程序交付，则额外生成 `frontend/uniapp/` 基础脚手架。
+
 在 `frontend/web/` 下生成 `package.json`：
 
 ```json
@@ -269,6 +272,7 @@ class ApplicationTests {
 - [ ] DDD 四层包结构已按 `backend/AGENTS.md` 第 2 章创建
 - [ ] `Result<T>`、`BusinessException`、`GlobalExceptionHandler` 已创建
 - [ ] `frontend/web/package.json` 存在且依赖正确
+- [ ] 若启用跨端交付，`frontend/uniapp/package.json`、`pages.json`、`manifest.json` 已创建
 - [ ] 前端请求封装的 `Result<T>` 类型与后端一致
 - [ ] Router 和 Pinia 已初始化
 - [ ] 已有的 `AGENTS.md` 文件未被覆盖

@@ -15,14 +15,18 @@
 
 1. `docs/00-research/RESEARCH_SUMMARY.md`（如存在）
 2. `docs/00-research/REQUIREMENTS_CLARIFIED.md`（如存在）
-3. `docs/01-requirements/PRD_RECTIFIED.md`（如存在）
-4. `docs/02-architecture/ARCHITECTURE.md`（如存在）
-5. `docs/02-architecture/API_CONTRACT.md`（如存在）
-6. `docs/02-architecture/DATA_MODEL.md`（如存在）
-7. `docs/03-testing/TEST_CASES.md`（如存在）
-8. `docs/03-testing/TEST_REPORT.md`（如存在）
-9. `docs/03-testing/DEFECT_LOG.md`（如存在）
-10. `docs/AGENTS.md` — 引用规则参考
+3. `docs/01-requirements/PRD_RAW.md`（如存在）
+4. `docs/01-requirements/PRD_RECTIFIED.md`（如存在）
+5. `docs/02-architecture/ARCHITECTURE.md`（如存在）
+6. `docs/02-architecture/API_CONTRACT.md`（如存在）
+7. `docs/02-architecture/DATA_MODEL.md`（如存在）
+8. `docs/03-testing/TEST_CASES.md`（如存在）
+9. `docs/03-testing/TEST_REPORT.md`（如存在）
+10. `docs/03-testing/DEFECT_LOG.md`（如存在）
+11. `docs/04-iteration/ITERATION_PLAN.md`（如存在）
+12. `docs/04-iteration/RELEASE_BASELINE.md`（如存在）
+13. `docs/04-iteration/CHANGELOG.md`（如存在）
+14. `docs/AGENTS.md` — 引用规则参考
 
 ## 输出
 
@@ -40,15 +44,17 @@
 | 澄清问题编号 | CQ-001、CQ-002、… | REQUIREMENTS_CLARIFIED.md |
 | 功能编号 | F001、F002、… | PRD_RECTIFIED.md |
 | 接口编号 | API-XXX-001、API-XXX-002、… | API_CONTRACT.md |
-| 表名 | t_xxx | DATA_MODEL.md |
+| 数据表编号 | T-XXX-001、T-XXX-002、… | DATA_MODEL.md |
 | 用例编号 | TC-XXX-001、… | TEST_CASES.md |
 | 缺陷编号 | BUG-XXX-001、… | DEFECT_LOG.md |
+| 迭代编号 | ITER-001、ITER-002、… | ITERATION_PLAN.md / RELEASE_BASELINE.md |
+| 版本号 | v1.0.0、v1.1.0、… | RELEASE_BASELINE.md / CHANGELOG.md |
 
 ### 步骤 2：校验 调研→需求 覆盖
 
-对 `RESEARCH_SUMMARY.md` 第 5 章（功能要点）中的每个条目：
+对 `RESEARCH_SUMMARY.md` 中 `4. 功能要点归纳` 的每个条目：
 
-- **检查**：`REQUIREMENTS_CLARIFIED.md` 中是否有对应条目（确认、修改或明确放弃）
+- **检查**：`REQUIREMENTS_CLARIFIED.md` 中 `3. 更新后的功能要点` 是否有对应条目（确认、修改或明确放弃）
 - **检查**：`PRD_RAW.md` 或 `PRD_RECTIFIED.md` 中是否有对应的 F 编号
 - **记录**：PASS 或 FAIL（含详情）
 - **结果**：列出孤立调研项（调研中出现但下游未覆盖的功能要点）
@@ -80,13 +86,23 @@
 
 ### 步骤 6：校验 数据模型覆盖
 
-对 `DATA_MODEL.md` 中的每张表：
+对 `DATA_MODEL.md` 中的每个 `T-模块-NNN` 条目：
 
-- **检查**：该表的关联功能编号（F 编号）是否在 `PRD_RECTIFIED.md` 中存在
+- **检查**：该数据表编号是否有效，且其关联功能编号（F 编号）在 `PRD_RECTIFIED.md` 中存在
 - **检查**：是否至少有一个接口涉及该表的数据
 - **结果**：列出孤立的表（无需求关联）
 
-### 步骤 7：校验 文档元数据完整性
+### 步骤 7：校验 版本基线完整性（如 04-iteration 文档存在）
+
+对 `ITERATION_PLAN.md`、`RELEASE_BASELINE.md`、`CHANGELOG.md` 执行以下检查：
+
+- **检查**：`RELEASE_BASELINE.md` 中的版本号、迭代编号是否存在
+- **检查**：`RELEASE_BASELINE.md` 中列出的基线文档是否真实存在且状态为已冻结
+- **检查**：`CHANGELOG.md` 中是否存在对应版本号的发布记录
+- **检查**：`ITERATION_PLAN.md` 中是否存在对应的 ITER 编号和里程碑记录
+- **结果**：列出版本基线断裂项
+
+### 步骤 8：校验 文档元数据完整性
 
 对每份文档检查：
 
@@ -97,7 +113,7 @@
 | 变更记录 | 至少有一条非占位条目 |
 | 关联文档 | 必须引用有效的文档名 |
 
-### 步骤 8：校验 缺陷引用（如 DEFECT_LOG.md 存在）
+### 步骤 9：校验 缺陷引用（如 DEFECT_LOG.md 存在）
 
 对每个 BUG-XXX-NNN：
 
@@ -105,7 +121,7 @@
 - **检查**：关联的 F 编号是否在 `PRD_RECTIFIED.md` 中存在
 - **结果**：列出引用断裂的缺陷记录
 
-### 步骤 9：生成 DOC_CHECK_REPORT.md
+### 步骤 10：生成 DOC_CHECK_REPORT.md
 
 ```markdown
 # 文档追溯性校验报告
@@ -125,6 +141,7 @@
 | 文档元数据完整性 | N | N | N |
 | 数据模型→需求覆盖 | N | N | N |
 | 缺陷引用有效性（如适用） | N | N | N |
+| 版本基线完整性（如适用） | N | N | N |
 
 ## 总体结果：PASS / FAIL
 > 任一校验项存在失败即为 FAIL。
@@ -152,11 +169,15 @@
 |---|---|---|
 
 ### 6. 孤立数据表
-| 表名 | 问题说明 |
+| 数据表编号 | 问题说明 |
 |---|---|
 
 ### 7. 缺陷引用问题
 | 缺陷编号 | 问题说明 |
+|---|---|
+
+### 8. 版本基线问题
+| 版本/迭代 | 问题说明 |
 |---|---|
 
 ## 修复建议
@@ -167,7 +188,7 @@
 |---|---|---|
 ```
 
-### 步骤 10：提示后续动作
+### 步骤 11：提示后续动作
 
 - **全部 PASS**：文档一致性良好，可以继续后续工作流
 - **存在 FAIL**：列出具体需要执行的修复动作（如"为 API-USER-003 添加测试用例"、"填写 TEST_PLAN.md 的版本号"）
@@ -178,4 +199,4 @@
 - Agent 通过文本匹配标识符模式进行校验，不执行脚本
 - 在主工作流的各个关键节点执行本 Skill，可以尽早发现偏差
 - **允许部分执行**：如果某些文档尚不存在（如开发前 TEST_CASES.md 不存在），跳过相关校验项
-- 校验标准遵循 `docs/AGENTS.md` 第 5 章（编号体系）和第 7 章（文档引用关系）定义的规范
+- 校验标准遵循 `docs/AGENTS.md` 中“统一编号体系”“阶段读写契约”“跨文档引用规则”定义的规范

@@ -33,7 +33,7 @@
 
 ### 步骤 2：分配正式需求编号
 
-将 `REQUIREMENTS_CLARIFIED.md` 第 2 章的功能要点转化为正式编号：
+将 `REQUIREMENTS_CLARIFIED.md` 中 `3. 更新后的功能要点` 的功能条目转化为正式编号：
 
 1. 按功能模块分组
 2. 分配 F 编号：F001、F002、…
@@ -67,8 +67,8 @@
 ```
 
 信息来源优先级：
-1. `REQUIREMENTS_CLARIFIED.md` 中已确认的内容（最高优先）
-2. `RESEARCH_SUMMARY.md` 中无争议的内容
+1. `REQUIREMENTS_CLARIFIED.md` 中 `3. 更新后的功能要点` 和 `4. 更新后的业务规则与边界`（最高优先）
+2. `RESEARCH_SUMMARY.md` 中 `4. 功能要点归纳` 与 `5. 业务规则与约束` 的无争议内容
 3. 设计稿中推断的内容（标记 `【设计推断】`）
 
 ### 步骤 4：分析设计稿补充 UI 细节

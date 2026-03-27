@@ -6,7 +6,7 @@
 
 ## 前置条件
 
-- `backend/pom.xml` 或 `frontend/web/package.json` 存在（否则先执行 `project-init`）
+- `backend/pom.xml` 或 `frontend/web/package.json` / `frontend/uniapp/package.json` 存在（否则先执行 `project-init`）
 - 设计文档已冻结（`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 已生成）
 
 ## 完成标准
@@ -21,8 +21,10 @@
 2. `docs/02-architecture/ARCHITECTURE.md` — 架构设计
 3. `docs/02-architecture/API_CONTRACT.md` — 接口契约
 4. `docs/02-architecture/DATA_MODEL.md` — 数据模型
-5. `backend/AGENTS.md` — 后端规范（后端开发时）
-6. `frontend/AGENTS.md` — 前端规范（前端开发时）
+5. `docs/03-testing/TEST_PLAN.md` — 测试计划
+6. `docs/03-testing/TEST_CASES.md` — 已分配 TC 编号的测试用例
+7. `backend/AGENTS.md` — 后端规范（后端开发时）
+8. `frontend/AGENTS.md` — 前端规范（前端开发时）
 
 ## 输出
 
@@ -35,7 +37,7 @@
 
 1. **检查工程骨架**：
    - 后端：`backend/pom.xml` 是否存在？
-   - 前端：`frontend/web/package.json` 是否存在？
+   - 前端：`frontend/web/package.json` 或 `frontend/uniapp/package.json` 是否存在？
    - 如不存在，**中止执行**并提示："请先执行 `project-init` 初始化项目骨架"
 2. **检查设计文档状态**：
    - `PRD_RECTIFIED.md` 状态是否为"已冻结"？
@@ -49,7 +51,8 @@
 1. `docs/02-architecture/ARCHITECTURE.md` — 理解整体架构和模块划分
 2. `docs/02-architecture/API_CONTRACT.md` — 理解接口契约
 3. `docs/02-architecture/DATA_MODEL.md` — 理解数据模型
-4. 对应目录的 `AGENTS.md` — 理解编码规范
+4. `docs/03-testing/TEST_CASES.md` — 获取已分配的 TC 编号和测试代码映射
+5. 对应目录的 `AGENTS.md` — 理解编码规范
 
 ### 步骤 2：后端开发（按 backend/AGENTS.md 规范）
 
@@ -117,11 +120,12 @@
 1. **Store**：Pinia Store 按模块拆分
 2. **全局状态**：用户信息、Token、权限
 
-### 步骤 4：编写单元测试
+### 步骤 4：按已分配 TC 编号编写测试
 
 - Domain Service 必须有单元测试
 - 关键 Application Service 编排逻辑需要测试
 - 前端关键组件需要组件测试
+- 测试编号来源于 `qa-design` 已生成的 `TEST_CASES.md`，`dev-implement` 不得自行发明或重排 TC 编号
 - 测试方法的 `@DisplayName` 注解必须包含关联的 TC 编号，格式：`@DisplayName("TC-XXX-NNN: 用例标题")`
   - 示例：`@DisplayName("TC-USER-001: 正常创建用户")`
 - 前端测试的 `describe`/`it` 描述必须包含 TC 编号
@@ -137,11 +141,12 @@
 4. **分层依赖**：无跨层调用
 5. **代码规范**：符合 AGENTS.md 中的规范要求
 6. **单元测试**：核心逻辑有测试覆盖
+7. **TC 绑定**：测试代码中的 TC 编号均来自 `TEST_CASES.md`
 
 ### 步骤 6：提示下一步
 
 开发完成后提示用户：
-- 如需生成测试计划和用例，使用 `qa-design`
+- 如需执行测试，使用 `qa-execute`
 
 ## 注意事项
 

@@ -12,6 +12,8 @@
 | 包管理 | pnpm / npm |
 | HTTP 请求 | axios（Web）/ uni.request（UniApp） |
 
+> 默认脚手架初始化目标为 `frontend/web/`。若架构设计或用户明确要求跨端交付，再增量启用 `frontend/uniapp/`。
+
 ## 2. 目录结构
 
 ### Vue 3 Web 项目
