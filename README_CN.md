@@ -128,10 +128,12 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - `backend-bootstrap`
 - `frontend-bootstrap`
 - `biz-research`
+- `requirements-research`
 - `prd-compose`
 - `prd-review`
 - `prd-rectify`
 - `solution-design`
+- `ui-design-spec`
 - `qa-design`
 - `dev-implement`
 - `qa-execute`
@@ -149,17 +151,28 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - 保持目录结构不变（`docs/`、`backend/`、`frontend/`、`tests/`、`codex/skills/`）
 - 后续按阶段用真实产物覆盖模板内容
 
-### 步骤 3：把项目输入材料放进仓库
+### 步骤 3：初始化前先手动修改关键文件
+
+复制完成后，不要立刻执行初始化 Skill，先把以下文件改成你的真实项目约束：
+
+- `AGENTS.md`：项目定位、范围边界、实际前后端技术栈约束
+- `backend/AGENTS.md`：后端架构风格（DDD/分层）、包规范、实现边界
+- `frontend/AGENTS.md`：前端框架选择（Vue/React/UniApp）、目录规范、状态与请求约束
+- `docs/AGENTS.md`（按需）：编号体系、追溯规则、文档治理约束
+
+如果有未定项，先标记为 `【待确认】` 再推进，不要保留与真实项目冲突的模板默认值。
+
+### 步骤 4：把项目输入材料放进仓库
 
 将业务资料、需求文档、设计稿、变更单放入仓库内可追溯位置，并在输出文档中登记来源。
 
-### 步骤 4：按实际情况选择初始化 Skill
+### 步骤 5：按实际情况选择初始化 Skill
 
 - 后端工程不存在：先执行 `backend-bootstrap`
 - 前端工程不存在：先执行 `frontend-bootstrap`
 - 前后端都不存在且希望一次初始化：执行 `project-init`
 
-### 步骤 5：进入标准流程主链
+### 步骤 6：进入标准流程主链
 
 首次交付主链：
 
@@ -193,6 +206,17 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 基于仓库内原始资料输出 RESEARCH_SUMMARY.md 和 REQUIREMENTS_CLARIFIED.md，
 要求登记全部来源、标注冲突并给出澄清结论。
 ```
+
+## 当前 Skill 一览（仓库快照）
+
+当前 `codex/skills/` 下包含：
+
+- 初始化类：`project-init`、`backend-bootstrap`、`frontend-bootstrap`
+- 需求与设计类：`biz-research`、`requirements-research`、`prd-compose`、`prd-review`、`prd-rectify`、`solution-design`、`ui-design-spec`
+- 开发与质量类：`qa-design`、`dev-implement`、`qa-execute`、`defect-fix`、`doc-check`
+- 迭代与发布类：`change-intake`、`iteration-retro`、`iteration-plan`
+
+后续如果 `codex/skills/` 有增删，请同步更新本节和上面的“最小复制清单”。
 
 ## 每个阶段最少要产出什么
 

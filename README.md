@@ -127,10 +127,12 @@ Core skills to keep if you do not copy all skills:
 - `backend-bootstrap`
 - `frontend-bootstrap`
 - `biz-research`
+- `requirements-research`
 - `prd-compose`
 - `prd-review`
 - `prd-rectify`
 - `solution-design`
+- `ui-design-spec`
 - `qa-design`
 - `dev-implement`
 - `qa-execute`
@@ -148,17 +150,28 @@ Use this when starting from zero and you want the safest default.
 - Keep directory structure unchanged (`docs/`, `backend/`, `frontend/`, `tests/`, `codex/skills/`)
 - Replace template placeholders with your project materials and generated outputs phase by phase
 
-### Step 3: Put project inputs in-repo
+### Step 3: Manually update key files before initialization
+
+After copying, do not run bootstrap skills immediately. First update these files to match your real project:
+
+- `AGENTS.md`: project positioning, scope boundaries, actual backend/frontend stack constraints
+- `backend/AGENTS.md`: backend architecture style (DDD/layered), package conventions, implementation boundaries
+- `frontend/AGENTS.md`: frontend framework choice (Vue/React/UniApp), directory rules, state/request conventions
+- `docs/AGENTS.md` (if needed): numbering, traceability, and document governance rules for your team
+
+If some decisions are not finalized yet, mark them as `【待确认】` first, then continue. Do not keep conflicting template defaults.
+
+### Step 4: Put project inputs in-repo
 
 Put business materials, PRDs, design files, and change requests in traceable repository locations, then reference them in docs outputs.
 
-### Step 4: Start the chain with the right bootstrap skill
+### Step 5: Start the chain with the right bootstrap skill
 
 - If backend project does not exist, run `backend-bootstrap`
 - If frontend project does not exist, run `frontend-bootstrap`
 - If both are missing and you want one-shot init for both sides, run `project-init`
 
-### Step 5: Continue with the standard workflow
+### Step 6: Continue with the standard workflow
 
 For first delivery:
 
@@ -192,6 +205,17 @@ Read AGENTS.md and docs/AGENTS.md first.
 Use all raw materials in this repository to produce RESEARCH_SUMMARY.md and REQUIREMENTS_CLARIFIED.md,
 including source registration, conflicts, and clarification conclusions.
 ```
+
+## Current Skill Set (Repository Snapshot)
+
+Skills currently available under `codex/skills/`:
+
+- Bootstrap: `project-init`, `backend-bootstrap`, `frontend-bootstrap`
+- Requirements and design: `biz-research`, `requirements-research`, `prd-compose`, `prd-review`, `prd-rectify`, `solution-design`, `ui-design-spec`
+- Development and quality: `qa-design`, `dev-implement`, `qa-execute`, `defect-fix`, `doc-check`
+- Iteration and release: `change-intake`, `iteration-retro`, `iteration-plan`
+
+If you add or remove skills in `codex/skills/`, update this section and the minimal copy list above together.
 
 ## Minimum Required Outputs Per Phase
 
