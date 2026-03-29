@@ -22,6 +22,8 @@ Expected outputs:
 
 ```
 ├── AGENTS.md
+├── codex/
+│   └── skills/
 ├── docs/
 │   ├── AGENTS.md
 │   ├── 00-research/
@@ -117,7 +119,7 @@ Copy these paths:
 - `backend/AGENTS.md`
 - `frontend/AGENTS.md`
 - `tests/AGENTS.md`
-- `.codex/skills/` (at least the core delivery skills listed below)
+- `codex/skills/` (at least the core delivery skills listed below)
 
 Core skills to keep if you do not copy all skills:
 
@@ -143,7 +145,7 @@ Core skills to keep if you do not copy all skills:
 Use this when starting from zero and you want the safest default.
 
 - Copy the whole template repository content except `.git/`
-- Keep directory structure unchanged (`docs/`, `backend/`, `frontend/`, `tests/`, `.codex/skills/`)
+- Keep directory structure unchanged (`docs/`, `backend/`, `frontend/`, `tests/`, `codex/skills/`)
 - Replace template placeholders with your project materials and generated outputs phase by phase
 
 ### Step 3: Put project inputs in-repo

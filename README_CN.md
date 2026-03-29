@@ -22,6 +22,8 @@
 
 ```
 ├── AGENTS.md
+├── codex/
+│   └── skills/
 ├── docs/
 │   ├── AGENTS.md
 │   ├── 00-research/
@@ -118,7 +120,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - `backend/AGENTS.md`
 - `frontend/AGENTS.md`
 - `tests/AGENTS.md`
-- `.codex/skills/`（至少保留下述核心 Skill）
+- `codex/skills/`（至少保留下述核心 Skill）
 
 如果不复制全部 Skill，至少保留：
 
@@ -144,7 +146,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 适用：从 0 到 1 新建项目，优先保证完整性和低风险。
 
 - 直接复制模板仓库全部内容（不含 `.git/`）
-- 保持目录结构不变（`docs/`、`backend/`、`frontend/`、`tests/`、`.codex/skills/`）
+- 保持目录结构不变（`docs/`、`backend/`、`frontend/`、`tests/`、`codex/skills/`）
 - 后续按阶段用真实产物覆盖模板内容
 
 ### 步骤 3：把项目输入材料放进仓库
