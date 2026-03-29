@@ -98,6 +98,99 @@ docs/02-architecture/API_CONTRACT.md, and docs/02-architecture/DATA_MODEL.md as 
 Implement the changes in backend/ and frontend/, and add tests mapped to TC IDs.
 ```
 
+## Using This Template in a New Project
+
+### Step 1: Create your new project repo
+
+Create an empty repository for the new project, then copy template files into it (do not copy `.git/` history from this template repo).
+
+### Step 2: Choose one copy mode
+
+#### Option A (Minimal Copy Set)
+
+Use this when you already have your own code repository and only want the Codex workflow baseline.
+
+Copy these paths:
+
+- `AGENTS.md`
+- `docs/` (all files and subdirectories)
+- `backend/AGENTS.md`
+- `frontend/AGENTS.md`
+- `tests/AGENTS.md`
+- `.codex/skills/` (at least the core delivery skills listed below)
+
+Core skills to keep if you do not copy all skills:
+
+- `project-init`
+- `backend-bootstrap`
+- `frontend-bootstrap`
+- `biz-research`
+- `prd-compose`
+- `prd-review`
+- `prd-rectify`
+- `solution-design`
+- `qa-design`
+- `dev-implement`
+- `qa-execute`
+- `defect-fix`
+- `doc-check`
+- `change-intake`
+- `iteration-retro`
+- `iteration-plan`
+
+#### Option B (Recommended Full Copy)
+
+Use this when starting from zero and you want the safest default.
+
+- Copy the whole template repository content except `.git/`
+- Keep directory structure unchanged (`docs/`, `backend/`, `frontend/`, `tests/`, `.codex/skills/`)
+- Replace template placeholders with your project materials and generated outputs phase by phase
+
+### Step 3: Put project inputs in-repo
+
+Put business materials, PRDs, design files, and change requests in traceable repository locations, then reference them in docs outputs.
+
+### Step 4: Start the chain with the right bootstrap skill
+
+- If backend project does not exist, run `backend-bootstrap`
+- If frontend project does not exist, run `frontend-bootstrap`
+- If both are missing and you want one-shot init for both sides, run `project-init`
+
+### Step 5: Continue with the standard workflow
+
+For first delivery:
+
+`biz-research → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+
+For incremental iteration:
+
+`change-intake → iteration-plan → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+
+## First Prompts After Copy
+
+You can use prompts like these in a fresh project repository:
+
+```text
+Use backend-bootstrap Skill.
+Read AGENTS.md and backend/AGENTS.md first.
+Based on openspec/project.md, docs/01-requirements/MVP_SCOPE.md, and current design baselines,
+create a minimal runnable backend scaffold only, and output all changes in-repo.
+```
+
+```text
+Use frontend-bootstrap Skill.
+Read AGENTS.md and frontend/AGENTS.md first.
+Based on docs/01-requirements/MVP_SCOPE.md, PRD_RECTIFIED.md, UI design docs, and HTML prototypes,
+create a minimal runnable frontend scaffold only, compatible with future API integration.
+```
+
+```text
+Use biz-research Skill.
+Read AGENTS.md and docs/AGENTS.md first.
+Use all raw materials in this repository to produce RESEARCH_SUMMARY.md and REQUIREMENTS_CLARIFIED.md,
+including source registration, conflicts, and clarification conclusions.
+```
+
 ## Minimum Required Outputs Per Phase
 
 | Phase | Must produce |

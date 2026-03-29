@@ -99,6 +99,99 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 在 backend/ 和 frontend/ 中完成实现，并补充与 TC 编号对应的测试代码。
 ```
 
+## 新项目如何使用该模板
+
+### 步骤 1：先创建新项目仓库
+
+先创建你的新仓库，再把模板文件复制进去（不要复制本模板仓库的 `.git/` 历史）。
+
+### 步骤 2：选择复制方案
+
+#### 方案 A：最小复制清单
+
+适用：你已有自己的业务仓库，只需要引入 Codex 研发流程基线。
+
+至少复制以下路径：
+
+- `AGENTS.md`
+- `docs/`（全部文件与子目录）
+- `backend/AGENTS.md`
+- `frontend/AGENTS.md`
+- `tests/AGENTS.md`
+- `.codex/skills/`（至少保留下述核心 Skill）
+
+如果不复制全部 Skill，至少保留：
+
+- `project-init`
+- `backend-bootstrap`
+- `frontend-bootstrap`
+- `biz-research`
+- `prd-compose`
+- `prd-review`
+- `prd-rectify`
+- `solution-design`
+- `qa-design`
+- `dev-implement`
+- `qa-execute`
+- `defect-fix`
+- `doc-check`
+- `change-intake`
+- `iteration-retro`
+- `iteration-plan`
+
+#### 方案 B：推荐全量复制
+
+适用：从 0 到 1 新建项目，优先保证完整性和低风险。
+
+- 直接复制模板仓库全部内容（不含 `.git/`）
+- 保持目录结构不变（`docs/`、`backend/`、`frontend/`、`tests/`、`.codex/skills/`）
+- 后续按阶段用真实产物覆盖模板内容
+
+### 步骤 3：把项目输入材料放进仓库
+
+将业务资料、需求文档、设计稿、变更单放入仓库内可追溯位置，并在输出文档中登记来源。
+
+### 步骤 4：按实际情况选择初始化 Skill
+
+- 后端工程不存在：先执行 `backend-bootstrap`
+- 前端工程不存在：先执行 `frontend-bootstrap`
+- 前后端都不存在且希望一次初始化：执行 `project-init`
+
+### 步骤 5：进入标准流程主链
+
+首次交付主链：
+
+`biz-research → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+
+增量迭代主链：
+
+`change-intake → iteration-plan → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+
+## 复制后首轮提示词示例
+
+可直接在新项目仓库中使用：
+
+```text
+使用 backend-bootstrap Skill。
+先读取 AGENTS.md 和 backend/AGENTS.md。
+基于 openspec/project.md、docs/01-requirements/MVP_SCOPE.md 与当前设计基线，
+仅创建最小可运行后端骨架，不实现完整业务，并把结果落盘到仓库。
+```
+
+```text
+使用 frontend-bootstrap Skill。
+先读取 AGENTS.md 和 frontend/AGENTS.md。
+基于 docs/01-requirements/MVP_SCOPE.md、PRD_RECTIFIED.md、UI 设计文档与 HTML 高保真稿，
+仅创建最小可运行前端骨架，并保证后续可接入 API。
+```
+
+```text
+使用 biz-research Skill。
+先读取 AGENTS.md 和 docs/AGENTS.md。
+基于仓库内原始资料输出 RESEARCH_SUMMARY.md 和 REQUIREMENTS_CLARIFIED.md，
+要求登记全部来源、标注冲突并给出澄清结论。
+```
+
 ## 每个阶段最少要产出什么
 
 | 阶段 | 必须产出 |
