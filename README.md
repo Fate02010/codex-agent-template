@@ -24,11 +24,15 @@ Expected outputs:
 ├── AGENTS.md
 ├── codex/
 │   └── skills/
+├── openspec/
+│   ├── project.md
+│   └── changes/
 ├── docs/
 │   ├── AGENTS.md
 │   ├── 00-research/
 │   ├── 01-requirements/
 │   ├── 02-architecture/
+│   ├── 02-design/
 │   ├── 03-testing/
 │   ├── 04-iteration/
 │   └── 05-retrospective/
@@ -48,7 +52,8 @@ Files under `docs/` are templates by default. The first real execution of the co
 
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
-    → solution-design → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → solution-design → ui-design-spec → prototype-check → qa-design
+    → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
 ```
 
@@ -56,7 +61,8 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 
 ```
 change-intake → iteration-plan → prd-rectify → solution-design
-    → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → ui-design-spec (if needed) → prototype-check (if needed) → qa-design
+    → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
 ```
 
@@ -133,6 +139,7 @@ Core skills to keep if you do not copy all skills:
 - `prd-rectify`
 - `solution-design`
 - `ui-design-spec`
+- `prototype-check`
 - `qa-design`
 - `dev-implement`
 - `qa-execute`
@@ -211,7 +218,7 @@ including source registration, conflicts, and clarification conclusions.
 Skills currently available under `codex/skills/`:
 
 - Bootstrap: `project-init`, `backend-bootstrap`, `frontend-bootstrap`
-- Requirements and design: `biz-research`, `requirements-research`, `prd-compose`, `prd-review`, `prd-rectify`, `solution-design`, `ui-design-spec`
+- Requirements and design: `biz-research`, `requirements-research`, `prd-compose`, `prd-review`, `prd-rectify`, `solution-design`, `ui-design-spec`, `prototype-check`
 - Development and quality: `qa-design`, `dev-implement`, `qa-execute`, `defect-fix`, `doc-check`
 - Iteration and release: `change-intake`, `iteration-retro`, `iteration-plan`
 
@@ -226,6 +233,8 @@ If you add or remove skills in `codex/skills/`, update this section and the mini
 | `prd-review` | graded issue list and review conclusion |
 | `prd-rectify` | freeze-ready requirement baseline |
 | `solution-design` | architecture, API contracts, data model |
+| `ui-design-spec` | UI design spec, screen inventory, page flow, high-fidelity prototype |
+| `prototype-check` | prototype anti-distortion check report |
 | `qa-design` | test strategy, TC IDs, coverage matrix, test-code mapping |
 | `dev-implement` | code and tests aligned with baselines and preassigned TC IDs |
 | `qa-execute` | real execution results, failures, risks, release recommendation |
@@ -242,6 +251,7 @@ If you add or remove skills in `codex/skills/`, update this section and the mini
 - update `API_CONTRACT.md` before changing APIs
 - update `DATA_MODEL.md` before changing schema
 - update `PRD_RECTIFIED.md` before changing business rules
+- use Element Plus as the default base UI system for admin web frontend
 - bind tests to TC IDs so docs and test code remain traceable
 - pass `iteration-retro` gate (`PASS` or `PASS WITH WAIVER`) before freezing a version
 

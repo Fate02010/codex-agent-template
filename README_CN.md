@@ -24,11 +24,15 @@
 ├── AGENTS.md
 ├── codex/
 │   └── skills/
+├── openspec/
+│   ├── project.md
+│   └── changes/
 ├── docs/
 │   ├── AGENTS.md
 │   ├── 00-research/
 │   ├── 01-requirements/
 │   ├── 02-architecture/
+│   ├── 02-design/
 │   ├── 03-testing/
 │   ├── 04-iteration/
 │   └── 05-retrospective/
@@ -48,7 +52,8 @@
 
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
-    → solution-design → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → solution-design → ui-design-spec → prototype-check → qa-design
+    → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
 ```
 
@@ -56,7 +61,8 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 
 ```
 change-intake → iteration-plan → prd-rectify → solution-design
-    → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → ui-design-spec（按需）→ prototype-check（按需）→ qa-design
+    → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
 ```
 
@@ -134,6 +140,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - `prd-rectify`
 - `solution-design`
 - `ui-design-spec`
+- `prototype-check`
 - `qa-design`
 - `dev-implement`
 - `qa-execute`
@@ -212,7 +219,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 当前 `codex/skills/` 下包含：
 
 - 初始化类：`project-init`、`backend-bootstrap`、`frontend-bootstrap`
-- 需求与设计类：`biz-research`、`requirements-research`、`prd-compose`、`prd-review`、`prd-rectify`、`solution-design`、`ui-design-spec`
+- 需求与设计类：`biz-research`、`requirements-research`、`prd-compose`、`prd-review`、`prd-rectify`、`solution-design`、`ui-design-spec`、`prototype-check`
 - 开发与质量类：`qa-design`、`dev-implement`、`qa-execute`、`defect-fix`、`doc-check`
 - 迭代与发布类：`change-intake`、`iteration-retro`、`iteration-plan`
 
@@ -227,6 +234,8 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 | `prd-review` | 分级问题清单和评审结论 |
 | `prd-rectify` | 可冻结需求基线 |
 | `solution-design` | 模块设计、接口契约、数据模型 |
+| `ui-design-spec` | UI 设计说明、页面清单、页面流转、高保真原型 |
+| `prototype-check` | 原型防变形检查报告 |
 | `qa-design` | 测试策略、TC 编号、覆盖矩阵、测试代码映射 |
 | `dev-implement` | 按基线和已分配 TC 实现的代码与测试 |
 | `qa-execute` | 真实执行结果、失败项、风险和准出建议 |
@@ -243,6 +252,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - 接口变更必须先改 `API_CONTRACT.md`
 - 表结构变更必须先改 `DATA_MODEL.md`
 - 业务规则变更必须先改 `PRD_RECTIFIED.md`
+- 后台管理端前端默认使用 Element Plus，不得混用多套基础组件体系
 - 测试必须绑定 TC 编号，确保文档和测试代码可追溯
 - 版本冻结前必须通过 `iteration-retro` 门禁（`PASS` 或 `PASS WITH WAIVER`）
 

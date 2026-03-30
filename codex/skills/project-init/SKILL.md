@@ -1,315 +1,124 @@
 ---
 name: project-init
-description: 项目脚手架初始化
+description: 初始化项目可运行骨架（后端 Maven 多模块 + 公共模块 + 前端 Element Plus 管理端）。
 ---
 
 # Skill: project-init — 项目脚手架初始化
 
 ## 触发条件
 
-当从本模板开始新项目，且 `backend/` 和 `frontend/` 目录下除 `AGENTS.md` 外没有代码文件时使用。本 Skill 应在开发实现之前执行。
+当项目处于首次交付，且 `backend/`、`frontend/` 下没有可运行工程时使用。
 
 ## 输入
 
-1. `AGENTS.md` — 项目总规则与技术栈
-2. `backend/AGENTS.md` — 后端架构规范
-3. `frontend/AGENTS.md` — 前端架构规范
-4. 可选：`docs/02-architecture/ARCHITECTURE.md`（如 `solution-design` 已执行）
+1. `AGENTS.md`
+2. `backend/AGENTS.md`
+3. `frontend/AGENTS.md`
+4. `docs/01-requirements/PRD_RECTIFIED.md`（如有）
+5. `docs/02-architecture/ARCHITECTURE.md`（如有）
+6. `docs/02-architecture/API_CONTRACT.md`（如有）
+7. `docs/02-architecture/DATA_MODEL.md`（如有）
+8. `docs/01-requirements/MVP_SCOPE.md`（如有）
 
 ## 输出
 
-- `backend/` 目录下的可编译后端项目脚手架
-- `frontend/web/` 目录下的可运行前端项目脚手架（默认）
-- `frontend/uniapp/` 目录下的跨端脚手架（仅在架构设计或用户明确要求时生成）
-- `frontend/miniprogram/` 目录下的原生小程序脚手架（仅在用户明确要求原生小程序时生成）
-- `tests/api/` 目录下的测试基础结构
+- 后端：`backend/<project-name>-parent` 多模块骨架
+- 前端：`frontend/<project-name>/web` 后台管理骨架（Vue3 + TS + Element Plus）
+- 测试：`tests/api/` 基础目录
 
 ## 执行流程
 
-### 步骤 1：读取约束
+### 步骤 1：读取约束并判定场景
 
-1. 读取根 `AGENTS.md` 获取技术栈（Java 17+、Spring Boot 3.x、MyBatis-Plus、MySQL 8.x、Redis）
-2. 读取 `backend/AGENTS.md` 获取 DDD 分包结构
-3. 读取 `frontend/AGENTS.md` 获取目录结构约定
-4. 如果 `ARCHITECTURE.md` 已存在，读取其中的项目名称和模块信息
+1. 从 `AGENTS.md` 与局部 `AGENTS.md` 读取技术栈约束。
+2. 判定是否多端场景：
+   - 若明确存在后台管理端 + 移动端/小程序端，按双服务初始化。
+   - 否则按单服务初始化。
+3. 提取项目元数据：`groupId`、`artifactId`、`projectName`、Java 版本。
 
-### 步骤 2：确定项目元数据
+### 步骤 2：生成后端 Maven 多模块骨架
 
-向用户确认或从 `ARCHITECTURE.md` 中推断：
+在 `backend/<project-name>-parent/` 生成：
 
-| 参数 | 默认值 | 来源 |
-|---|---|---|
-| groupId | com.example | ARCHITECTURE.md 或用户指定 |
-| artifactId | demo | ARCHITECTURE.md 或用户指定 |
-| 项目名称 | demo | ARCHITECTURE.md 或用户指定 |
-| Java 版本 | 17 | AGENTS.md |
-| Spring Boot 版本 | 3.2.x（最新 3.x） | AGENTS.md |
-| MyBatis-Plus 版本 | 3.5.x（最新） | AGENTS.md |
-
-### 步骤 3：生成后端脚手架
-
-#### 3.1 Maven 配置（pom.xml）
-
-在 `backend/` 下生成 `pom.xml`：
-
-- parent：`spring-boot-starter-parent` 3.2.x
-- Java 17 编译器设置
-- 核心依赖：
-  - `spring-boot-starter-web`
-  - `spring-boot-starter-validation`
-  - `mybatis-plus-spring-boot3-starter`
-  - `mysql-connector-j`
-  - `spring-boot-starter-data-redis`
-  - `lombok`
-- 测试依赖：
-  - `spring-boot-starter-test`
-  - `mybatis-plus-boot-starter-test`（如有）
-- 构建插件：`spring-boot-maven-plugin`
-
-#### 3.2 启动类
-
-创建 `src/main/java/[groupId]/[artifactId]/Application.java`：
-
-```java
-@SpringBootApplication
-@MapperScan("[groupId].[artifactId].infrastructure.persistence.mapper")
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
+```text
+<project-name>-parent/
+├── pom.xml
+├── <project-name>-common/
+│   ├── pom.xml
+│   └── src/main/java/.../common/
+├── <project-name>-admin-service/
+│   ├── pom.xml
+│   ├── src/main/java/.../
+│   └── src/main/resources/
+└── <project-name>-app-service/   # 多端时生成
+    ├── pom.xml
+    ├── src/main/java/.../
+    └── src/main/resources/
 ```
 
-#### 3.3 DDD 分包结构
+要求：
 
-按 `backend/AGENTS.md` 的“分层架构”章节创建空包（含 `package-info.java`）：
+1. 父模块 `pom.xml` 只做依赖与插件版本管理，不放业务代码。
+2. `common` 模块提供：`Result<T>`、异常基类、错误键定义。
+3. 业务服务模块提供 DDD 目录：`interfaces/application/domain/infrastructure`。
 
-```
-[base]/
-├── interfaces/
-│   ├── controller/
-│   ├── dto/
-│   └── assembler/
-├── application/
-│   ├── service/
-│   ├── command/
-│   └── query/
-├── domain/
-│   ├── model/
-│   ├── service/
-│   ├── repository/
-│   └── event/
-└── infrastructure/
-    ├── persistence/
-    │   ├── mapper/
-    │   ├── po/
-    │   └── repository/
-    ├── cache/
-    └── config/
-```
+### 步骤 3：补齐后端强制配置
 
-#### 3.4 基础类
+每个服务模块必须补齐以下内容：
 
-创建 `backend/AGENTS.md` 中引用的基础设施类：
+1. 启动类（`@SpringBootApplication`）
+2. `application.yml`，包含：
+   - `mybatis-plus.mapper-locations: classpath:mapper/**/*.xml`
+3. `src/main/resources/mapper/**/*.xml` 占位 Mapper XML
+4. `src/main/resources/error/`：
+   - `error-codes.properties`
+   - `error-messages_zh_CN.properties`
+   - `error-messages_en_US.properties`
+5. 外部与内部 Controller 分层目录：
+   - `interfaces/controller/external`
+   - `interfaces/controller/internal`
 
-**Result.java**（`interfaces/dto/`）：
-```java
-public class Result<T> {
-    private int code;
-    private String message;
-    private T data;
-    // success()、fail() 静态工厂方法
-}
-```
+### 步骤 4：生成前端后台骨架（Element Plus）
 
-**BusinessException.java**（`domain/`）：
-```java
-public class BusinessException extends RuntimeException {
-    private int errorCode;
-    private String message;
-}
-```
+在 `frontend/<project-name>/web/` 生成：
 
-**SystemException.java**（`infrastructure/`）：
-```java
-public class SystemException extends RuntimeException {
-    private int errorCode;
-    private String message;
-}
-```
+1. `package.json`：Vue3、TypeScript、Vite、Vue Router、Pinia、Axios、Element Plus
+2. `src/main.ts`：注册 Router、Pinia、Element Plus
+3. `src/App.vue`
+4. `src/router/index.ts`
+5. `src/stores/`
+6. `src/api/request.ts`（统一返回体对齐后端 `Result<T>`）
+7. `src/types/common.ts`
 
-**GlobalExceptionHandler.java**（`infrastructure/config/`）：
-```java
-@RestControllerAdvice
-public class GlobalExceptionHandler {
-    // 处理 BusinessException → Result.fail(errorCode, message)
-    // 处理 SystemException → Result.fail(50000, message)
-    // 处理 MethodArgumentNotValidException → Result.fail(40001, ...)
-    // 处理 Exception → Result.fail(99999, ...)
-}
-```
+### 步骤 5：注释与规范占位
 
-#### 3.5 配置文件
+生成的 Java 类模板需包含 Javadoc，占位字段至少包含：
 
-在 `src/main/resources/` 下创建：
+- 作者名
+- 时间说明
+- 类用途
 
-**application.yml**：
-```yaml
-server:
-  port: 8080
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/${DB_NAME}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: ${DB_USER:root}
-    password: ${DB_PASS:root}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-mybatis-plus:
-  mapper-locations: classpath:mapper/**/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-```
+实体/DTO/PO 字段需保留字段注释占位。
 
-**application-dev.yml**：开发环境覆盖配置
-**application-test.yml**：测试环境覆盖配置
+### 步骤 6：测试目录初始化
 
-#### 3.6 测试基础类
+- 创建 `tests/api/`
+- 创建后端最小 `ApplicationTests`
+- 测试示例应体现 TC 绑定规范（`@DisplayName("TC-...")`）
 
-创建 `src/test/java/[groupId]/[artifactId]/ApplicationTests.java`：
+### 步骤 7：自检
 
-```java
-@SpringBootTest
-class ApplicationTests {
-    @Test
-    void contextLoads() {
-    }
-}
-```
+至少检查：
 
-### 步骤 4：生成前端脚手架（Vue 3 Web）
-
-#### 4.1 package.json
-
-默认在 `frontend/web/` 下生成 `package.json`。若 `ARCHITECTURE.md` 或用户明确要求 UniApp 交付，则额外生成 `frontend/uniapp/` 基础脚手架；若用户明确要求**原生微信小程序**，则生成 `frontend/miniprogram/` 基础脚手架。
-
-在 `frontend/web/` 下生成 `package.json`：
-
-```json
-{
-  "name": "[项目名称]-web",
-  "version": "0.1.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "lint": "eslint src --ext .ts,.vue --fix"
-  },
-  "dependencies": {
-    "vue": "^3.4.x",
-    "vue-router": "^4.x",
-    "pinia": "^2.x",
-    "axios": "^1.x"
-  },
-  "devDependencies": {
-    "vite": "^5.x",
-    "@vitejs/plugin-vue": "^5.x",
-    "typescript": "^5.x",
-    "vue-tsc": "^2.x",
-    "vitest": "^1.x",
-    "eslint": "^8.x",
-    "prettier": "^3.x"
-  }
-}
-```
-
-#### 4.2 Vite 配置（vite.config.ts）
-
-- Vue 插件
-- 路径别名 `@/` → `src/`
-- 开发代理：`/api` → 后端地址占位
-
-#### 4.3 TypeScript 配置（tsconfig.json）
-
-- strict 模式
-- 路径别名
-- Vue SFC 类型支持
-
-#### 4.4 目录结构与基础文件
-
-按 `frontend/AGENTS.md` 的“目录结构”章节创建：
-
-| 文件 | 说明 |
-|---|---|
-| `src/api/request.ts` | axios 实例封装（Token 注入、错误码处理、401 跳转），与后端 `Result<T>` 对齐 |
-| `src/router/index.ts` | Vue Router 初始化，空路由数组 |
-| `src/stores/index.ts` | Pinia createPinia |
-| `src/stores/user.ts` | `useUserStore` 骨架（token、userInfo） |
-| `src/types/common.ts` | `Result<T>` 类型定义，与后端统一返回体匹配 |
-| `src/App.vue` | 根组件，包含 `<router-view />` |
-| `src/main.ts` | createApp + use router + use pinia |
-| `index.html` | 入口 HTML |
-
-#### 4.5 配置文件
-
-- `.eslintrc.cjs` — ESLint 配置
-- `.prettierrc` — Prettier 配置
-- `.gitignore` — 忽略 node_modules、dist 等
-
-#### 4.6 原生小程序脚手架（可选）
-
-当用户明确要求原生微信小程序交付时，在 `frontend/miniprogram/` 下生成最小可运行骨架：
-
-| 文件 | 说明 |
-|---|---|
-| `app.js` | 小程序入口逻辑 |
-| `app.json` | 全局配置（页面路由、window、sitemap） |
-| `app.wxss` | 全局样式 |
-| `pages/index/index.js` | 示例页面逻辑 |
-| `pages/index/index.wxml` | 示例页面模板 |
-| `pages/index/index.wxss` | 示例页面样式 |
-| `project.config.json` | 开发者工具项目配置（占位） |
-
-### 步骤 5：生成测试目录结构
-
-- 创建 `tests/api/` 空目录（用于接口测试）
-- 测试代码命名与组织必须携带 TC 编号，以便执行结果自动映射回 `TEST_CASES.md` 中的用例：
-  - **后端（JUnit 5）**：测试方法使用 `@DisplayName("TC-MODULE-NNN: 用例标题")` 注解
-  - **前端（Vitest）**：使用 `describe("TC-MODULE-NNN: 用例标题", () => { ... })` 或 `it("TC-MODULE-NNN: 用例标题", ...)` 描述
-  - **接口测试**：测试文件或用例同样以 TC 编号为前缀或标注
-- 此约束确保 `qa-design` → `qa-execute` → `defect-fix` 闭环中，测试结果可按 TC 编号自动回写到测试报告
-
-### 步骤 6：自检验证
-
-检查清单：
-
-- [ ] `backend/pom.xml` 存在且 XML 结构正确
-- [ ] Application 启动类包含 `@SpringBootApplication`
-- [ ] DDD 四层包结构已按 `backend/AGENTS.md` 的“分层架构”章节创建
-- [ ] `Result<T>`、`BusinessException`、`GlobalExceptionHandler` 已创建
-- [ ] `frontend/web/package.json` 存在且依赖正确
-- [ ] 若启用跨端交付，`frontend/uniapp/package.json`、`pages.json`、`manifest.json` 已创建
-- [ ] 若启用原生小程序交付，`frontend/miniprogram/app.json` 与示例页面已创建
-- [ ] 前端请求封装的 `Result<T>` 类型与后端一致
-- [ ] Router 和 Pinia 已初始化
-- [ ] 已有的 `AGENTS.md` 文件未被覆盖
-
-### 步骤 7：提示下一步
-
-脚手架创建完成后提示用户：
-- 如已有业务资料（Word/PDF/设计稿/调研材料）：进入 `biz-research`
-- 如已有结构化 Markdown PRD：可直接进入 `prd-review`
-- 如尚无 PRD 或业务资料：等待需求输入
+- [ ] 后端父模块 + common + 业务模块存在
+- [ ] 父模块不含业务代码
+- [ ] Mapper XML 路径和配置存在
+- [ ] `resources/error` 多语言配置存在
+- [ ] 前端默认包含 Element Plus
+- [ ] 前端目录使用 `frontend/<project-name>/web`
 
 ## 注意事项
 
-- 本 Skill 创建的是**实际可编译/运行的代码文件**，不是文档
-- **不添加业务逻辑**，只创建基础设施和基础类
-- 脚手架必须能通过编译（`mvn compile`、`npm run build`）
-- 如果 `ARCHITECTURE.md` 已存在，使用其中的模块名进行包命名；否则使用通用默认值
-- **保留已有的 AGENTS.md 文件**，不得覆盖
-- 生成的代码必须符合对应 `AGENTS.md` 中定义的所有规范
+- 本 Skill 只做骨架，不实现完整业务逻辑。
+- 若已有同名模块，优先补齐缺口，不直接覆盖已有文件。
+- 若文档仍为模板状态，仅创建占位，不推断具体业务字段。

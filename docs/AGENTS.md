@@ -10,7 +10,7 @@
 
 ## 2. 目录结构
 
-```
+```text
 docs/
 ├── AGENTS.md
 ├── DOC_CHECK_REPORT.md
@@ -18,6 +18,7 @@ docs/
 │   ├── RESEARCH_SUMMARY.md
 │   └── REQUIREMENTS_CLARIFIED.md
 ├── 01-requirements/
+│   ├── MVP_SCOPE.md
 │   ├── PRD_RAW.md
 │   ├── PRD_REVIEW_ISSUES.md
 │   └── PRD_RECTIFIED.md
@@ -25,6 +26,12 @@ docs/
 │   ├── ARCHITECTURE.md
 │   ├── API_CONTRACT.md
 │   └── DATA_MODEL.md
+├── 02-design/
+│   ├── UI_DESIGN_SPEC.md
+│   ├── PAGE_FLOW.md
+│   ├── SCREEN_INVENTORY.md
+│   ├── UI_REVIEW_CHECKLIST.md
+│   └── PROTOTYPE_CHECK_REPORT.md
 ├── 03-testing/
 │   ├── TEST_PLAN.md
 │   ├── TEST_CASES.md
@@ -84,7 +91,7 @@ docs/
 | 【删除】 | 删除内容 | 明确不再支持的功能或字段 |
 | 【待确认】 | 尚未定论 | 不能直接作为开发依据 |
 | 【风险】 | 风险项 | 技术、依赖、性能、合规等风险 |
-| 【设计推断】 | 来自设计稿推断 | 调研或 PRD 阶段 |
+| 【设计推断】 | 来自设计稿推断 | 调研、PRD 或 UI 设计阶段 |
 | 【冲突】 | 输入材料矛盾 | 调研或 PRD 阶段 |
 | 【澄清结论】 | 已确认结论 | 澄清阶段 |
 | 【变更】 | 增量变化 | 迭代阶段更新基线 |
@@ -95,6 +102,8 @@ docs/
 |---|---|---|
 | 澄清问题 | `CQ-NNN` | `CQ-001` |
 | 功能需求 | `FNNN` | `F001` |
+| 页面 | `SCR-模块-NNN` | `SCR-MEMBER-001` |
+| 原型检查项 | `PC-模块-NNN` | `PC-MEMBER-001` |
 | 接口 | `API-模块-NNN` | `API-ORDER-001` |
 | 数据表 | `T-模块-NNN` | `T-ORDER-001` |
 | 测试用例 | `TC-模块-NNN` | `TC-ORDER-001` |
@@ -134,27 +143,29 @@ docs/
 | `RESEARCH_SUMMARY.md` | `4. 功能要点归纳` | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | 调研功能条目进入澄清后的功能基线 |
 | `RESEARCH_SUMMARY.md` | `5. 业务规则与约束` | `REQUIREMENTS_CLARIFIED.md` | `4. 更新后的业务规则与边界` | 仅把已确认或带风险说明的规则传入 |
 | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 从这里分配 F 编号 |
+| `PRD_RECTIFIED.md` | `3. 功能需求基线` | `ARCHITECTURE.md` | `3. 模块划分` | 架构模块职责必须回链到 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `API_CONTRACT.md` | `3. 接口清单` / `4. 接口明细` | 接口必须显式关联 F 编号 |
-| `PRD_RECTIFIED.md` | `3. 功能需求基线` | `DATA_MODEL.md` | `4. 表结构明细` | 数据表主标识符使用 `T-模块-NNN` |
+| `PRD_RECTIFIED.md` | `3. 功能需求基线` | `DATA_MODEL.md` | `4. 表结构明细` + `建表 SQL` + `索引 SQL` | 数据表主标识符使用 `T-模块-NNN`，并输出可执行 SQL |
+| `PRD_RECTIFIED.md` + `ARCHITECTURE.md` | 页面流程、角色、规则 | `UI_DESIGN_SPEC.md` / `PAGE_FLOW.md` / `SCREEN_INVENTORY.md` | 页面与交互章节 | 页面与流程必须关联需求编号 |
+| `UI_DESIGN_SPEC.md` + 原型文件 | 页面布局与交互 | `PROTOTYPE_CHECK_REPORT.md` | 检查明细 | 原型变形检查必须记录可追溯问题和结论 |
 | `TEST_CASES.md` | `2. 用例清单` / `3. TC 与测试代码绑定规则` | 测试代码 | `@DisplayName` / `it()` | 测试代码必须绑定已分配的 TC 编号 |
-| `CHANGE_REQUEST.md` | `1. 变更请求列表` / `2. 变更明细` | `ITERATION_PLAN.md` | `2.1 纳入项` | 仅已批准且`纳入迭代=未纳入`的 CR 可被纳入当前迭代，并回写 `纳入迭代=ITER-NNN` |
-| `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` | 迭代范围、测试结果、缺陷状态、阻塞项 | `ITERATION_REVIEW.md` | `1. 迭代信息` / `2. KPI 快照` / `3. 根因分析` / `4. 门禁结论` | 复盘结论必须可追溯到迭代、测试和校验结果 |
+| `CHANGE_REQUEST.md` | `1. 变更请求列表` / `2. 变更明细` | `ITERATION_PLAN.md` | `2.1 纳入项` | 仅已批准且`纳入迭代=未纳入`的 CR 可被纳入当前迭代 |
+| `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` | 迭代范围、测试结果、缺陷状态、阻塞项 | `ITERATION_REVIEW.md` | `1. 迭代信息` / `2. KPI 快照` / `3. 根因分析` / `4. 门禁结论` | 复盘结论必须可追溯 |
 | `ITERATION_REVIEW.md` | `3. 根因分析` / `5. 改进项映射` | `IMPROVEMENT_BACKLOG.md` | `1. 改进项总表` | 每条 `RCA-NNN` 至少映射一个 `IMP-NNN` |
 | `IMPROVEMENT_BACKLOG.md` | `1. 改进项总表` | `ITERATION_PLAN.md` | `4. 风险与阻塞` / `5. 准出标准` | 逾期改进项必须在下一迭代显式处理或豁免 |
 | `ITERATION_REVIEW.md` | `4. 门禁结论` / `5. 豁免记录` | `RELEASE_BASELINE.md` | `5. 复盘门禁` | 版本冻结时必须记录复盘结论和豁免引用 |
-| `ITERATION_PLAN.md` / `RELEASE_BASELINE.md` | 版本、迭代、基线信息 | `CHANGELOG.md` / `DOC_CHECK_REPORT.md` | 版本记录 / 版本基线校验 | 发布闭环必须覆盖版本维度 |
 
 ## 10. 跨文档引用规则
 
 - 需求引用：`关联需求：F001`
-- 澄清引用：`关联澄清：CQ-001`
+- 页面引用：`关联页面：SCR-MEMBER-001`
+- 原型检查引用：`关联检查项：PC-MEMBER-001`
 - 接口引用：`关联接口：API-USER-001`
 - 数据表引用：`关联数据表：T-USER-001`
 - 测试引用：`关联用例：TC-USER-001`
 - 缺陷引用：`关联缺陷：BUG-USER-001`
 - 变更引用：`关联变更：CR-001`
 - 迭代引用：`关联迭代：ITER-001`
-- 迭代归属引用：`纳入迭代：ITER-001`
 - 根因引用：`关联根因：RCA-001`
 - 改进项引用：`关联改进项：IMP-001`
 - 豁免引用：`关联豁免：WV-ITER-002-01`
@@ -162,16 +173,18 @@ docs/
 跨文档引用优先使用“编号 + 文件”组合，例如：
 
 - `参见 PRD_RECTIFIED.md § F001`
+- `参见 UI_DESIGN_SPEC.md § SCR-MEMBER-001`
 - `参见 API_CONTRACT.md § API-ORDER-002`
 
 ## 11. 追溯链要求
 
 默认要求建立以下追溯关系：
 
-```
+```text
 原始材料 → RESEARCH_SUMMARY
-RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED → PRD_RAW / PRD_RECTIFIED
-PRD_RECTIFIED → ARCHITECTURE / API_CONTRACT / DATA_MODEL
+RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED → PRD_RAW / PRD_RECTIFIED / MVP_SCOPE
+PRD_RECTIFIED → ARCHITECTURE / API_CONTRACT / DATA_MODEL / UI_DESIGN_SPEC / PAGE_FLOW
+UI_DESIGN_SPEC / PAGE_FLOW / SCREEN_INVENTORY → 原型文件 → PROTOTYPE_CHECK_REPORT
 PRD_RECTIFIED / API_CONTRACT → TEST_PLAN / TEST_CASES
 TEST_CASES → 测试代码
 TEST_CASES / 测试代码 → TEST_REPORT
@@ -185,7 +198,7 @@ ITERATION_REVIEW → IMPROVEMENT_BACKLOG → 下一轮 ITERATION_PLAN
 
 ## 12. 冻结与变更规则
 
-- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`RELEASE_BASELINE.md` 视为基线文档
+- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`RELEASE_BASELINE.md` 视为基线文档
 - 基线文档更新时，正文必须带【修改】或【变更】标记，并补充变更记录
 - 增量迭代优先局部更新，不允许整体重写导致基线丢失
 - 如果文档已废弃，需在文档信息中标注状态为 `已废弃`

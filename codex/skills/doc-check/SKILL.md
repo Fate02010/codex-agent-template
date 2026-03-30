@@ -20,22 +20,28 @@ description: 文档追溯性校验
 
 1. `docs/00-research/RESEARCH_SUMMARY.md`（如存在）
 2. `docs/00-research/REQUIREMENTS_CLARIFIED.md`（如存在）
-3. `docs/01-requirements/PRD_RAW.md`（如存在）
-4. `docs/01-requirements/PRD_RECTIFIED.md`（如存在）
-5. `docs/02-architecture/ARCHITECTURE.md`（如存在）
-6. `docs/02-architecture/API_CONTRACT.md`（如存在）
-7. `docs/02-architecture/DATA_MODEL.md`（如存在）
-8. `docs/03-testing/TEST_CASES.md`（如存在）
-9. `docs/03-testing/TEST_REPORT.md`（如存在）
-10. `docs/03-testing/DEFECT_LOG.md`（如存在）
-11. `docs/04-iteration/CHANGE_REQUEST.md`（如存在）
-12. `docs/04-iteration/CHANGE_IMPACT.md`（如存在）
-13. `docs/04-iteration/ITERATION_PLAN.md`（如存在）
-14. `docs/04-iteration/RELEASE_BASELINE.md`（如存在）
-15. `docs/04-iteration/CHANGELOG.md`（如存在）
-16. `docs/05-retrospective/ITERATION_REVIEW.md`（如存在）
-17. `docs/05-retrospective/IMPROVEMENT_BACKLOG.md`（如存在）
-18. `docs/AGENTS.md` — 引用规则参考
+3. `docs/01-requirements/MVP_SCOPE.md`（如存在）
+4. `docs/01-requirements/PRD_RAW.md`（如存在）
+5. `docs/01-requirements/PRD_RECTIFIED.md`（如存在）
+6. `docs/02-architecture/ARCHITECTURE.md`（如存在）
+7. `docs/02-architecture/API_CONTRACT.md`（如存在）
+8. `docs/02-architecture/DATA_MODEL.md`（如存在）
+9. `docs/02-design/UI_DESIGN_SPEC.md`（如存在）
+10. `docs/02-design/PAGE_FLOW.md`（如存在）
+11. `docs/02-design/SCREEN_INVENTORY.md`（如存在）
+12. `docs/02-design/UI_REVIEW_CHECKLIST.md`（如存在）
+13. `docs/02-design/PROTOTYPE_CHECK_REPORT.md`（如存在）
+14. `docs/03-testing/TEST_CASES.md`（如存在）
+15. `docs/03-testing/TEST_REPORT.md`（如存在）
+16. `docs/03-testing/DEFECT_LOG.md`（如存在）
+17. `docs/04-iteration/CHANGE_REQUEST.md`（如存在）
+18. `docs/04-iteration/CHANGE_IMPACT.md`（如存在）
+19. `docs/04-iteration/ITERATION_PLAN.md`（如存在）
+20. `docs/04-iteration/RELEASE_BASELINE.md`（如存在）
+21. `docs/04-iteration/CHANGELOG.md`（如存在）
+22. `docs/05-retrospective/ITERATION_REVIEW.md`（如存在）
+23. `docs/05-retrospective/IMPROVEMENT_BACKLOG.md`（如存在）
+24. `docs/AGENTS.md` — 引用规则参考
 
 ## 输出
 
@@ -52,6 +58,7 @@ description: 文档追溯性校验
 | 调研功能要点 | 编号（流水号） | RESEARCH_SUMMARY.md |
 | 澄清问题编号 | CQ-001、CQ-002、… | REQUIREMENTS_CLARIFIED.md |
 | 功能编号 | F001、F002、… | PRD_RECTIFIED.md |
+| 页面编号 | SCR-XXX-001、… | SCREEN_INVENTORY.md / UI_DESIGN_SPEC.md |
 | 接口编号 | API-XXX-001、API-XXX-002、… | API_CONTRACT.md |
 | 数据表编号 | T-XXX-001、T-XXX-002、… | DATA_MODEL.md |
 | 用例编号 | TC-XXX-001、… | TEST_CASES.md |
@@ -87,6 +94,14 @@ description: 文档追溯性校验
 - **检查**：`TEST_CASES.md` 中是否至少有一条用例的"关联接口"为该接口编号
 - **记录**：PASS 或 FAIL
 - **结果**：列出未测试的接口
+
+### 步骤 4.5：校验 需求→页面设计 覆盖（如 02-design 文档存在）
+
+对 `PRD_RECTIFIED.md` 中每个 F 编号：
+
+- **检查**：`UI_DESIGN_SPEC.md` 或 `SCREEN_INVENTORY.md` 是否存在对应页面/交互条目
+- **检查**：`PAGE_FLOW.md` 是否覆盖核心流程
+- **结果**：列出“有需求但无页面设计映射”的条目
 
 ### 步骤 5：校验 用例→需求/接口 引用有效性
 
@@ -179,6 +194,7 @@ description: 文档追溯性校验
 |---|---|---|---|
 | 调研→需求覆盖 | N | N | N |
 | 需求→接口覆盖 | N | N | N |
+| 需求→页面设计覆盖（如适用） | N | N | N |
 | 接口→用例覆盖 | N | N | N |
 | 用例→需求引用有效性 | N | N | N |
 | 用例→接口引用有效性 | N | N | N |
@@ -206,31 +222,35 @@ description: 文档追溯性校验
 | 接口编号 | 接口名称 | 状态 |
 |---|---|---|
 
-### 4. 无效用例引用
+### 4. 需求与页面设计断链
+| 需求编号 | 问题说明 |
+|---|---|
+
+### 5. 无效用例引用
 | 用例编号 | 无效引用 | 问题说明 |
 |---|---|---|
 
-### 5. 不完整文档元数据
+### 6. 不完整文档元数据
 | 文档 | 字段 | 问题说明 |
 |---|---|---|
 
-### 6. 孤立数据表
+### 7. 孤立数据表
 | 数据表编号 | 问题说明 |
 |---|---|
 
-### 7. 缺陷引用问题
+### 8. 缺陷引用问题
 | 缺陷编号 | 问题说明 |
 |---|---|
 
-### 8. 版本基线问题
+### 9. 版本基线问题
 | 版本/迭代 | 问题说明 |
 |---|---|
 
-### 9. CR 纳入一致性问题
+### 10. CR 纳入一致性问题
 | CR 编号 | 问题说明 |
 |---|---|
 
-### 10. 复盘闭环问题
+### 11. 复盘闭环问题
 | 迭代/改进项/豁免 | 问题说明 |
 |---|---|
 

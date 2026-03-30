@@ -40,6 +40,13 @@
 - 复盘根因、改进项、豁免单必须使用统一编号
 - 任何功能上线前，必须能从版本基线反向追溯到需求、设计、测试和变更记录
 
+### 2.5 架构默认基线（条件强制）
+
+- 后端默认采用 Maven 多模块：父模块（仅做版本与依赖管理）+ `common` 公共模块 + 业务模块
+- 0-1 项目最小结构：`父项目` + `公共模块` + `业务模块`
+- 若需求/架构识别为多端（如后台管理端 + 移动端），必须拆分为独立业务服务（如 `admin-service` 与 `app-service`）
+- 前端调用接口与微服务内部调用接口必须分离，分别使用外部 Controller 与内部 Controller
+
 ## 3. 进入项目后的必读顺序
 
 1. 本文件 `AGENTS.md`
@@ -59,7 +66,7 @@
 - [ ] 已确认本次阶段对应的上游文档是否存在且可用
 - [ ] 原始材料已经放入仓库内可追溯位置，且将在文档中登记来源
 - [ ] 已确认后端/前端工程是否存在，不存在则先执行 `project-init`
-- [ ] 已确认本次工作是否涉及接口变更、表结构变更、业务规则变更或版本变更
+- [ ] 已确认本次工作是否涉及接口变更、表结构变更、业务规则变更、原型变更或版本变更
 - [ ] 若为迭代收尾，已确认 `IMPROVEMENT_BACKLOG.md` 是否存在逾期改进项
 - [ ] 已确认本次输出要覆盖哪些文档和代码目录
 
@@ -69,7 +76,8 @@
 
 ```
 project-init → biz-research → prd-compose → prd-review → prd-rectify
-    → solution-design → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → solution-design → ui-design-spec → prototype-check → qa-design
+    → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan（冻结 v1.0.0 基线）
 ```
 
@@ -82,7 +90,9 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 | `prd-compose` | 调研与澄清已形成结论 | 调研摘要 + 澄清记录 + 设计稿 | 结构化输出原始 PRD，沉淀功能、流程、字段、验收标准 | `docs/01-requirements/PRD_RAW.md` | 每个功能点具备编号、描述、规则、异常和验收标准 |
 | `prd-review` | 原始 PRD 完成 | `PRD_RAW.md` | 从完整性、一致性、可实现性、可测试性角度审查 | `PRD_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类 |
 | `prd-rectify` | 评审存在问题 | `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 逐项整改并执行基线冻结（将状态从`已整改`推进为`已冻结`） | `PRD_RECTIFIED.md` | 阻塞问题全部关闭且 `PRD_RECTIFIED.md` 状态=`已冻结` |
-| `solution-design` | `PRD_RECTIFIED.md` 已冻结 | `PRD_RECTIFIED.md` | 完成架构、接口、数据设计并建立追溯关系 | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 接口、数据表、模块职责与需求一一对应 |
+| `solution-design` | `PRD_RECTIFIED.md` 已冻结 | `PRD_RECTIFIED.md` | 完成架构、接口、数据设计并建立追溯关系 | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 接口、数据表、模块职责与需求一一对应，且 `DATA_MODEL.md` 包含建表 SQL 与索引 SQL |
+| `ui-design-spec` | 需求与架构基线可用，准备前端实现 | `PRD_RECTIFIED.md` + 架构文档 + 设计稿（如有） | 输出 UI 说明、页面清单、页面流转和高保真 HTML 原型 | `docs/02-design/*` + 原型文件 | 页面与流程覆盖完整，可评审 |
+| `prototype-check` | 已生成高保真原型 | `docs/02-design/*` + 原型文件 | 执行防变形检查（布局、尺寸、断点、溢出、跳转） | `PROTOTYPE_CHECK_REPORT.md` | 关键页面检查通过或风险项可追溯 |
 | `qa-design` | 设计文档冻结，准备进入开发 | `PRD_RECTIFIED.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 设计测试策略和测试用例，预分配 TC 编号并建立测试代码映射 | `TEST_PLAN.md` + `TEST_CASES.md` | P0/P1/P2 用例齐备，TC 编号可直接供开发绑定测试代码 |
 | `dev-implement` | 设计与测试基线已齐备 | 整改后 PRD + 设计文档 + `TEST_PLAN.md` + `TEST_CASES.md` + 局部 `AGENTS.md` | 按文档实现代码，并按 TC 编号补测试 | `backend/`、`frontend/` 代码 | 代码可编译，可说明每个改动对应的需求、设计和 TC |
 | `qa-execute` | 测试计划与用例已齐备 | `TEST_PLAN.md` + `TEST_CASES.md` + 源代码 | 执行测试并回写结果、覆盖率、风险和准出建议 | `TEST_REPORT.md` | 结果真实可追溯，可明确是否准出 |
@@ -97,7 +107,8 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 
 ```
 change-intake → iteration-plan → prd-rectify → solution-design（局部更新）
-    → qa-design → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
+    → ui-design-spec（按需）→ prototype-check（按需）→ qa-design
+    → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan（冻结新版本基线）
 ```
 
@@ -109,6 +120,8 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | `iteration-plan` | 决定本轮迭代做什么、不做什么 | 已批准 CR + 影响分析 + 当前基线 + `IMPROVEMENT_BACKLOG.md`（如存在） | `ITERATION_PLAN.md` | 迭代目标、范围、里程碑和准出标准明确 |
 | `prd-rectify` | 只更新受影响需求基线 | 已批准 CR + 当前 `PRD_RECTIFIED.md` | 更新后的 `PRD_RECTIFIED.md` | 变更项被清晰标记，未受影响需求保持稳定 |
 | `solution-design` | 局部更新架构/接口/数据设计 | 更新后的需求基线 | 更新后的设计文档 | 每项变更均有受影响设计说明 |
+| `ui-design-spec` | 更新受影响页面设计与原型 | 更新后的需求/设计文档 + 原型基线 | 更新后的 `docs/02-design/*` 与原型 | 增量页面可评审 |
+| `prototype-check` | 校验增量页面视觉和交互稳定性 | 最新原型 + 基线原型（如有） | 更新后的 `PROTOTYPE_CHECK_REPORT.md` | 不存在阻塞性变形问题 |
 | `qa-design` | 为增量范围预分配 TC 并补测试策略 | 增量需求 + 受影响接口/数据模型 | 更新测试文档 | 新增功能和回归范围均具备可执行 TC |
 | `dev-implement` | 仅修改批准范围内的代码 | 更新后的设计文档 + 更新后的 `TEST_CASES.md` + 代码基线 | 代码与增量测试 | 变更范围受控，无越权开发，测试代码绑定有效 TC |
 | `qa-execute` | 覆盖新增功能、受影响回归和高风险路径 | 更新测试文档 + 源代码 | 新测试结果 | 新功能通过，受影响旧功能回归通过 |
@@ -130,11 +143,12 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 
 ### 7.2 冻结规则
 
-- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`RELEASE_BASELINE.md` 默认属于基线文档
+- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`RELEASE_BASELINE.md` 默认属于基线文档
 - `prd-rectify` 负责需求基线冻结：整改完成后必须将 `PRD_RECTIFIED.md` 状态更新为 `已冻结`，否则不得进入 `solution-design`
 - `solution-design` 负责设计基线冻结：输出 `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 后需更新为 `已冻结`，否则不得进入 `qa-design` / `dev-implement`
+- `ui-design-spec` 与 `prototype-check` 负责原型基线：原型检查未通过时不得进入 `dev-implement`
 - 修改基线文档时，必须在正文中使用【修改】或【变更】标记，并同步更新变更记录
-- 接口、表结构、业务规则变更必须先更新对应文档，再改代码
+- 接口、表结构、业务规则、原型交互变更必须先更新对应文档，再改代码
 
 ## 8. 技术栈约束
 
@@ -147,6 +161,7 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | ORM | MyBatis + MyBatis-Plus |
 | 数据库 | MySQL 8.x |
 | 缓存 | Redis |
+| 构建 | Maven 多模块（父模块 + common + 业务模块） |
 | 代码规范 | 阿里巴巴 Java 开发手册 |
 
 ### 8.2 前端
@@ -154,12 +169,19 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 项目 | 技术选型 |
 |---|---|
 | Web 端 | Vue 3 + Composition API + TypeScript |
+| 后台管理组件库 | Element Plus（默认强制） |
 | 小程序 | 微信小程序原生 / UniApp |
 | 跨端方案 | UniApp |
 
 ### 8.3 文档格式
 
 所有正式文档统一使用 Markdown，存放于 `docs/`。
+
+### 8.4 目录与命名约束
+
+- 后端工程初始化默认命名为 `backend/<project-name>-parent`，子模块至少包含 `common` 与一个业务模块
+- 前端工程初始化默认命名为 `frontend/<project-name>/web`
+- 单仓多服务时，服务命名需与 `ARCHITECTURE.md` 模块命名一致
 
 ## 9. 变更规则
 
@@ -169,6 +191,7 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 表结构变更 | `docs/02-architecture/DATA_MODEL.md` | Entity / Mapper / SQL |
 | 业务规则变更 | `docs/01-requirements/PRD_RECTIFIED.md` | 对应业务代码 |
 | 架构调整 | `docs/02-architecture/ARCHITECTURE.md` | 对应模块代码 |
+| 原型或页面交互变更 | `docs/02-design/UI_DESIGN_SPEC.md` + `docs/02-design/PAGE_FLOW.md` | 前端页面 / 组件 / 原型文件 |
 | 新增需求/变更 | `docs/04-iteration/CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` | 受影响文档和代码 |
 | 过程改进/复盘豁免 | `docs/05-retrospective/ITERATION_REVIEW.md` + `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` | 下轮迭代计划、对应整改文档与代码 |
 | 发布基线变化 | `docs/04-iteration/RELEASE_BASELINE.md` + `CHANGELOG.md` | Tag / 版本号 / 发布说明 |
@@ -179,7 +202,8 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 
 - [ ] 调研文档已完成并可追溯到输入材料
 - [ ] `PRD_RECTIFIED.md` 已冻结
-- [ ] 架构、接口、数据模型已冻结并与代码一致
+- [ ] 架构、接口、数据模型已冻结并与代码一致，数据模型已包含建表 SQL 与索引 SQL
+- [ ] 页面设计与原型检查报告可追溯（如本迭代涉及前端页面变更）
 - [ ] 代码可编译通过，无阻塞性 warning
 - [ ] 单元测试、集成测试、关键回归测试通过
 - [ ] `TEST_REPORT.md` 达到准出标准
@@ -193,14 +217,18 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 
 | 任务场景 | 推荐 Skill |
 |---|---|
-| 新项目，需要初始化代码骨架 | `project-init` |
+| 新项目，需要一次初始化前后端代码骨架 | `project-init` |
+| 仅初始化后端骨架 | `backend-bootstrap` |
+| 仅初始化前端骨架 | `frontend-bootstrap` |
 | 拿到业务资料/调研材料，需要调研归纳和澄清 | `biz-research` |
 | 需求已澄清，需要编写正式 PRD | `prd-compose` |
 | 拿到 PRD，需要评审 | `prd-review` |
 | PRD 评审完，需要整改 | `prd-rectify` |
 | 需求明确，需要出设计方案 | `solution-design` |
-| 设计完成，需要写代码 | `dev-implement` |
+| 需求与架构已定，需要补 UI 设计说明和高保真原型 | `ui-design-spec` |
+| 原型已生成，需要做防变形检查 | `prototype-check` |
 | 需要生成测试计划和用例 | `qa-design` |
+| 设计完成，需要写代码 | `dev-implement` |
 | 用例就绪，需要执行测试 | `qa-execute` |
 | 测试有失败，需要修复缺陷 | `defect-fix` |
 | 需要校验文档一致性和追溯链 | `doc-check` |

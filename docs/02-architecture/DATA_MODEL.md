@@ -13,11 +13,11 @@
 
 ## 目标
 
-定义系统数据实体、表结构、索引、约束和追溯关系，作为持久化实现依据。
+定义系统数据实体、表结构、索引、约束、SQL DDL 和追溯关系，作为持久化实现依据。
 
 ## 范围
 
-- 在范围内：实体、表、字段、索引、逻辑关系、状态字段和数据约束
+- 在范围内：实体、表、字段、索引、建表 SQL、索引 SQL、逻辑关系、状态字段和数据约束
 - 不在范围内：Repository 实现细节
 
 ## 1. 全局约定
@@ -51,8 +51,8 @@
 
 ## 2. 实体概览
 
-| 实体编号 | 实体名称 | 说明 | 关联需求 | 对应表 |
-|---|---|---|---|---|
+| 实体编号 | 实体名称 | 说明 | 关联需求 | 对应表 | 所属服务 |
+|---|---|---|---|---|---|
 
 ## 3. ER 关系概览
 
@@ -65,6 +65,7 @@
 
 - 关联需求：
 - 实体说明：
+- 所属服务：admin-service / app-service
 - 数据量预估：
 - 写入频率：
 - 更新频率：
@@ -79,6 +80,29 @@
 | 索引名 | 类型 | 字段 | 设计理由 |
 |---|---|---|---|
 
+#### 建表 SQL
+
+```sql
+-- 请填写完整 CREATE TABLE 语句（MySQL 8.x）
+CREATE TABLE IF NOT EXISTS `t_xxx` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `created_by` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `created_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_by` varchar(64) DEFAULT NULL COMMENT '更新人',
+  `updated_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除标记'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表说明';
+```
+
+#### 索引 SQL
+
+```sql
+-- 请填写该表的 CREATE INDEX / ALTER TABLE ADD INDEX 语句
+-- 示例：
+-- CREATE UNIQUE INDEX `uk_xxx_field` ON `t_xxx` (`field`);
+-- CREATE INDEX `idx_xxx_created_time` ON `t_xxx` (`created_time`);
+```
+
 #### 约束与规则
 
 | 编号 | 规则 | 说明 |
@@ -91,8 +115,8 @@
 
 ## 5. 数据追溯矩阵
 
-| 数据表编号 | 表名 | 关联需求 | 关联接口 |
-|---|---|---|---|
+| 数据表编号 | 表名 | 所属服务 | 关联需求 | 关联接口 |
+|---|---|---|---|---|
 
 ## 6. 数据风险与迁移策略
 
@@ -108,6 +132,8 @@
 
 - [ ] 每张表都能追溯到需求
 - [ ] 每张表都定义字段、索引和约束
+- [ ] 每张表都提供可执行的建表 SQL（CREATE TABLE）
+- [ ] 每张表都提供可执行的索引 SQL（CREATE INDEX / ADD INDEX）
 - [ ] 状态字段和枚举值含义明确
 - [ ] 可以直接指导后端持久化实现
 

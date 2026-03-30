@@ -25,7 +25,8 @@
 ### 1.1 Base URL
 
 ```text
-/api/v1
+外部接口：/api/v1
+内部接口：/internal/v1
 ```
 
 ### 1.2 统一返回体
@@ -70,10 +71,12 @@ Authorization: Bearer <token>
 | 42901 | 429 | 请求过于频繁 |
 | 50001 | 500 | 系统内部异常 |
 
+> 错误码与多语言文案需对应 `resources/error/error-codes.properties`、`error-messages_zh_CN.properties`、`error-messages_en_US.properties`。
+
 ## 3. 接口清单
 
-| 接口编号 | 接口名称 | 方法 | 路径 | 关联需求 | 鉴权 | 幂等性 |
-|---|---|---|---|---|---|---|
+| 接口编号 | 接口名称 | 接口域（external/internal） | 方法 | 路径 | 关联需求 | 鉴权 | 幂等性 |
+|---|---|---|---|---|---|---|---|
 
 ## 4. 接口明细
 
@@ -82,6 +85,7 @@ Authorization: Bearer <token>
 - 关联需求：
 - 关联角色：
 - 业务说明：
+- 接口域：external / internal
 - 方法：`GET` / `POST` / `PUT` / `DELETE`
 - 路径：
 - 鉴权要求：
@@ -116,8 +120,8 @@ Authorization: Bearer <token>
 
 #### 错误场景
 
-| 错误码 | 场景 | 说明 |
-|---|---|---|
+| 错误码 | 错误键 | 场景 | 说明 |
+|---|---|---|---|
 
 ## 5. 追溯矩阵
 
