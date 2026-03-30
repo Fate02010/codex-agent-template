@@ -140,6 +140,8 @@ Core skills to keep if you do not copy all skills:
 - `solution-design`
 - `ui-design-spec`
 - `prototype-check`
+- `parallel-task-splitter`
+- `parallel-dev-orchestrator`
 - `qa-design`
 - `dev-implement`
 - `qa-execute`
@@ -184,9 +186,13 @@ For first delivery:
 
 `biz-research → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
 
+When one request affects both backend and frontend and can be decoupled, run `parallel-task-splitter` first, then `parallel-dev-orchestrator`, and then `dev-implement`.
+
 For incremental iteration:
 
 `change-intake → iteration-plan → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+
+When one request affects both backend and frontend and can be decoupled, run `parallel-task-splitter` first, then `parallel-dev-orchestrator`, and then `dev-implement`.
 
 ## First Prompts After Copy
 
@@ -213,13 +219,20 @@ Use all raw materials in this repository to produce RESEARCH_SUMMARY.md and REQU
 including source registration, conflicts, and clarification conclusions.
 ```
 
+```text
+Use parallel-task-splitter Skill.
+Read PRD_RECTIFIED.md, API_CONTRACT.md, DATA_MODEL.md, and TEST_CASES.md first.
+Split current requirements by feature and output terminal-only prompts for backend and frontend workers,
+including editable paths, prohibited changes, TC bindings, and done criteria.
+```
+
 ## Current Skill Set (Repository Snapshot)
 
 Skills currently available under `codex/skills/`:
 
 - Bootstrap: `project-init`, `backend-bootstrap`, `frontend-bootstrap`
 - Requirements and design: `biz-research`, `requirements-research`, `prd-compose`, `prd-review`, `prd-rectify`, `solution-design`, `ui-design-spec`, `prototype-check`
-- Development and quality: `qa-design`, `dev-implement`, `qa-execute`, `defect-fix`, `doc-check`
+- Development and quality: `parallel-task-splitter`, `parallel-dev-orchestrator`, `qa-design`, `dev-implement`, `qa-execute`, `defect-fix`, `doc-check`
 - Iteration and release: `change-intake`, `iteration-retro`, `iteration-plan`
 
 If you add or remove skills in `codex/skills/`, update this section and the minimal copy list above together.

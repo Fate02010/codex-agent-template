@@ -141,6 +141,8 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - `solution-design`
 - `ui-design-spec`
 - `prototype-check`
+- `parallel-task-splitter`
+- `parallel-dev-orchestrator`
 - `qa-design`
 - `dev-implement`
 - `qa-execute`
@@ -185,9 +187,13 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 
 `biz-research → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
 
+当同一需求同时影响前后端且依赖可解耦时，先执行 `parallel-task-splitter`，再执行 `parallel-dev-orchestrator`，最后进入 `dev-implement`。
+
 增量迭代主链：
 
 `change-intake → iteration-plan → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+
+当同一需求同时影响前后端且依赖可解耦时，先执行 `parallel-task-splitter`，再执行 `parallel-dev-orchestrator`，最后进入 `dev-implement`。
 
 ## 复制后首轮提示词示例
 
@@ -214,13 +220,20 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 要求登记全部来源、标注冲突并给出澄清结论。
 ```
 
+```text
+使用 parallel-task-splitter Skill。
+先读取 PRD_RECTIFIED.md、API_CONTRACT.md、DATA_MODEL.md、TEST_CASES.md。
+按功能点拆分当前需求，并在终端输出后端与前端可直接执行的并行开发提示词，
+提示词必须包含可修改目录、禁止项、TC 绑定和完成判定。
+```
+
 ## 当前 Skill 一览（仓库快照）
 
 当前 `codex/skills/` 下包含：
 
 - 初始化类：`project-init`、`backend-bootstrap`、`frontend-bootstrap`
 - 需求与设计类：`biz-research`、`requirements-research`、`prd-compose`、`prd-review`、`prd-rectify`、`solution-design`、`ui-design-spec`、`prototype-check`
-- 开发与质量类：`qa-design`、`dev-implement`、`qa-execute`、`defect-fix`、`doc-check`
+- 开发与质量类：`parallel-task-splitter`、`parallel-dev-orchestrator`、`qa-design`、`dev-implement`、`qa-execute`、`defect-fix`、`doc-check`
 - 迭代与发布类：`change-intake`、`iteration-retro`、`iteration-plan`
 
 后续如果 `codex/skills/` 有增删，请同步更新本节和上面的“最小复制清单”。

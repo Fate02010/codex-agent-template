@@ -107,13 +107,16 @@ interfaces → application → domain ← infrastructure
 
 ### 4.3 MyBatis / MyBatis-Plus 规范
 
+- 服务模块 `pom.xml` 必须声明 `mybatis-plus-spring-boot3-starter` 依赖（版本由父模块统一管理）
 - 数据访问必须通过 `domain/repository` 接口
 - MyBatis-Plus `IService` / `ServiceImpl` 只能在 `infrastructure/persistence/repository` 内部使用
 - 禁止 `application` 和 `domain` 直接依赖 MyBatis-Plus
 - 禁止 Controller 直连 Mapper
+- 每个服务模块必须提供 `MybatisPlusConfig` 并注册分页拦截器
 
 ### 4.4 Mapper XML 规范（强制）
 
+- 至少保留一个 Mapper 接口继承 `BaseMapper<T>` 作为骨架能力校验
 - 每个 Mapper 接口必须有对应 XML
 - XML 路径统一：`src/main/resources/mapper/**/*.xml`
 - 文件命名：`*Mapper.xml`
@@ -194,6 +197,7 @@ error/
 - 禁止 Controller 直连 Mapper
 - 禁止在 Domain 层依赖 Spring 注解
 - 禁止在 Application/Domain 直接使用 MyBatis-Plus 的 `IService`
+- 禁止创建后端骨架时缺失 MyBatis-Plus 依赖或基础配置
 - 禁止缺失 Mapper XML
 - 禁止错误码文案不做国际化
 - 禁止无注释的核心业务实体和公共接口

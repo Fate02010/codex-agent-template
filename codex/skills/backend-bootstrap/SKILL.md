@@ -1,6 +1,6 @@
 ---
 name: backend-bootstrap
-description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common + 业务服务），并落实 Mapper XML 与错误码国际化目录规范。
+description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common + 业务服务），并强制接入 MyBatis-Plus、Mapper XML 与错误码国际化目录规范。
 ---
 
 # Skill: backend-bootstrap — 后端最小工程骨架初始化
@@ -12,6 +12,7 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - Maven 多模块
 - 父模块仅做版本管理
 - `common` 公共模块
+- MyBatis-Plus 依赖与最小配置
 - MyBatis Mapper XML
 - `resources/error` 国际化错误码配置
 
@@ -45,6 +46,7 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - 父模块 `pom.xml` 仅管理版本、依赖和插件
 - 公共能力必须集中在 `common` 模块
 - 服务模块必须使用 DDD 目录
+- 服务模块必须接入 MyBatis-Plus（依赖 + Mapper 扫描 + 分页插件）
 - 每个服务模块必须有 `mapper/**/*.xml`
 - 每个服务模块必须有 `resources/error/*.properties`
 - 外部接口与内部接口必须分开目录和 URL 前缀
@@ -68,7 +70,7 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 创建 `backend/<project-name>-parent/pom.xml`：
 
 - packaging=`pom`
-- 维护 Spring Boot/MyBatis/MySQL/Redis/JUnit 等版本
+- 维护 Spring Boot/MyBatis-Plus/MySQL/Redis/JUnit 等版本
 - 声明 `common` 和业务服务模块
 
 ### 4. 创建/补齐 common 模块
@@ -81,6 +83,7 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 
 - 启动类
 - DDD 分层目录
+- `pom.xml`（包含 `mybatis-plus-spring-boot3-starter` 依赖，版本由父模块管理）
 - `application.yml`
 - `src/main/resources/mapper/**/*.xml`
 - `src/main/resources/error/error-codes.properties`
@@ -88,6 +91,13 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - `src/main/resources/error/error-messages_en_US.properties`
 - `interfaces/controller/external`
 - `interfaces/controller/internal`
+- `infrastructure/config/MybatisPlusConfig.java`（注册 `MybatisPlusInterceptor` + `PaginationInnerInterceptor`）
+- 至少一个 `infrastructure/persistence/mapper/*Mapper.java`（继承 `BaseMapper<T>`）
+
+`application.yml` 至少包含：
+
+- `mybatis-plus.mapper-locations: classpath:mapper/**/*.xml`
+- `mybatis-plus.type-aliases-package: ...infrastructure.persistence.po`
 
 ### 6. 创建测试目录
 
@@ -101,6 +111,8 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 
 - [ ] 存在父模块 + common + 至少一个业务服务模块
 - [ ] 父模块不含业务代码
+- [ ] 服务模块已接入 MyBatis-Plus（依赖、Mapper 扫描、分页插件）
 - [ ] 服务模块可识别 mapper XML 与 error 目录
+- [ ] 至少一个 Mapper 继承 `BaseMapper<T>`
 - [ ] DDD 分层目录齐全
 - [ ] 后续可直接衔接 `dev-implement`

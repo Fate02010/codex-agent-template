@@ -47,6 +47,15 @@
 - 若需求/架构识别为多端（如后台管理端 + 移动端），必须拆分为独立业务服务（如 `admin-service` 与 `app-service`）
 - 前端调用接口与微服务内部调用接口必须分离，分别使用外部 Controller 与内部 Controller
 
+### 2.6 并行开发编排规则（条件触发）
+
+- 仅当“同一迭代同时包含前后端变更”且“`API_CONTRACT.md`、`DATA_MODEL.md` 已冻结且无待确认项”时，允许进入并行开发编排
+- 并行编排入口固定为：先执行 `parallel-task-splitter` 生成按功能点拆分的后端/前端提示词，再执行 `parallel-dev-orchestrator`
+- 并行编排前必须先明确边界：后端任务只允许修改 `backend/**`，前端任务只允许修改 `frontend/**`
+- 共享契约文件（需求、接口、数据模型、测试基线）不允许在并行执行中被两个 Agent 同时修改，必须串行处理
+- 出现以下任一情况，禁止并行并回退单线开发：依赖顺序不可拆解、关键接口未冻结、核心规则仍有【待确认】、跨端改动高度耦合
+- 并行执行后必须进入统一收口：联调、TC 映射校验、`qa-execute`
+
 ## 3. 进入项目后的必读顺序
 
 1. 本文件 `AGENTS.md`
@@ -85,7 +94,7 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 
 | 阶段 | 何时触发 | 必备输入 | 必做动作 | 标准输出 | 完成判定 |
 |---|---|---|---|---|---|
-| `project-init` | 仓库没有可运行工程骨架 | 根 `AGENTS.md` + 技术栈约束 | 初始化 `backend/`、`frontend/` 项目骨架，补局部 `AGENTS.md` 约束落点 | 可编译/可安装的工程目录 | 工程可启动，目录结构与规范一致 |
+| `project-init` | 仓库没有可运行工程骨架 | 根 `AGENTS.md` + 技术栈约束 | 初始化 `backend/`、`frontend/` 项目骨架，补局部 `AGENTS.md` 约束落点；后端骨架必须接入 MyBatis-Plus 基线能力 | 可编译/可安装的工程目录 | 工程可启动，目录结构与规范一致 |
 | `biz-research` | 已拿到原始业务资料 | Word/PDF/设计稿/访谈记录/竞品材料 | 归纳目标、角色、场景、规则、矛盾和缺口 | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` | 输入材料全部登记，矛盾项被澄清或明确标记为待确认 |
 | `prd-compose` | 调研与澄清已形成结论 | 调研摘要 + 澄清记录 + 设计稿 | 结构化输出原始 PRD，沉淀功能、流程、字段、验收标准 | `docs/01-requirements/PRD_RAW.md` | 每个功能点具备编号、描述、规则、异常和验收标准 |
 | `prd-review` | 原始 PRD 完成 | `PRD_RAW.md` | 从完整性、一致性、可实现性、可测试性角度审查 | `PRD_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类 |
@@ -94,7 +103,7 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 | `ui-design-spec` | 需求与架构基线可用，准备前端实现 | `PRD_RECTIFIED.md` + 架构文档 + 设计稿（如有） | 输出 UI 说明、页面清单、页面流转和高保真 HTML 原型 | `docs/02-design/*` + 原型文件 | 页面与流程覆盖完整，可评审 |
 | `prototype-check` | 已生成高保真原型 | `docs/02-design/*` + 原型文件 | 执行防变形检查（布局、尺寸、断点、溢出、跳转） | `PROTOTYPE_CHECK_REPORT.md` | 关键页面检查通过或风险项可追溯 |
 | `qa-design` | 设计文档冻结，准备进入开发 | `PRD_RECTIFIED.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 设计测试策略和测试用例，预分配 TC 编号并建立测试代码映射 | `TEST_PLAN.md` + `TEST_CASES.md` | P0/P1/P2 用例齐备，TC 编号可直接供开发绑定测试代码 |
-| `dev-implement` | 设计与测试基线已齐备 | 整改后 PRD + 设计文档 + `TEST_PLAN.md` + `TEST_CASES.md` + 局部 `AGENTS.md` | 按文档实现代码，并按 TC 编号补测试 | `backend/`、`frontend/` 代码 | 代码可编译，可说明每个改动对应的需求、设计和 TC |
+| `dev-implement` | 设计与测试基线已齐备 | 整改后 PRD + 设计文档 + `TEST_PLAN.md` + `TEST_CASES.md` + 局部 `AGENTS.md` | 按文档实现代码，并按 TC 编号补测试；满足条件时先执行 `parallel-task-splitter` 再执行 `parallel-dev-orchestrator` 后并行开发 | `backend/`、`frontend/` 代码 | 代码可编译，可说明每个改动对应的需求、设计和 TC |
 | `qa-execute` | 测试计划与用例已齐备 | `TEST_PLAN.md` + `TEST_CASES.md` + 源代码 | 执行测试并回写结果、覆盖率、风险和准出建议 | `TEST_REPORT.md` | 结果真实可追溯，可明确是否准出 |
 | `defect-fix` | 测试失败或缺陷新增 | `TEST_REPORT.md` + 代码 + 设计文档 | 修复缺陷、补回归测试、更新缺陷状态 | 修复代码 + `DEFECT_LOG.md` | 缺陷闭环，回归结果已记录 |
 | `doc-check` | 任意关键节点 | 全部文档 | 校验追溯链、元数据、冻结状态和引用有效性 | `DOC_CHECK_REPORT.md` | 所有阻塞性文档问题关闭 |
@@ -123,7 +132,7 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | `ui-design-spec` | 更新受影响页面设计与原型 | 更新后的需求/设计文档 + 原型基线 | 更新后的 `docs/02-design/*` 与原型 | 增量页面可评审 |
 | `prototype-check` | 校验增量页面视觉和交互稳定性 | 最新原型 + 基线原型（如有） | 更新后的 `PROTOTYPE_CHECK_REPORT.md` | 不存在阻塞性变形问题 |
 | `qa-design` | 为增量范围预分配 TC 并补测试策略 | 增量需求 + 受影响接口/数据模型 | 更新测试文档 | 新增功能和回归范围均具备可执行 TC |
-| `dev-implement` | 仅修改批准范围内的代码 | 更新后的设计文档 + 更新后的 `TEST_CASES.md` + 代码基线 | 代码与增量测试 | 变更范围受控，无越权开发，测试代码绑定有效 TC |
+| `dev-implement` | 仅修改批准范围内的代码 | 更新后的设计文档 + 更新后的 `TEST_CASES.md` + 代码基线 | 代码与增量测试；满足条件时先执行 `parallel-task-splitter` 再执行 `parallel-dev-orchestrator` 后并行开发 | 变更范围受控，无越权开发，测试代码绑定有效 TC |
 | `qa-execute` | 覆盖新增功能、受影响回归和高风险路径 | 更新测试文档 + 源代码 | 新测试结果 | 新功能通过，受影响旧功能回归通过 |
 | `iteration-retro` | 迭代执行收尾复盘 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` + 现有改进项清单 | 输出 KPI、根因、改进行动与豁免记录 | `docs/05-retrospective/ITERATION_REVIEW.md` + `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` | 复盘门禁结论可追溯，阻塞项已关闭或豁免 |
 | `iteration-plan`（收尾） | 冻结新版本 | 全量通过结果 + `DOC_CHECK_REPORT.md` + `ITERATION_REVIEW.md` + 当前基线 | 更新版本基线和变更日志 | 新版本可发布、可追溯 |
@@ -227,6 +236,8 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 需求明确，需要出设计方案 | `solution-design` |
 | 需求与架构已定，需要补 UI 设计说明和高保真原型 | `ui-design-spec` |
 | 原型已生成，需要做防变形检查 | `prototype-check` |
+| 同一需求涉及前后端，需要按功能点拆分并生成并行开发提示词 | `parallel-task-splitter` |
+| 同一需求涉及前后端且依赖可解耦，需要并行开发编排 | `parallel-dev-orchestrator` |
 | 需要生成测试计划和用例 | `qa-design` |
 | 设计完成，需要写代码 | `dev-implement` |
 | 用例就绪，需要执行测试 | `qa-execute` |

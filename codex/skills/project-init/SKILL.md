@@ -1,6 +1,6 @@
 ---
 name: project-init
-description: 初始化项目可运行骨架（后端 Maven 多模块 + 公共模块 + 前端 Element Plus 管理端）。
+description: 初始化项目可运行骨架（后端 Maven 多模块 + MyBatis-Plus + 公共模块 + 前端 Element Plus 管理端）。
 ---
 
 # Skill: project-init — 项目脚手架初始化
@@ -61,20 +61,25 @@ description: 初始化项目可运行骨架（后端 Maven 多模块 + 公共模
 1. 父模块 `pom.xml` 只做依赖与插件版本管理，不放业务代码。
 2. `common` 模块提供：`Result<T>`、异常基类、错误键定义。
 3. 业务服务模块提供 DDD 目录：`interfaces/application/domain/infrastructure`。
+4. 父模块必须管理 MyBatis-Plus 依赖版本，服务模块必须声明 MyBatis-Plus starter 依赖。
 
 ### 步骤 3：补齐后端强制配置
 
 每个服务模块必须补齐以下内容：
 
 1. 启动类（`@SpringBootApplication`）
-2. `application.yml`，包含：
+2. Mapper 扫描配置（`@MapperScan` 或等效配置类）
+3. MyBatis-Plus 配置类（注册 `MybatisPlusInterceptor`，至少包含分页插件）
+4. 至少一个 Mapper 接口继承 `BaseMapper<T>`
+5. `application.yml`，包含：
    - `mybatis-plus.mapper-locations: classpath:mapper/**/*.xml`
-3. `src/main/resources/mapper/**/*.xml` 占位 Mapper XML
-4. `src/main/resources/error/`：
+   - `mybatis-plus.type-aliases-package: ...infrastructure.persistence.po`
+6. `src/main/resources/mapper/**/*.xml` 占位 Mapper XML
+7. `src/main/resources/error/`：
    - `error-codes.properties`
    - `error-messages_zh_CN.properties`
    - `error-messages_en_US.properties`
-5. 外部与内部 Controller 分层目录：
+8. 外部与内部 Controller 分层目录：
    - `interfaces/controller/external`
    - `interfaces/controller/internal`
 
@@ -112,6 +117,7 @@ description: 初始化项目可运行骨架（后端 Maven 多模块 + 公共模
 
 - [ ] 后端父模块 + common + 业务模块存在
 - [ ] 父模块不含业务代码
+- [ ] 服务模块已接入 MyBatis-Plus（依赖、Mapper 扫描、拦截器）
 - [ ] Mapper XML 路径和配置存在
 - [ ] `resources/error` 多语言配置存在
 - [ ] 前端默认包含 Element Plus
