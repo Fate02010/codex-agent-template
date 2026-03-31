@@ -32,7 +32,7 @@ description: 在业务调研与需求澄清完成后，基于候选能力收敛�
 - 需要编写完整 PRD（使用 `prd-compose`）。
 - 需要产出架构、接口、数据模型设计（使用 `solution-design`）。
 - 需要直接实现后端/前端代码（使用 `dev-implement`）。
-- 需要直接生成 UI 设计说明或原型（使用 `ui-design-spec` / `prototype-check`）。
+- 需要直接生成 UI 设计说明或原型（使用 `ui-design-spec` / `prototype-build` / `prototype-check`）。
 
 ## Inputs
 

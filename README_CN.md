@@ -52,7 +52,8 @@
 
 ```
 project-init → biz-research → scope-definition → prd-compose → prd-review → prd-rectify
-    → solution-design → ui-design-spec → prototype-check → qa-design
+    → solution-design → ui-design-spec → prototype-build → prototype-check
+    → prototype-rectify（按需）→ qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
 ```
@@ -61,7 +62,8 @@ project-init → biz-research → scope-definition → prd-compose → prd-revie
 
 ```
 change-intake → iteration-plan → prd-rectify → solution-design
-    → ui-design-spec（按需）→ prototype-check（按需）→ qa-design
+    → ui-design-spec（按需）→ prototype-build（按需）→ prototype-check（按需）
+    → prototype-rectify（按需）→ qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
 ```
@@ -150,7 +152,9 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - `prd-rectify`
 - `solution-design`
 - `ui-design-spec`
+- `prototype-build`
 - `prototype-check`
+- `prototype-rectify`
 - `parallel-task-splitter`
 - `parallel-dev-orchestrator`
 - `qa-design`
@@ -195,13 +199,13 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 
 首次交付主链：
 
-`biz-research → scope-definition → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+`biz-research → scope-definition → prd-compose → prd-review → prd-rectify → solution-design → ui-design-spec → prototype-build → prototype-check → prototype-rectify（按需）→ qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
 
 当同一需求同时影响前后端且依赖可解耦时，先执行 `parallel-task-splitter`，再执行 `parallel-dev-orchestrator`，最后进入 `dev-implement`。
 
 增量迭代主链：
 
-`change-intake → iteration-plan → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+`change-intake → iteration-plan → prd-rectify → solution-design → ui-design-spec（按需）→ prototype-build（按需）→ prototype-check（按需）→ prototype-rectify（按需）→ qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
 
 当同一需求同时影响前后端且依赖可解耦时，先执行 `parallel-task-splitter`，再执行 `parallel-dev-orchestrator`，最后进入 `dev-implement`。
 
@@ -242,7 +246,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 当前 `codex/skills/` 下包含：
 
 - 初始化类：`project-init`、`backend-bootstrap`、`frontend-bootstrap`
-- 需求与设计类：`biz-research`、`requirements-research`、`prd-compose`、`prd-review`、`prd-rectify`、`solution-design`、`ui-design-spec`、`prototype-check`
+- 需求与设计类：`biz-research`、`requirements-research`、`prd-compose`、`prd-review`、`prd-rectify`、`solution-design`、`ui-design-spec`、`prototype-build`、`prototype-check`、`prototype-rectify`
 - 开发与质量类：`parallel-task-splitter`、`parallel-dev-orchestrator`、`qa-design`、`dev-implement`、`qa-execute`、`defect-fix`、`doc-check`
 - 迭代与发布类：`change-intake`、`iteration-retro`、`iteration-plan`
 
@@ -257,8 +261,10 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 | `prd-review` | 分级问题清单和评审结论 |
 | `prd-rectify` | 可冻结需求基线 |
 | `solution-design` | 模块设计、接口契约、数据模型 |
-| `ui-design-spec` | UI 设计说明、页面清单、页面流转、高保真原型 |
-| `prototype-check` | 原型防变形检查报告 |
+| `ui-design-spec` | 高保真设计基线文档（页面、流程、Token、组件、状态） |
+| `prototype-build` | 高保真 HTML 原型文件与构建说明 |
+| `prototype-check` | 原型验收门禁报告（是否可进入开发） |
+| `prototype-rectify` | 原型与设计文档修复闭环及修复日志 |
 | `qa-design` | 测试策略、TC 编号、覆盖矩阵、测试代码映射 |
 | `dev-implement` | 按基线和已分配 TC 实现的代码与测试 |
 | `qa-execute` | 真实执行结果、失败项、风险和准出建议 |

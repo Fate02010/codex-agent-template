@@ -52,7 +52,8 @@ Files under `docs/` are templates by default. The first real execution of the co
 
 ```
 project-init → biz-research → scope-definition → prd-compose → prd-review → prd-rectify
-    → solution-design → ui-design-spec → prototype-check → qa-design
+    → solution-design → ui-design-spec → prototype-build → prototype-check
+    → prototype-rectify (if needed) → qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
 ```
@@ -61,7 +62,8 @@ project-init → biz-research → scope-definition → prd-compose → prd-revie
 
 ```
 change-intake → iteration-plan → prd-rectify → solution-design
-    → ui-design-spec (if needed) → prototype-check (if needed) → qa-design
+    → ui-design-spec (if needed) → prototype-build (if needed) → prototype-check (if needed)
+    → prototype-rectify (if needed) → qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
 ```
@@ -149,7 +151,9 @@ Core skills to keep if you do not copy all skills:
 - `prd-rectify`
 - `solution-design`
 - `ui-design-spec`
+- `prototype-build`
 - `prototype-check`
+- `prototype-rectify`
 - `parallel-task-splitter`
 - `parallel-dev-orchestrator`
 - `qa-design`
@@ -194,13 +198,13 @@ Put business materials, PRDs, design files, and change requests in traceable rep
 
 For first delivery:
 
-`biz-research → scope-definition → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+`biz-research → scope-definition → prd-compose → prd-review → prd-rectify → solution-design → ui-design-spec → prototype-build → prototype-check → prototype-rectify (if needed) → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
 
 When one request affects both backend and frontend and can be decoupled, run `parallel-task-splitter` first, then `parallel-dev-orchestrator`, and then `dev-implement`.
 
 For incremental iteration:
 
-`change-intake → iteration-plan → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+`change-intake → iteration-plan → prd-rectify → solution-design → ui-design-spec (if needed) → prototype-build (if needed) → prototype-check (if needed) → prototype-rectify (if needed) → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
 
 When one request affects both backend and frontend and can be decoupled, run `parallel-task-splitter` first, then `parallel-dev-orchestrator`, and then `dev-implement`.
 
@@ -241,7 +245,7 @@ including editable paths, prohibited changes, TC bindings, and done criteria.
 Skills currently available under `codex/skills/`:
 
 - Bootstrap: `project-init`, `backend-bootstrap`, `frontend-bootstrap`
-- Requirements and design: `biz-research`, `requirements-research`, `prd-compose`, `prd-review`, `prd-rectify`, `solution-design`, `ui-design-spec`, `prototype-check`
+- Requirements and design: `biz-research`, `requirements-research`, `prd-compose`, `prd-review`, `prd-rectify`, `solution-design`, `ui-design-spec`, `prototype-build`, `prototype-check`, `prototype-rectify`
 - Development and quality: `parallel-task-splitter`, `parallel-dev-orchestrator`, `qa-design`, `dev-implement`, `qa-execute`, `defect-fix`, `doc-check`
 - Iteration and release: `change-intake`, `iteration-retro`, `iteration-plan`
 
@@ -256,8 +260,10 @@ If you add or remove skills in `codex/skills/`, update this section and the mini
 | `prd-review` | graded issue list and review conclusion |
 | `prd-rectify` | freeze-ready requirement baseline |
 | `solution-design` | architecture, API contracts, data model |
-| `ui-design-spec` | UI design spec, screen inventory, page flow, high-fidelity prototype |
-| `prototype-check` | prototype anti-distortion check report |
+| `ui-design-spec` | high-fidelity design baseline docs (screens, flows, tokens, component/state specs) |
+| `prototype-build` | high-fidelity HTML prototype files and prototype build notes |
+| `prototype-check` | prototype acceptance gate report (go/no-go for dev-implement) |
+| `prototype-rectify` | prototype/design sync fixes and fix log |
 | `qa-design` | test strategy, TC IDs, coverage matrix, test-code mapping |
 | `dev-implement` | code and tests aligned with baselines and preassigned TC IDs |
 | `qa-execute` | real execution results, failures, risks, release recommendation |

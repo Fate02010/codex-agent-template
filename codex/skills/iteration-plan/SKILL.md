@@ -126,15 +126,17 @@ description: 版本迭代管理
 |---|---|---|---|---|
 | 1 | 更新需求基线 | prd-rectify | PRD_RECTIFIED.md | — |
 | 2 | 更新接口/数据模型 | solution-design | API_CONTRACT.md / DATA_MODEL.md | — |
-| 3 | 页面设计与原型更新（按需） | ui-design-spec | docs/02-design/* / 原型文件 | — |
-| 4 | 原型防变形检查（按需） | prototype-check | PROTOTYPE_CHECK_REPORT.md | — |
-| 5 | 测试设计 | qa-design | TEST_PLAN.md / TEST_CASES.md | — |
-| 6 | 开发实现 | dev-implement | backend/ / frontend/ | — |
-| 7 | 测试执行 | qa-execute | TEST_REPORT.md | — |
-| 8 | 缺陷修复 | defect-fix | 修复代码 / DEFECT_LOG.md | — |
-| 9 | 文档校验 | doc-check | DOC_CHECK_REPORT.md | — |
-| 10 | 迭代复盘 | iteration-retro | ITERATION_REVIEW.md / IMPROVEMENT_BACKLOG.md | — |
-| 11 | 版本冻结 | iteration-plan | RELEASE_BASELINE.md / CHANGELOG.md | — |
+| 3 | 设计基线更新（按需） | ui-design-spec | docs/02-design/*.md（设计基线） | — |
+| 4 | 原型构建（按需） | prototype-build | frontend/design-prototype/* / PROTOTYPE_BUILD_NOTES.md | — |
+| 5 | 原型验收门禁（按需） | prototype-check | PROTOTYPE_CHECK_REPORT.md | — |
+| 6 | 原型修复闭环（按需循环） | prototype-rectify | PROTOTYPE_FIX_LOG.md + 更新后的设计文档/原型 | — |
+| 7 | 测试设计 | qa-design | TEST_PLAN.md / TEST_CASES.md | — |
+| 8 | 开发实现 | dev-implement | backend/ / frontend/ | — |
+| 9 | 测试执行 | qa-execute | TEST_REPORT.md | — |
+| 10 | 缺陷修复 | defect-fix | 修复代码 / DEFECT_LOG.md | — |
+| 11 | 文档校验 | doc-check | DOC_CHECK_REPORT.md | — |
+| 12 | 迭代复盘 | iteration-retro | ITERATION_REVIEW.md / IMPROVEMENT_BACKLOG.md | — |
+| 13 | 版本冻结 | iteration-plan | RELEASE_BASELINE.md / CHANGELOG.md | — |
 
 ## 5. 里程碑
 | 里程碑 | 目标日期 | 完成标准 |

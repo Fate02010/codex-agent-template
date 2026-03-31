@@ -1,131 +1,156 @@
 ---
 name: ui-design-spec
-description: 生成可执行 UI 设计文档与高保真 HTML 原型，支持 review-mode（偏评审）与 production-mock-mode（偏生产一致）；默认 production-mock-mode，且仅 production 模式强制衔接 prototype-check。
+description: 当需求与架构基线已冻结、需要产出高保真设计基线并为 prototype-build 提供输入时触发；不用于直接生成 HTML 原型、执行原型验收门禁或做原型修复闭环。
 ---
 
-# Skill: ui-design-spec — UI 设计说明与高保真原型
+# Skill: ui-design-spec — 高保真设计基线
 
 ## Purpose
 
-在开发前输出可评审、可追溯、可落地的 UI 设计基线，并根据目标选择两种执行模式：
+基于需求与设计基线，产出可评审、可追溯、可复用的高保真设计基线文档，作为后续 `prototype-build` 的唯一设计输入。
 
-- `review-mode`：偏评审，强调信息架构、页面流转和评审沟通效率。
-- `production-mock-mode`：偏生产一致，强调与需求/契约/数据模型对齐，可直接支撑前端实现。
+本 Skill 聚焦“设计基线定义”，不承担原型构建与修复闭环。
 
 ## When to Use
 
-- `PRD_RECTIFIED.md` 已冻结，需要进入页面设计阶段
-- 需要从需求文档快速产出一版高保真 HTML 原型
-- 增量需求涉及页面新增或改造
+满足以下条件时触发：
 
-模式触发约定：
+- `PRD_RECTIFIED.md` 已冻结，且需要进入前端设计阶段。
+- 已完成范围收敛，需要将页面、流程、状态、组件规范化。
+- 需要为 `prototype-build` 输出稳定输入，避免原型阶段反复补需求。
+- 增量迭代中 current change 涉及页面或交互变更。
 
-- 未显式指定 `mode` 时，默认 `production-mock-mode`
-- 显式指定 `mode=review-mode` 时，走评审优先链路
-- 同时出现两个模式或模式值无效时，标记 `【待确认】` 并停止输出
+## When Not to Use
+
+以下场景不应使用本 Skill：
+
+- 直接生成 HTML 原型（使用 `prototype-build`）。
+- 对原型进行验收门禁判断（使用 `prototype-check`）。
+- 根据问题报告做修复闭环（使用 `prototype-rectify`）。
+- 重新定义业务需求、架构方案或接口契约（使用上游需求/设计 Skill）。
 
 ## Inputs
 
+按优先顺序读取：
+
 1. `docs/01-requirements/PRD_RECTIFIED.md`
-2. `docs/01-requirements/MVP_SCOPE.md`（如有）
-3. `docs/02-architecture/ARCHITECTURE.md`（如有）
-4. `docs/02-architecture/API_CONTRACT.md`（如有）
-5. 现有设计稿/截图（如有）
-6. 模式参数：`mode=review-mode | production-mock-mode`（可选）
+2. `docs/01-requirements/MVP_SCOPE.md`
+3. `docs/01-requirements/OUT_OF_SCOPE.md`
+4. `docs/02-architecture/ARCHITECTURE.md`
+5. `docs/02-architecture/API_CONTRACT.md`
+6. `docs/02-architecture/DATA_MODEL.md`
+7. current change artifact（如项目启用 OpenSpec）：`<current-change>`
+8. 现有设计稿/页面截图（如有）
+
+输入降级策略：
+
+- 缺少 `MVP_SCOPE.md` / `OUT_OF_SCOPE.md` / `<current-change>` 时，必须显式标注范围风险为 `【待确认】`。
+- 对缺失但可合理补足的信息，可使用 `【设计推断】`，并注明依据来源。
 
 ## Outputs
 
-按模式分目录隔离输出，避免相互覆盖。
+必须输出：
 
-`review-mode` 输出：
+1. `docs/02-design/SCREEN_INVENTORY.md`
+2. `docs/02-design/UI_DESIGN_SPEC.md`
+3. `docs/02-design/PAGE_FLOW.md`
+4. `docs/02-design/UI_REVIEW_CHECKLIST.md`
+5. `docs/02-design/DESIGN_TOKENS.md`
+6. `docs/02-design/COMPONENT_GUIDELINES.md`
+7. `docs/02-design/STATE_MATRIX.md`
 
-1. `docs/02-design/review/UI_DESIGN_SPEC.md`
-2. `docs/02-design/review/PAGE_FLOW.md`
-3. `docs/02-design/review/SCREEN_INVENTORY.md`
-4. `docs/02-design/review/UI_REVIEW_CHECKLIST.md`
-5. 原型（可选）：`docs/02-design/review/prototype/`
+输出边界：
 
-`production-mock-mode` 输出：
-
-1. `docs/02-design/production/UI_DESIGN_SPEC.md`
-2. `docs/02-design/production/PAGE_FLOW.md`
-3. `docs/02-design/production/SCREEN_INVENTORY.md`
-4. `docs/02-design/production/UI_REVIEW_CHECKLIST.md`
-5. 原型（必选，二选一）：
-   - `frontend/design-prototype/production/`（优先）
-   - `docs/02-design/production/prototype/`（备用）
+- 本 Skill 只输出设计基线文档，不直接输出 HTML/CSS 原型文件。
 
 ## Rules
 
-- 设计必须回链需求编号，不可脱离 PRD 自行扩展核心业务
-- 页面必须覆盖：正常态、空态、异常态、权限差异（如适用）
-- 原型文件必须可本地打开并支持主流程跳转
-- 变更内容需标记【新增】/【修改】/【删除】
-- 默认只处理本次范围内页面，不做无边界全站重绘
+1. 页面设计必须受 `PRD_RECTIFIED.md`、`MVP_SCOPE.md`、`OUT_OF_SCOPE.md`、`<current-change>` 共同约束。
+2. 不得发明未定义页面、字段、交互动作。
+3. 页面状态覆盖必须包含以下 9 类：
+   - `normal`
+   - `loading`
+   - `empty`
+   - `error`
+   - `forbidden`
+   - `disabled`
+   - `no-result`
+   - `submit-success`
+   - `submit-fail`
+4. 信息不足时必须标记 `【待确认】`，并说明影响范围。
+5. 依据上下文做合理补足时必须标记 `【设计推断】`，并注明推断依据。
+6. 设计结论必须可追溯到需求编号、页面编号和接口编号。
+7. 默认仅覆盖本期范围与 `<current-change>`，不得越权扩展。
 
-模式差异规则：
+## Workflow
 
-1. `review-mode`
-   - 重点：流程可评审、信息层级清晰、关键交互可解释
-   - 允许使用评审导向 mock 数据与简化交互
-   - `prototype-check` 为可选（建议执行）
-2. `production-mock-mode`
-   - 重点：字段命名、状态定义、交互路径与契约一致
-   - 必须体现关键接口字段映射与异常/权限分支
-   - `prototype-check` 为必选；未通过不得进入 `dev-implement`
+### 步骤 1：范围与约束对齐
 
-## Steps
+- 提取 In Scope、Out of Scope、current change 边界。
+- 生成页面候选清单，并排除范围外页面。
 
-### 0. 解析模式与输出目录
+### 步骤 2：构建页面与流程基线
 
-- 读取 `mode` 参数，确定执行模式。
-- 未指定 `mode` 时默认 `production-mock-mode`。
-- 初始化对应输出目录：`review/` 或 `production/`。
+- 产出 `SCREEN_INVENTORY.md`：页面编号、角色、入口、优先级、关联需求。
+- 产出 `PAGE_FLOW.md`：主流程、分支流程、异常流程、跳转矩阵。
 
-### 1. 提取页面与流程（公共）
+### 步骤 3：构建 UI 说明基线
 
-从 PRD 提取页面清单、关键流程、交互动作和字段，并建立需求回链。
+- 产出 `UI_DESIGN_SPEC.md`：布局结构、字段展示、交互动作、权限差异。
+- 产出 `STATE_MATRIX.md`：按页面列出 9 类状态的触发条件、展示与动作。
 
-### 2. 输出设计文档（按模式）
+### 步骤 4：构建设计系统基线
 
-- `review-mode`：侧重评审可读性与流程完整性。
-- `production-mock-mode`：侧重与 `API_CONTRACT.md`、`DATA_MODEL.md` 对齐的一致性说明。
-- 按模式目录补齐 `UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`UI_REVIEW_CHECKLIST.md`。
+- 产出 `DESIGN_TOKENS.md`：颜色、字体、间距、圆角、阴影、层级、断点、动效规范。
+- 产出 `COMPONENT_GUIDELINES.md`：组件变体、状态、禁用条件、组合规则、可访问性要求。
 
-### 3. 生成 HTML 原型（按模式）
+### 步骤 5：输出评审检查清单
 
-- `review-mode`：原型可选；若输出，至少覆盖首页导航和核心流程页。
-- `production-mock-mode`：原型必选；必须覆盖核心流程全链路，并体现正常态、空态、异常态、权限差异。
+- 产出 `UI_REVIEW_CHECKLIST.md`：产品、设计、开发、测试四类检查项与门禁结论。
 
-### 4. 一致性自检（按模式）
+### 步骤 6：交付下游输入
 
-- [ ] 页面清单与原型文件一一对应
-- [ ] 页面字段与 PRD 对齐
-- [ ] 流程跳转与 PAGE_FLOW 一致
-- [ ] `production-mock-mode` 下关键字段命名与接口契约一致
-- [ ] `production-mock-mode` 下关键状态与数据模型约束一致
+- 明确标注“下游由 `prototype-build` 消费的关键章节与字段”。
 
-### 5. 触发原型校验
+## Quality Gate
 
-`production-mock-mode`：
+- [ ] 已输出 7 份设计基线文档且路径正确。
+- [ ] 页面与流程全部在 In Scope / `<current-change>` 内。
+- [ ] 未出现超范围页面、字段、交互。
+- [ ] `STATE_MATRIX.md` 覆盖 9 类状态且页面级可追溯。
+- [ ] `DESIGN_TOKENS.md` 与 `COMPONENT_GUIDELINES.md` 可直接指导原型构建。
+- [ ] 所有 `【待确认】` 与 `【设计推断】` 已显式标记并附依据。
+- [ ] 输出可直接进入 `prototype-build`，无阻塞信息缺口。
 
-- 原型产出后必须继续执行 `prototype-check`。
-- 输入使用 `production/` 目录文档与对应原型目录。
-- 若检查结论为阻塞，不得进入 `dev-implement`。
+## Example
 
-`review-mode`：
+示例：会员管理系统
 
-- `prototype-check` 为可选。
-- 若当前目标仅为方案评审，可暂缓到 production 模式前统一执行。
+输入：
 
-`prototype-check` 产出文件建议：
+- 需求：会员档案、等级规则、积分流水、权益发放、订单关联查询
+- 范围：MVP 仅包含会员档案、等级、积分查询；自动营销与外部触达在 Out of Scope
+- 变更：`<current-change>` 仅涉及“会员列表页 + 会员详情页 + 积分流水页”
 
-- `docs/02-design/review/PROTOTYPE_CHECK_REPORT.md`（review）
-- `docs/02-design/production/PROTOTYPE_CHECK_REPORT.md`（production）
+输出思路：
 
+1. `SCREEN_INVENTORY.md`
+- 登记 `SCR-MEMBER-001`（会员列表）、`SCR-MEMBER-002`（会员详情）、`SCR-POINTS-001`（积分流水）。
 
-## 注意事项
+2. `UI_DESIGN_SPEC.md`
+- 定义列表筛选区、表格区、详情抽屉、流水分页区及字段映射。
+- 对“等级阈值文案展示规则”若未明确，标记 `【待确认】`。
 
-- 本 Skill 产出的是“设计稿级原型”，不是生产前端代码。
-- 不在本阶段实现真实接口联调和业务状态管理。
-- 若需进入开发，请优先使用 `production-mock-mode` 结果作为实现基线。
+3. `PAGE_FLOW.md`
+- 输出“会员列表 → 会员详情 → 积分流水查询”的主流程与异常回路。
+
+4. `DESIGN_TOKENS.md` + `COMPONENT_GUIDELINES.md`
+- 统一主色、语义色、按钮尺寸、表格间距、标签状态规范。
+
+5. `STATE_MATRIX.md`
+- 对 3 个页面逐一覆盖 9 类状态；例如：
+  - `submit-fail`：会员编辑提交失败时展示错误提示与重试动作。
+  - `forbidden`：无权限角色仅可见不可操作。
+
+6. `UI_REVIEW_CHECKLIST.md`
+- 形成可评审结论并列出需下游处理项，进入 `prototype-build`。

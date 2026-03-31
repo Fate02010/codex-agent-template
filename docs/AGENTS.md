@@ -35,7 +35,13 @@ docs/
 │   ├── PAGE_FLOW.md
 │   ├── SCREEN_INVENTORY.md
 │   ├── UI_REVIEW_CHECKLIST.md
-│   └── PROTOTYPE_CHECK_REPORT.md
+│   ├── DESIGN_TOKENS.md
+│   ├── COMPONENT_GUIDELINES.md
+│   ├── STATE_MATRIX.md
+│   ├── PROTOTYPE_BUILD_NOTES.md
+│   ├── PROTOTYPE_CHECK_REPORT.md
+│   ├── PROTOTYPE_FIX_LOG.md
+│   └── PROTOTYPE_SKILLS_UPGRADE_NOTES.md
 ├── 03-testing/
 │   ├── TEST_PLAN.md
 │   ├── TEST_CASES.md
@@ -158,8 +164,10 @@ docs/
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `ARCHITECTURE.md` | `3. 模块划分` | 架构模块职责必须回链到 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `API_CONTRACT.md` | `3. 接口清单` / `4. 接口明细` | 接口必须显式关联 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `DATA_MODEL.md` | `4. 表结构明细` + `建表 SQL` + `索引 SQL` | 数据表主标识符使用 `T-模块-NNN`，并输出可执行 SQL |
-| `PRD_RECTIFIED.md` + `ARCHITECTURE.md` | 页面流程、角色、规则 | `UI_DESIGN_SPEC.md` / `PAGE_FLOW.md` / `SCREEN_INVENTORY.md` | 页面与交互章节 | 页面与流程必须关联需求编号 |
-| `UI_DESIGN_SPEC.md` + 原型文件 | 页面布局与交互 | `PROTOTYPE_CHECK_REPORT.md` | 检查明细 | 原型变形检查必须记录可追溯问题和结论 |
+| `PRD_RECTIFIED.md` + `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + 设计文档 + current change（如有） | 页面流程、状态、组件、视觉约束 | `UI_DESIGN_SPEC.md` / `PAGE_FLOW.md` / `SCREEN_INVENTORY.md` / `DESIGN_TOKENS.md` / `COMPONENT_GUIDELINES.md` / `STATE_MATRIX.md` / `UI_REVIEW_CHECKLIST.md` | 页面、状态、设计系统章节 | `ui-design-spec` 负责产出可直接供原型构建消费的设计基线 |
+| `UI_DESIGN_SPEC.md` + `PAGE_FLOW.md` + `SCREEN_INVENTORY.md` + `DESIGN_TOKENS.md` + `COMPONENT_GUIDELINES.md` + `STATE_MATRIX.md` | 页面结构、状态矩阵、视觉规范 | `frontend/design-prototype/*` + `PROTOTYPE_BUILD_NOTES.md` | 原型文件与构建说明 | `prototype-build` 只落地原型，不扩展需求 |
+| 需求边界文档 + 设计基线 + 原型文件 | 页面质量、状态覆盖、范围一致性 | `PROTOTYPE_CHECK_REPORT.md` | 检查明细与门禁结论 | `prototype-check` 用于开发前验收，存在阻塞项不得进入开发 |
+| `PROTOTYPE_CHECK_REPORT.md` + 设计文档 + 原型文件 | 问题编号与修复落点 | 更新后的设计文档/原型 + `PROTOTYPE_FIX_LOG.md` | 修复闭环章节 | `prototype-rectify` 必须输出已关闭/未关闭问题清单 |
 | `TEST_CASES.md` | `2. 用例清单` / `3. TC 与测试代码绑定规则` | 测试代码 | `@DisplayName` / `it()` | 测试代码必须绑定已分配的 TC 编号 |
 | `CHANGE_REQUEST.md` | `1. 变更请求列表` / `2. 变更明细` | `ITERATION_PLAN.md` | `2.1 纳入项` | 仅已批准且`纳入迭代=未纳入`的 CR 可被纳入当前迭代 |
 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` | 迭代范围、测试结果、缺陷状态、阻塞项 | `ITERATION_REVIEW.md` | `1. 迭代信息` / `2. KPI 快照` / `3. 根因分析` / `4. 门禁结论` | 复盘结论必须可追溯 |
@@ -199,7 +207,9 @@ RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED / CAPABILITY_CANDIDATES（可选） / 
 → MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY / CHANGE_SPLIT_HINTS
 MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY → PRD_RAW
 PRD_RECTIFIED → ARCHITECTURE / API_CONTRACT / DATA_MODEL / UI_DESIGN_SPEC / PAGE_FLOW
-UI_DESIGN_SPEC / PAGE_FLOW / SCREEN_INVENTORY → 原型文件 → PROTOTYPE_CHECK_REPORT
+UI_DESIGN_SPEC / PAGE_FLOW / SCREEN_INVENTORY / DESIGN_TOKENS / COMPONENT_GUIDELINES / STATE_MATRIX
+→ 原型文件（prototype-build）→ PROTOTYPE_CHECK_REPORT（prototype-check）
+→ PROTOTYPE_FIX_LOG（prototype-rectify，按需循环）
 PRD_RECTIFIED / API_CONTRACT → TEST_PLAN / TEST_CASES
 TEST_CASES → 测试代码
 TEST_CASES / 测试代码 → TEST_REPORT
@@ -213,7 +223,7 @@ ITERATION_REVIEW → IMPROVEMENT_BACKLOG → 下一轮 ITERATION_PLAN
 
 ## 12. 冻结与变更规则
 
-- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`RELEASE_BASELINE.md` 视为基线文档
+- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md`、`STATE_MATRIX.md`、`RELEASE_BASELINE.md` 视为基线文档
 - 基线文档更新时，正文必须带【修改】或【变更】标记，并补充变更记录
 - 增量迭代优先局部更新，不允许整体重写导致基线丢失
 - 如果文档已废弃，需在文档信息中标注状态为 `已废弃`
