@@ -24,6 +24,10 @@ description: 详细需求文档编写
 1. `docs/00-research/REQUIREMENTS_CLARIFIED.md` — 需求澄清记录
 2. `docs/00-research/RESEARCH_SUMMARY.md` — 调研摘要（补充来源追溯）
 3. 可选：设计稿图片（Sketch/Figma 导出图）— 用于补充 UI 相关需求细节
+4. `docs/01-requirements/MVP_SCOPE.md`（建议）
+5. `docs/01-requirements/OUT_OF_SCOPE.md`（建议）
+6. `docs/01-requirements/FEATURE_PRIORITY.md`（建议）
+7. `docs/01-requirements/CHANGE_SPLIT_HINTS.md`（建议）
 
 ## 输出
 
@@ -37,10 +41,13 @@ description: 详细需求文档编写
 
 1. 读取 `REQUIREMENTS_CLARIFIED.md` 获取已确认的功能要点、业务规则、约束和遗留风险
 2. 读取 `RESEARCH_SUMMARY.md` 获取原始来源信息，用于追溯标注
+3. 若存在 `MVP_SCOPE.md` / `OUT_OF_SCOPE.md` / `FEATURE_PRIORITY.md`，优先以范围结论约束 PRD 编写边界
+
+若当前阶段要求先做范围收敛但未找到范围文档，先回退执行 `scope-definition`。
 
 ### 步骤 2：分配正式需求编号
 
-将 `REQUIREMENTS_CLARIFIED.md` 中 `3. 更新后的功能要点` 的功能条目转化为正式编号：
+将 `REQUIREMENTS_CLARIFIED.md` 中 `3. 更新后的功能要点` 的功能条目转化为正式编号。若已有范围文档，仅将 In Scope 条目转化为正式需求编号：
 
 1. 按功能模块分组
    - 模块展示统一使用 `EN（中文）`（例如 `USER（用户管理）`）
@@ -170,6 +177,7 @@ PRD 编写完成后提示用户：
 - **不得杜撰需求**。所有内容必须来自澄清记录或调研摘要，剩余不确定项放入"待确认事项"
 - F 编号必须唯一且在模块内连续
 - 模块展示字段统一使用 `EN（中文）`，编号中的模块段仍仅使用英文缩写
+- Out of Scope 能力不得写入 PRD 功能正文
 - 追溯链：源材料 → RESEARCH_SUMMARY.md → REQUIREMENTS_CLARIFIED.md (CQ-xxx) → PRD_RAW.md (F-xxx)
 - 保留 `【设计推断】` 和 `【冲突】` 标记，供下游 `prd-review` 消费
 - 输出的 PRD_RAW.md 结构已接近 PRD_RECTIFIED.md，但仍需经过 `prd-review` 和 `prd-rectify` 正式冻结

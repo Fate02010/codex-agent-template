@@ -51,7 +51,7 @@
 ### 首次交付
 
 ```
-project-init → biz-research → prd-compose → prd-review → prd-rectify
+project-init → biz-research → scope-definition → prd-compose → prd-review → prd-rectify
     → solution-design → ui-design-spec → prototype-check → qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
@@ -91,6 +91,15 @@ change-intake → iteration-plan → prd-rectify → solution-design
 输入是仓库中的业务资料和设计稿，请先阅读根 AGENTS.md 和 docs/AGENTS.md，
 输出 docs/00-research/RESEARCH_SUMMARY.md 与 docs/00-research/REQUIREMENTS_CLARIFIED.md。
 要求登记全部输入材料、标注冲突和待确认项，并给出澄清结论。
+```
+
+```text
+使用 scope-definition Skill。
+先读取 AGENTS.md 和 docs/AGENTS.md。
+基于 docs/00-research/RESEARCH_SUMMARY.md、docs/00-research/REQUIREMENTS_CLARIFIED.md、
+docs/01-requirements/CAPABILITY_CANDIDATES.md（如有）与 openspec/project.md，
+输出 MVP_SCOPE.md、OUT_OF_SCOPE.md、FEATURE_PRIORITY.md、CHANGE_SPLIT_HINTS.md。
+要求明确做什么、不做什么、优先级、依赖关系与取舍理由。
 ```
 
 ```text
@@ -134,6 +143,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 - `backend-bootstrap`
 - `frontend-bootstrap`
 - `biz-research`
+- `scope-definition`
 - `requirements-research`
 - `prd-compose`
 - `prd-review`
@@ -185,7 +195,7 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 
 首次交付主链：
 
-`biz-research → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+`biz-research → scope-definition → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
 
 当同一需求同时影响前后端且依赖可解耦时，先执行 `parallel-task-splitter`，再执行 `parallel-dev-orchestrator`，最后进入 `dev-implement`。
 

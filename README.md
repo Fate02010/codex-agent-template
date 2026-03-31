@@ -51,7 +51,7 @@ Files under `docs/` are templates by default. The first real execution of the co
 ### First Delivery
 
 ```
-project-init → biz-research → prd-compose → prd-review → prd-rectify
+project-init → biz-research → scope-definition → prd-compose → prd-review → prd-rectify
     → solution-design → ui-design-spec → prototype-check → qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan
@@ -90,6 +90,15 @@ Read AGENTS.md and docs/AGENTS.md first.
 Use the raw business materials and design files in this repo to produce
 docs/00-research/RESEARCH_SUMMARY.md and docs/00-research/REQUIREMENTS_CLARIFIED.md.
 Register every source, identify conflicts, and record clarification conclusions.
+```
+
+```text
+Use the scope-definition Skill.
+Read AGENTS.md and docs/AGENTS.md first.
+Based on docs/00-research/RESEARCH_SUMMARY.md, docs/00-research/REQUIREMENTS_CLARIFIED.md,
+docs/01-requirements/CAPABILITY_CANDIDATES.md (if present), and openspec/project.md,
+produce MVP_SCOPE.md, OUT_OF_SCOPE.md, FEATURE_PRIORITY.md, and CHANGE_SPLIT_HINTS.md.
+Clearly state in-scope, out-of-scope, prioritization, dependencies, and trade-off reasons.
 ```
 
 ```text
@@ -133,6 +142,7 @@ Core skills to keep if you do not copy all skills:
 - `backend-bootstrap`
 - `frontend-bootstrap`
 - `biz-research`
+- `scope-definition`
 - `requirements-research`
 - `prd-compose`
 - `prd-review`
@@ -184,7 +194,7 @@ Put business materials, PRDs, design files, and change requests in traceable rep
 
 For first delivery:
 
-`biz-research → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
+`biz-research → scope-definition → prd-compose → prd-review → prd-rectify → solution-design → qa-design → dev-implement → qa-execute → defect-fix/doc-check → iteration-retro → iteration-plan`
 
 When one request affects both backend and frontend and can be decoupled, run `parallel-task-splitter` first, then `parallel-dev-orchestrator`, and then `dev-implement`.
 

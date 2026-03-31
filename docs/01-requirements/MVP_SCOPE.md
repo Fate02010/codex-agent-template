@@ -3,8 +3,8 @@
 ## 文档信息
 
 - 文档类型：模板（首次执行 Skill 后覆盖）
-- 生成 Skill：`requirements-research` / `prd-compose`
-- 上游输入：`RESEARCH_SUMMARY.md`、`REQUIREMENTS_CLARIFIED.md`
+- 生成 Skill：`scope-definition`
+- 上游输入：`RESEARCH_SUMMARY.md`、`REQUIREMENTS_CLARIFIED.md`、`CAPABILITY_CANDIDATES.md`（可选）、`openspec/project.md`
 - 版本：v0.0
 - 日期：—
 - 状态：模板 → 草稿 → 已冻结

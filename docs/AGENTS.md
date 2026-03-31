@@ -18,7 +18,11 @@ docs/
 │   ├── RESEARCH_SUMMARY.md
 │   └── REQUIREMENTS_CLARIFIED.md
 ├── 01-requirements/
+│   ├── CAPABILITY_CANDIDATES.md
 │   ├── MVP_SCOPE.md
+│   ├── OUT_OF_SCOPE.md
+│   ├── FEATURE_PRIORITY.md
+│   ├── CHANGE_SPLIT_HINTS.md
 │   ├── PRD_RAW.md
 │   ├── PRD_REVIEW_ISSUES.md
 │   └── PRD_RECTIFIED.md
@@ -148,6 +152,8 @@ docs/
 |---|---|---|---|---|
 | `RESEARCH_SUMMARY.md` | `4. 功能要点归纳` | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | 调研功能条目进入澄清后的功能基线 |
 | `RESEARCH_SUMMARY.md` | `5. 业务规则与约束` | `REQUIREMENTS_CLARIFIED.md` | `4. 更新后的业务规则与边界` | 仅把已确认或带风险说明的规则传入 |
+| `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` + `CAPABILITY_CANDIDATES.md`（可选） + `openspec/project.md` | 候选能力、业务目标、约束条件 | `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` + `CHANGE_SPLIT_HINTS.md` | 范围与优先级章节 | `scope-definition` 用于收敛本期范围并给出 change 拆分参考 |
+| `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` | In Scope / Out of Scope / 优先级结论 | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 只展开 In Scope 能力，Out of Scope 不得进入 PRD 主体 |
 | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 从这里分配 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `ARCHITECTURE.md` | `3. 模块划分` | 架构模块职责必须回链到 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `API_CONTRACT.md` | `3. 接口清单` / `4. 接口明细` | 接口必须显式关联 F 编号 |
@@ -188,7 +194,10 @@ docs/
 
 ```text
 原始材料 → RESEARCH_SUMMARY
-RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED → PRD_RAW / PRD_RECTIFIED / MVP_SCOPE
+RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED → CAPABILITY_CANDIDATES（可选）
+RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED / CAPABILITY_CANDIDATES（可选） / project.md
+→ MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY / CHANGE_SPLIT_HINTS
+MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY → PRD_RAW
 PRD_RECTIFIED → ARCHITECTURE / API_CONTRACT / DATA_MODEL / UI_DESIGN_SPEC / PAGE_FLOW
 UI_DESIGN_SPEC / PAGE_FLOW / SCREEN_INVENTORY → 原型文件 → PROTOTYPE_CHECK_REPORT
 PRD_RECTIFIED / API_CONTRACT → TEST_PLAN / TEST_CASES

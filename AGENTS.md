@@ -23,6 +23,7 @@
 - 上游输入缺失时，不允许直接推进下游阶段
 - 首次交付若 `backend/` 和 `frontend/` 下没有可运行工程文件，进入 `dev-implement` 前必须先执行 `project-init`
 - 增量需求必须先经过 `change-intake` 和 `iteration-plan`，再进入需求/设计/开发主链
+- 首次交付在 `biz-research` 完成后，进入 `prd-compose` 前必须先执行 `scope-definition`，明确本期范围边界
 
 ### 2.3 单阶段闭环
 
@@ -86,7 +87,7 @@
 ### 5.1 标准流程
 
 ```
-project-init → biz-research → prd-compose → prd-review → prd-rectify
+project-init → biz-research → scope-definition → prd-compose → prd-review → prd-rectify
     → solution-design → ui-design-spec → prototype-check → qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan（冻结 v1.0.0 基线）
@@ -98,7 +99,8 @@ project-init → biz-research → prd-compose → prd-review → prd-rectify
 |---|---|---|---|---|---|
 | `project-init` | 仓库没有可运行工程骨架 | 根 `AGENTS.md` + 技术栈约束 | 初始化 `backend/`、`frontend/` 项目骨架，补局部 `AGENTS.md` 约束落点；后端骨架必须接入 MyBatis-Plus 基线能力 | 可编译/可安装的工程目录 | 工程可启动，目录结构与规范一致 |
 | `biz-research` | 已拿到原始业务资料 | Word/PDF/设计稿/访谈记录/竞品材料 | 归纳目标、角色、场景、规则、矛盾和缺口 | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` | 输入材料全部登记，矛盾项被澄清或明确标记为待确认 |
-| `prd-compose` | 调研与澄清已形成结论 | 调研摘要 + 澄清记录 + 设计稿 | 结构化输出原始 PRD，沉淀功能、流程、字段、验收标准 | `docs/01-requirements/PRD_RAW.md` | 每个功能点具备编号、描述、规则、异常和验收标准 |
+| `scope-definition` | 调研与澄清完成，需要收敛本期 MVP 范围 | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` + `CAPABILITY_CANDIDATES.md`（可选） + `openspec/project.md` | 基于候选能力输出本期范围、范围外项、优先级和 OpenSpec change 拆分参考 | `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` + `CHANGE_SPLIT_HINTS.md` | 本期“做什么/不做什么”边界明确，取舍理由与依赖关系可追溯 |
+| `prd-compose` | 调研、澄清与范围边界已形成结论 | 调研摘要 + 澄清记录 + 范围边界文档 + 设计稿 | 结构化输出原始 PRD，沉淀功能、流程、字段、验收标准 | `docs/01-requirements/PRD_RAW.md` | 每个功能点具备编号、描述、规则、异常和验收标准，且不越出 In Scope |
 | `prd-review` | 原始 PRD 完成 | `PRD_RAW.md` | 从完整性、一致性、可实现性、可测试性角度审查 | `PRD_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类 |
 | `prd-rectify` | 评审存在问题 | `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 逐项整改并执行基线冻结（将状态从`已整改`推进为`已冻结`） | `PRD_RECTIFIED.md` | 阻塞问题全部关闭且 `PRD_RECTIFIED.md` 状态=`已冻结` |
 | `solution-design` | `PRD_RECTIFIED.md` 已冻结 | `PRD_RECTIFIED.md` | 完成架构、接口、数据设计并建立追溯关系 | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 接口、数据表、模块职责与需求一一对应，且 `DATA_MODEL.md` 包含建表 SQL 与索引 SQL |
@@ -232,6 +234,7 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 仅初始化后端骨架 | `backend-bootstrap` |
 | 仅初始化前端骨架 | `frontend-bootstrap` |
 | 拿到业务资料/调研材料，需要调研归纳和澄清 | `biz-research` |
+| 调研完成后，需要把候选能力收敛为本期 MVP 边界 | `scope-definition` |
 | 需求已澄清，需要编写正式 PRD | `prd-compose` |
 | 拿到 PRD，需要评审 | `prd-review` |
 | PRD 评审完，需要整改 | `prd-rectify` |
