@@ -58,6 +58,7 @@ description: 在同一迭代同时涉及前后端时，先完成并行可行性�
 - backend worker：仅负责 `backend/**` 的实现与测试
 - frontend worker：仅负责 `frontend/**` 的实现与测试
 - 共享文档（需求/接口/数据/测试基线）仅允许主线串行更新，不进入并行改写
+- 从 `parallel-task-splitter` 读取模块时，展示统一为 `EN（中文）`，编号与目录归属判定仅使用英文缩写
 
 ### 步骤 3：并行执行约束
 

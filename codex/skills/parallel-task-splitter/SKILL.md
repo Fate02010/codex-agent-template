@@ -41,6 +41,7 @@ description: 根据当前冻结需求与设计基线按功能点拆分前后端�
 
 - 功能编号（如 `F-XXX` 或当前文档编号）
 - 功能名称
+- 所属模块（`EN（中文）`，如 `ORDER（订单管理）`）
 - 影响端（backend/frontend/both）
 - 对应 TC 编号集合
 
@@ -59,10 +60,11 @@ description: 根据当前冻结需求与设计基线按功能点拆分前后端�
 每个功能点必须输出以下结构：
 
 1. `Feature: <编号> <名称>`
-2. `Backend Prompt: ...`
-3. `Frontend Prompt: ...`
-4. `Shared Preconditions: ...`
-5. `Done Criteria: ...`
+2. `Module: <EN（中文）>`
+3. `Backend Prompt: ...`
+4. `Frontend Prompt: ...`
+5. `Shared Preconditions: ...`
+6. `Done Criteria: ...`
 
 提示词必须包含：
 
@@ -70,6 +72,7 @@ description: 根据当前冻结需求与设计基线按功能点拆分前后端�
 - 禁止越权修改项
 - 与 `TEST_CASES.md` 对应的 TC 编号
 - 完成后需要回传的验收信息
+- 模块展示使用 `EN（中文）`，但编号中的模块段仅使用英文缩写（如 `TC-ORDER-001`）
 
 ### 步骤 4：并行前置检查
 
