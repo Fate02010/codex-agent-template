@@ -94,7 +94,8 @@
 
 ```
 project-init → biz-research → scope-definition → prd-compose → prd-review → prd-rectify
-    → solution-design → ui-design-spec → prototype-build → prototype-check
+    → solution-design → architecture-review → architecture-rectify
+    → ui-design-spec → prototype-build → prototype-check
     → [prototype-rectify ⟲] → qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
     → iteration-retro → iteration-plan（冻结 v1.0.0 基线）
@@ -111,6 +112,8 @@ project-init → biz-research → scope-definition → prd-compose → prd-revie
 | `prd-review` | 原始 PRD 完成 | `PRD_RAW.md` | 从完整性、一致性、可实现性、可测试性角度执行严格门禁评审（含跨字段规则、关键流程、GWT 验收） | `PRD_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类；存在阻塞项则必须整改 |
 | `prd-rectify` | 评审存在问题 | `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 逐项整改并执行基线冻结（将状态从`已整改`推进为`已冻结`） | `PRD_RECTIFIED.md` | 阻塞问题全部关闭，关键规则与参数级约束补齐，且 `PRD_RECTIFIED.md` 状态=`已冻结` |
 | `solution-design` | `PRD_RECTIFIED.md` 已冻结 | `PRD_RECTIFIED.md` | 完成架构、接口、数据设计并建立追溯关系 | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 接口、数据表、模块职责与需求一一对应，且 `DATA_MODEL.md` 包含建表 SQL 与索引 SQL |
+| `architecture-review` | 设计文档已产出，需要进入测试/开发前门禁 | `PRD_RECTIFIED.md` + `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 从需求覆盖、一致性、可实现性、可测试性、数据设计、非功能设计角度执行设计评审 | `ARCHITECTURE_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类；存在阻塞项则禁止进入下游 |
+| `architecture-rectify` | 设计评审已完成，需要关闭问题并冻结设计基线 | `PRD_RECTIFIED.md` + `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` + `ARCHITECTURE_REVIEW_ISSUES.md` | 按评审问题定点整改设计文档、回写问题状态并执行设计冻结 | 更新后的设计文档 + 更新后的 `ARCHITECTURE_REVIEW_ISSUES.md` | 阻塞问题全部关闭，且三份设计文档状态=`已冻结` |
 | `ui-design-spec` | 需求与架构基线可用，准备形成前端设计基线 | `PRD_RECTIFIED.md` + `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + 架构文档 + current change（如有） | 输出共享设计基线与 display/acceptance 双轨专用文档 | `SCREEN_INVENTORY.md` + `UI_DESIGN_SPEC.md` + `PAGE_FLOW.md` + `UI_REVIEW_CHECKLIST.md` + `DESIGN_TOKENS.md` + `COMPONENT_GUIDELINES.md` + `STATE_MATRIX.md` + `DISPLAY_PROTOTYPE_SPEC.md` + `ACCEPTANCE_PROTOTYPE_SPEC.md` | 共享基线与双轨规则齐备，可直接供 `prototype-build` 消费 |
 | `prototype-build` | 设计基线已齐备，需要落地高保真 HTML 原型 | `docs/02-design/` 基线文档 + current change（如有） | 按 display / acceptance 模式生成原型、样式资产和构建说明；未指定模式时默认生成 display | `frontend/design-prototype/*` + `PROTOTYPE_BUILD_NOTES.md` | 原型可本地打开、静态跳转可用、风格统一，且双轨差异可追溯 |
 | `prototype-check` | 已生成 acceptance 高保真原型，准备开发前验收 | 需求边界文档 + 设计基线 + acceptance 原型文件 + current change（如有） | 对 acceptance 执行原型验收门禁，并可附带 display 观察项 | `PROTOTYPE_CHECK_REPORT.md` | acceptance 无阻塞问题时才建议进入 `dev-implement` |
@@ -129,6 +132,7 @@ project-init → biz-research → scope-definition → prd-compose → prd-revie
 
 ```
 change-intake → iteration-plan → prd-rectify → solution-design（局部更新）
+    → architecture-review → architecture-rectify
     → ui-design-spec（按需）→ prototype-build（按需）→ prototype-check（按需）
     → [prototype-rectify ⟲] → qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
@@ -143,6 +147,8 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | `iteration-plan` | 决定本轮迭代做什么、不做什么 | 已批准 CR + 影响分析 + 当前基线 + `IMPROVEMENT_BACKLOG.md`（如存在） | `ITERATION_PLAN.md` | 迭代目标、范围、里程碑和准出标准明确 |
 | `prd-rectify` | 只更新受影响需求基线 | 已批准 CR + 当前 `PRD_RECTIFIED.md` | 更新后的 `PRD_RECTIFIED.md` | 变更项被清晰标记，未受影响需求保持稳定 |
 | `solution-design` | 局部更新架构/接口/数据设计 | 更新后的需求基线 | 更新后的设计文档 | 每项变更均有受影响设计说明 |
+| `architecture-review` | 对增量设计基线执行评审门禁 | 更新后的需求基线 + 设计文档 | `ARCHITECTURE_REVIEW_ISSUES.md` | 问题已分级；存在阻塞项时不得进入 `qa-design` / `dev-implement` |
+| `architecture-rectify` | 对增量设计评审问题执行整改并完成冻结 | 更新后的需求基线 + 设计文档 + `ARCHITECTURE_REVIEW_ISSUES.md` | 更新后的设计文档 + 更新后的 `ARCHITECTURE_REVIEW_ISSUES.md` | 阻塞问题关闭后设计文档重新冻结，方可进入下游 |
 | `ui-design-spec` | 更新受影响页面设计基线 | 更新后的需求/设计文档 + current change（如有） | 更新后的共享基线文档与双轨专用文档 | 受影响页面、双轨规则与状态定义完整可评审 |
 | `prototype-build` | 根据增量设计基线更新原型 | 更新后的设计基线 + 原型基线 | 更新后的 display / acceptance 原型与构建说明 | 增量原型可演示且双轨差异受控 |
 | `prototype-check` | 对增量 acceptance 原型执行验收门禁 | 最新 acceptance 原型 + 设计基线 + 范围边界文档 | 更新后的 `PROTOTYPE_CHECK_REPORT.md` | acceptance 无阻塞问题时才可进入开发 |
@@ -170,7 +176,10 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 
 - `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md`、`STATE_MATRIX.md`、`DISPLAY_PROTOTYPE_SPEC.md`、`ACCEPTANCE_PROTOTYPE_SPEC.md`、`RELEASE_BASELINE.md` 默认属于基线文档
 - `prd-rectify` 负责需求基线冻结：整改完成后必须将 `PRD_RECTIFIED.md` 状态更新为 `已冻结`，否则不得进入 `solution-design`
-- `solution-design` 负责设计基线冻结：输出 `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 后需更新为 `已冻结`，否则不得进入 `qa-design` / `dev-implement`
+- `solution-design` 负责产出设计草案或更新设计版本：输出 `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 后，必须进入 `architecture-review`
+- `architecture-review` 负责设计评审门禁：输出 `ARCHITECTURE_REVIEW_ISSUES.md`，不直接整改设计文档，不替代 `doc-check`
+- `architecture-rectify` 负责关闭评审问题并完成设计冻结：阻塞问题未关闭时，设计文档状态必须为 `已整改`，不得进入 `qa-design` / `dev-implement`
+- 设计阻塞项关闭且不存在影响实现的 `【待确认】` / `【冲突】` 时，设计基线文档状态需更新为 `已冻结`
 - `ui-design-spec` 负责共享基线与双轨规则定义，`prototype-build` 负责按模式落地原型，`prototype-check` 负责 acceptance 验收门禁，`prototype-rectify` 负责问题闭环
 - acceptance 原型验收存在阻塞问题时，不得进入 `dev-implement`
 - 修改基线文档时，必须在正文中使用【修改】或【变更】标记，并同步更新变更记录
@@ -255,6 +264,8 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 拿到 PRD，需要评审 | `prd-review` |
 | PRD 评审完，需要整改 | `prd-rectify` |
 | 需求明确，需要出设计方案 | `solution-design` |
+| 设计文档已产出，需要做架构/接口/数据模型评审 | `architecture-review` |
+| 设计评审已完成，需要按问题整改并冻结设计基线 | `architecture-rectify` |
 | 需求与架构已定，需要补高保真设计基线文档 | `ui-design-spec` |
 | 设计基线已齐备，需要生成高保真 HTML 原型 | `prototype-build` |
 | 原型已生成，需要做开发前验收门禁 | `prototype-check` |

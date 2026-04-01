@@ -31,6 +31,7 @@ docs/
 │   └── PRD_RECTIFIED.md
 ├── 02-architecture/
 │   ├── ARCHITECTURE.md
+│   ├── ARCHITECTURE_REVIEW_ISSUES.md
 │   ├── API_CONTRACT.md
 │   └── DATA_MODEL.md
 ├── 02-design/
@@ -182,6 +183,8 @@ docs/
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `ARCHITECTURE.md` | `3. 模块划分` | 架构模块职责必须回链到 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `API_CONTRACT.md` | `3. 接口清单` / `4. 接口明细` | 接口必须显式关联 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `DATA_MODEL.md` | `4. 表结构明细` + `建表 SQL` + `索引 SQL` | 数据表主标识符使用 `T-模块-NNN`，并输出可执行 SQL |
+| `PRD_RECTIFIED.md` + `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 需求映射、模块职责、接口约束、数据模型、非功能设计 | `ARCHITECTURE_REVIEW_ISSUES.md` | `问题清单` + `阻塞项汇总` + `评审结论与下一步建议` | `architecture-review` 负责对设计基线执行评审门禁，只输出问题，不直接修改基线 |
+| `ARCHITECTURE_REVIEW_ISSUES.md` + `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 问题定位、整改建议、关联需求/接口/数据表 | 更新后的设计基线文档 + 回写后的 `ARCHITECTURE_REVIEW_ISSUES.md` | 对应正文章节 + `整改状态` / `整改说明` / `关联修改文档` | `architecture-rectify` 负责按问题定点修订并执行设计冻结，不生成设计副本文件 |
 | `PRD_RECTIFIED.md` + `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + 设计文档 + current change（如有） | 页面流程、状态、组件、视觉约束 | `UI_DESIGN_SPEC.md` / `PAGE_FLOW.md` / `SCREEN_INVENTORY.md` / `DESIGN_TOKENS.md` / `COMPONENT_GUIDELINES.md` / `STATE_MATRIX.md` / `UI_REVIEW_CHECKLIST.md` / `DISPLAY_PROTOTYPE_SPEC.md` / `ACCEPTANCE_PROTOTYPE_SPEC.md` | 页面、状态、设计系统章节 | `ui-design-spec` 负责产出共享基线和双轨专用规则，供原型构建消费 |
 | `UI_DESIGN_SPEC.md` + `PAGE_FLOW.md` + `SCREEN_INVENTORY.md` + `DESIGN_TOKENS.md` + `COMPONENT_GUIDELINES.md` + `STATE_MATRIX.md` + `DISPLAY_PROTOTYPE_SPEC.md` + `ACCEPTANCE_PROTOTYPE_SPEC.md` | 页面结构、状态矩阵、视觉规范、双轨差异 | `frontend/design-prototype/*` + `PROTOTYPE_BUILD_NOTES.md` | 原型文件与构建说明 | `prototype-build` 默认构建 display，acceptance 按需显式构建 |
 | 需求边界文档 + 设计基线 + acceptance 原型文件 | 页面质量、状态覆盖、范围一致性 | `PROTOTYPE_CHECK_REPORT.md` | 检查明细与门禁结论 | `prototype-check` 用于 acceptance 开发前验收，存在阻塞项不得进入开发 |
@@ -230,7 +233,11 @@ PRODUCT_ROADMAP / ROADMAP_PHASES / ROADMAP_DEPENDENCIES / ROADMAP_RISKS
 RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED / CAPABILITY_CANDIDATES（可选） / project.md
 → MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY / CHANGE_SPLIT_HINTS
 MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY → PRD_RAW
-PRD_RECTIFIED → ARCHITECTURE / API_CONTRACT / DATA_MODEL / UI_DESIGN_SPEC / PAGE_FLOW
+PRD_RECTIFIED → ARCHITECTURE / API_CONTRACT / DATA_MODEL
+ARCHITECTURE / API_CONTRACT / DATA_MODEL → ARCHITECTURE_REVIEW_ISSUES
+ARCHITECTURE_REVIEW_ISSUES → architecture-rectify
+architecture-rectify → qa-design
+PRD_RECTIFIED → UI_DESIGN_SPEC / PAGE_FLOW
 UI_DESIGN_SPEC / PAGE_FLOW / SCREEN_INVENTORY / DESIGN_TOKENS / COMPONENT_GUIDELINES / STATE_MATRIX
 / DISPLAY_PROTOTYPE_SPEC / ACCEPTANCE_PROTOTYPE_SPEC
 → 原型文件（prototype-build，默认 display）

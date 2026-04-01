@@ -1,0 +1,200 @@
+---
+name: architecture-review
+description: 在 solution-design 产出或更新架构、接口、数据模型设计后执行工程化评审，识别阻塞测试/开发的设计问题并输出问题清单；不用于直接整改设计文档，不替代 doc-check 的元数据/追溯形式校验，评审结果作为 architecture-rectify 的整改与冻结输入。
+---
+
+# Skill: architecture-review — 架构设计评审
+
+## 触发条件
+
+当 `solution-design` 已产出或更新以下设计基线，且需要在进入 `qa-design` / `dev-implement` 前做设计评审时使用本 Skill：
+
+- `docs/02-architecture/ARCHITECTURE.md`
+- `docs/02-architecture/API_CONTRACT.md`
+- `docs/02-architecture/DATA_MODEL.md`
+
+以下场景不触发本 Skill：
+
+- 仍在编写或更新设计文档初稿（应先使用 `solution-design`）
+- 需要整改设计文档并关闭评审问题（应使用 `architecture-rectify`）
+- 需要校验文档元数据、引用、冻结状态和追溯形式完整性（应使用 `doc-check`）
+
+## 输入
+
+1. `docs/01-requirements/PRD_RECTIFIED.md`
+2. `docs/02-architecture/ARCHITECTURE.md`
+3. `docs/02-architecture/API_CONTRACT.md`
+4. `docs/02-architecture/DATA_MODEL.md`
+5. `docs/01-requirements/MVP_SCOPE.md`（如有）
+6. 相关增量变更文档（迭代场景）
+7. `docs/01-requirements/OUT_OF_SCOPE.md`（如有）
+8. `docs/01-requirements/FEATURE_PRIORITY.md`（如有）
+9. `openspec/project.md`（如有）
+
+## 输出
+
+- `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md` — 架构设计评审问题清单
+
+## 执行流程
+
+### 步骤 0：校验输入基线
+
+- `PRD_RECTIFIED.md` 必须存在且状态为 `已冻结`。
+- `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 必须存在，且不能仍为 `模板`。
+- 若设计文档缺失或仍是模板，占位终止并返回 `solution-design`。
+
+### 步骤 1：建立需求-设计追溯映射
+
+基于 `PRD_RECTIFIED.md` 与设计文档建立以下映射：
+
+- `F -> API`
+- `F -> T`
+- `F -> TC`（可接受 `TC-TBD` 占位，但必须有可测试入口）
+- 核心角色 -> 接口/模块/数据范围
+- 关键状态流转 -> 写操作边界 -> 数据持久化对象
+
+若存在以下情况，优先标记为高风险：
+
+- 需求存在但无接口映射
+- 需求存在但无数据表映射
+- 接口、表存在但无法回链 `FNNN`
+- 关键角色动作无法映射到接口或数据范围
+
+### 步骤 2：逐文档与跨文档审查
+
+按以下维度逐项检查设计基线，记录发现的问题：
+
+| 评审维度 | 检查要点 |
+|---|---|
+| 需求覆盖完整性 | `F -> API -> T -> TC` 是否闭环？核心需求是否均有接口、数据表和测试入口？ |
+| 跨文档一致性 | 模块划分、术语、字段、状态、错误码、角色权限是否一致？是否存在章节间自相矛盾？ |
+| 可实现性 | 事务边界、幂等策略、并发控制、状态流转、异常处理是否达到可开发粒度？ |
+| 可测试性 | 成功/失败示例、错误场景、参数约束、验证口径是否足够支撑 `qa-design`？ |
+| 数据设计合理性 | 主键、唯一约束、索引、可执行 SQL、关联关系、审计字段是否完备？ |
+| 架构约束符合性 | 是否符合外部/内部 Controller 分层、服务拆分、默认技术栈和目录约束？ |
+| 非功能设计 | 性能、审计、可观测性、安全边界是否量化且可验证？ |
+| 冻结可用性 | 是否仍存在影响实现的 `【待确认】`、`【设计推断】`、`【冲突】`？ |
+
+评审时至少检查以下事实：
+
+1. `ARCHITECTURE.md` 中模块职责是否回链到需求编号，系统上下文图、组件架构图、部署架构图是否与正文一致。
+2. `API_CONTRACT.md` 中每个接口是否具备参数级约束、成功/失败示例、错误码映射、兼容策略、写操作边界。
+3. `DATA_MODEL.md` 中每张表是否具备主键、唯一/非空/默认值、关联关系、建表 SQL、索引 SQL 与索引用途说明。
+4. 核心状态变更是否同时在架构文档、接口契约、数据模型中闭环。
+5. 关键角色权限、数据范围和异常处理是否能落到接口与数据层。
+
+### 步骤 3：汇总问题并分级
+
+对每个问题进行分类和定级：
+
+| 级别 | 含义 | 处理要求 |
+|---|---|---|
+| 🔴 阻塞 | 无法继续测试设计、实现或冻结设计基线 | 必须整改后重新评审 |
+| 🟠 重要 | 影响设计质量、一致性或测试口径，但可在短期内收敛 | 建议在整改阶段解决 |
+| 🟡 建议 | 优化项，不影响当前主链继续推进 | 可后续迭代处理 |
+
+以下情况直接判定为 `🔴 阻塞`：
+
+1. 核心需求无设计映射，或 `F -> API -> T` 追溯断链
+2. API 与数据表无法支撑关键主流程或关键角色动作
+3. 事务 / 幂等 / 并发边界缺失，导致关键写操作不可实现
+4. 关键状态流转或异常处理缺失，无法对齐系统行为
+5. 关键接口参数约束不完整（长度/范围/精度/格式/枚举/空值策略）
+6. 数据表缺少可执行 SQL 或关键索引，无法落地实现
+7. 存在影响实现的未关闭 `【待确认】` / `【冲突】`
+
+### 步骤 4：输出问题清单与结论
+
+将所有问题按以下格式写入 `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md`：
+
+```markdown
+# 架构设计评审问题清单
+
+## 文档信息
+- 文档类型：产物
+- 生成 Skill：`architecture-review`
+- 上游输入：`PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`
+- 版本：v1.0
+- 日期：YYYY-MM-DD
+- 状态：评审中 / 已整改 / 已关闭
+
+## 评审范围
+- 评审日期：YYYY-MM-DD
+- 需求基线：`docs/01-requirements/PRD_RECTIFIED.md`
+- 设计文档：
+  - `docs/02-architecture/ARCHITECTURE.md`
+  - `docs/02-architecture/API_CONTRACT.md`
+  - `docs/02-architecture/DATA_MODEL.md`
+- 评审目标：验证设计基线是否满足一致性、可实现性、可测试性与冻结门禁
+
+## 总体结论
+- 评审结论：[通过 / 有条件通过 / 不通过]
+- 是否允许进入下游：[是 / 否]
+- 结论说明：
+
+## 问题统计
+| 级别 | 数量 |
+|---|---|
+| 🔴 阻塞 | N |
+| 🟠 重要 | N |
+| 🟡 建议 | N |
+
+## 问题清单
+
+### 🔴 阻塞问题
+
+#### ISSUE-001: [问题标题]
+- **定位**：设计章节标题路径（如：`ARCHITECTURE.md > 4. 关键流程实现边界`、`API_CONTRACT.md > 3. 接口明细 > API-USER-001`、`DATA_MODEL.md > 5. 建表 SQL > T-USER-001`）
+- **问题描述**：具体说明问题
+- **影响**：对测试设计、实现、冻结的具体影响
+- **整改建议**：如何修改
+- **关联需求 / 接口 / 数据表 / 用例**：`F001` / `API-USER-001` / `T-USER-001` / `TC-USER-001`
+- **整改状态**：待整改 / 已整改 / 已关闭
+- **整改说明**：
+- **关联修改文档**：`ARCHITECTURE.md` / `API_CONTRACT.md` / `DATA_MODEL.md`
+
+### 🟠 重要问题
+...
+
+### 🟡 建议事项
+...
+
+## 阻塞项汇总
+| 问题编号 | 阻塞原因 | 阻塞下游阶段 | 建议动作 |
+|---|---|---|---|
+
+## 评审结论与下一步建议
+- 下一步进入 `architecture-rectify`，根据评审问题执行定点整改、关闭问题并完成设计冻结
+- `architecture-rectify` 完成且设计基线状态为 `已冻结` 后，方可进入 `qa-design`
+
+## 变更记录
+| 版本 | 日期 | 说明 |
+|---|---|---|
+| v1.0 | YYYY-MM-DD | 初始评审 |
+```
+
+评审结论口径：
+
+| 结论 | 条件 |
+|---|---|
+| 通过 | 无阻塞和重要问题，允许进入 `architecture-rectify` 直接关闭问题并冻结 |
+| 有条件通过 | 无阻塞问题，有重要问题但不影响整改冻结路径 |
+| 不通过 | 有阻塞问题，必须进入 `architecture-rectify` 整改后重新评审 |
+
+### 步骤 5：提示下一步
+
+评审完成后提示用户：
+
+- 下一步使用 `architecture-rectify` 关闭评审问题并完成设计冻结
+- 在 `architecture-rectify` 完成前，不得进入 `qa-design` / `dev-implement`
+- 若需要校验文档元数据、引用和冻结状态一致性，继续使用 `doc-check`
+
+## 注意事项
+
+- 评审必须基于已存在的需求与设计文档，不得自行脑补业务结论
+- 每个问题必须给出定位、影响和整改建议，不能只写“不合理”
+- `architecture-review` 只输出问题清单，不直接修改设计基线
+- `architecture-review` 聚焦设计质量、实现边界、跨文档一致性、可实现性、可测试性、数据设计与非功能设计
+- `doc-check` 聚焦元数据、引用、追溯形式、冻结状态和流程门禁，不替代本 Skill 的设计评审
+- 问题状态默认从 `待整改` 开始；只有完成整改且满足关闭条件后，才允许由 `architecture-rectify` 回写为 `已关闭`
+- 对关键写链路、状态流转、错误码、索引与 SQL 缺失，默认按高优先级处理
