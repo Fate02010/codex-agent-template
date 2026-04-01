@@ -243,6 +243,7 @@ change-intake → iteration-plan → prd-rectify → solution-design（局部更
 | 仅初始化后端骨架 | `backend-bootstrap` |
 | 仅初始化前端骨架 | `frontend-bootstrap` |
 | 拿到业务资料/调研材料，需要调研归纳和澄清 | `biz-research` |
+| 已完成调研或已有产品现状，需要规划中长期产品路线图、季度规划或 MVP→V2→V3 路线 | `product-roadmap` |
 | 调研完成后，需要把候选能力收敛为本期 MVP 边界 | `scope-definition` |
 | 需求已澄清，需要编写正式 PRD | `prd-compose` |
 | 拿到 PRD，需要评审 | `prd-review` |

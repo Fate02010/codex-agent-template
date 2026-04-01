@@ -52,6 +52,10 @@ docs/
 ├── 04-iteration/
 │   ├── CHANGE_REQUEST.md
 │   ├── CHANGE_IMPACT.md
+│   ├── PRODUCT_ROADMAP.md
+│   ├── ROADMAP_PHASES.md
+│   ├── ROADMAP_DEPENDENCIES.md
+│   ├── ROADMAP_RISKS.md
 │   ├── ITERATION_PLAN.md
 │   ├── RELEASE_BASELINE.md
 │   └── CHANGELOG.md
@@ -161,6 +165,7 @@ docs/
 | `RESEARCH_SUMMARY.md` | `4. 功能要点归纳` | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | 调研功能条目进入澄清后的功能基线 |
 | `RESEARCH_SUMMARY.md` | `5. 业务规则与约束` | `REQUIREMENTS_CLARIFIED.md` | `4. 更新后的业务规则与边界` | 仅把已确认或带风险说明的规则传入 |
 | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` + `CAPABILITY_CANDIDATES.md`（可选） + `openspec/project.md` | 候选能力、业务目标、约束条件 | `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` + `CHANGE_SPLIT_HINTS.md` | 范围与优先级章节 | `scope-definition` 用于收敛本期范围并给出 change 拆分参考 |
+| `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` + `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` + 当前版本基线 + `openspec/project.md` | 业务目标、候选能力、当前能力现状、版本约束 | `PRODUCT_ROADMAP.md` / `ROADMAP_PHASES.md` / `ROADMAP_DEPENDENCIES.md` / `ROADMAP_RISKS.md` | 路线图与阶段规划章节 | `product-roadmap` 用于输出中长期产品路线图，为后续 `scope-definition`、`change-intake`、`iteration-plan` 提供输入 |
 | `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` | In Scope / Out of Scope / 优先级结论 | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 只展开 In Scope 能力，Out of Scope 不得进入 PRD 主体；字段与规则需达到参数级粒度 |
 | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 从这里分配 F 编号 |
 | `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 阻塞/重要问题清单 + 原始需求内容 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `prd-rectify` 必须关闭阻塞问题并补齐参数级约束后才可冻结 |
@@ -206,6 +211,12 @@ docs/
 ```text
 原始材料 → RESEARCH_SUMMARY
 RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED → CAPABILITY_CANDIDATES（可选）
+RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED / CAPABILITY_CANDIDATES（可选） / project.md
+→ PRODUCT_ROADMAP / ROADMAP_PHASES / ROADMAP_DEPENDENCIES / ROADMAP_RISKS（可选）
+PRODUCT_ROADMAP / ROADMAP_PHASES / ROADMAP_DEPENDENCIES / ROADMAP_RISKS
+→ MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY（按需）
+PRODUCT_ROADMAP / ROADMAP_PHASES / ROADMAP_DEPENDENCIES / ROADMAP_RISKS
+→ CHANGE_REQUEST / ITERATION_PLAN（按需）
 RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED / CAPABILITY_CANDIDATES（可选） / project.md
 → MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY / CHANGE_SPLIT_HINTS
 MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY → PRD_RAW
