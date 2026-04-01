@@ -4,14 +4,14 @@
 
 - 文档类型：模板（首次执行 Skill 后覆盖）
 - 生成 Skill：`prototype-build`
-- 上游输入：`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md`、`STATE_MATRIX.md`
+- 上游输入：`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md`、`STATE_MATRIX.md`、`DISPLAY_PROTOTYPE_SPEC.md`、`ACCEPTANCE_PROTOTYPE_SPEC.md`
 - 版本：v0.0
 - 日期：—
 - 状态：模板 → 草稿 → 已冻结
 
 ## 目标
 
-记录本轮原型构建范围、页面映射、样式资产与已知限制，作为验收与后续修复依据。
+记录本轮原型构建范围、构建模式、双轨差异、页面映射、样式资产与已知限制，作为验收与后续修复依据。
 
 ## 范围
 
@@ -23,8 +23,18 @@
 | 项目 | 内容 |
 |---|---|
 | 关联变更 | `<current-change>` |
+| 构建模式 | `display` / `acceptance` / `both` |
 | 页面数量 |  |
 | 资产清单 |  |
+
+## 1.1 双轨差异摘要
+
+| 项目 | display | acceptance |
+|---|---|---|
+| 信息密度 | 低 | 高 |
+| 状态显式展示 | 非必须 | 必须按门禁需要呈现 |
+| 验收辅助信息 | 不展示 | 可展示 |
+| 关键字段暴露 | 收敛展示 | 可核对展示 |
 
 ## 2. 页面构建清单
 
@@ -52,6 +62,14 @@
 | 编号 | 类型 | 描述 | 处理建议 |
 |---|---|---|---|
 | PB-NOTE-001 | 【待确认】/【风险】 |  |  |
+
+## 6. acceptance 专属可见项
+
+| 项目 | 页面 | 说明 |
+|---|---|---|
+| 状态显式入口 |  |  |
+| 验收辅助信息 |  |  |
+| 契约核对字段 |  |  |
 
 ## 变更记录
 

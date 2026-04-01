@@ -38,6 +38,8 @@ docs/
 │   ├── DESIGN_TOKENS.md
 │   ├── COMPONENT_GUIDELINES.md
 │   ├── STATE_MATRIX.md
+│   ├── DISPLAY_PROTOTYPE_SPEC.md
+│   ├── ACCEPTANCE_PROTOTYPE_SPEC.md
 │   ├── PROTOTYPE_BUILD_NOTES.md
 │   ├── PROTOTYPE_CHECK_REPORT.md
 │   ├── PROTOTYPE_FIX_LOG.md
@@ -146,7 +148,7 @@ docs/
 | 文档信息 | 元数据完整 |
 | 目标 | 说明本文档要解决什么问题 |
 | 范围 | 写清楚包含和不包含的内容 |
-| 正文 | 必须落到可执行信息，如规则、字段、流程、表格 |
+| 正文 | 必须落到可执行信息，如规则、字段、流程、表格；PRD 字段需给出参数级约束（长度/范围/精度/格式/枚举/空值策略/错误提示） |
 | 异常与边界 | 记录失败路径、限制条件、风险 |
 | 变更记录 | 记录版本、日期、改动说明 |
 
@@ -159,15 +161,16 @@ docs/
 | `RESEARCH_SUMMARY.md` | `4. 功能要点归纳` | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | 调研功能条目进入澄清后的功能基线 |
 | `RESEARCH_SUMMARY.md` | `5. 业务规则与约束` | `REQUIREMENTS_CLARIFIED.md` | `4. 更新后的业务规则与边界` | 仅把已确认或带风险说明的规则传入 |
 | `RESEARCH_SUMMARY.md` + `REQUIREMENTS_CLARIFIED.md` + `CAPABILITY_CANDIDATES.md`（可选） + `openspec/project.md` | 候选能力、业务目标、约束条件 | `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` + `CHANGE_SPLIT_HINTS.md` | 范围与优先级章节 | `scope-definition` 用于收敛本期范围并给出 change 拆分参考 |
-| `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` | In Scope / Out of Scope / 优先级结论 | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 只展开 In Scope 能力，Out of Scope 不得进入 PRD 主体 |
+| `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + `FEATURE_PRIORITY.md` | In Scope / Out of Scope / 优先级结论 | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 只展开 In Scope 能力，Out of Scope 不得进入 PRD 主体；字段与规则需达到参数级粒度 |
 | `REQUIREMENTS_CLARIFIED.md` | `3. 更新后的功能要点` | `PRD_RAW.md` | `4. 功能需求` | `prd-compose` 从这里分配 F 编号 |
+| `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 阻塞/重要问题清单 + 原始需求内容 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `prd-rectify` 必须关闭阻塞问题并补齐参数级约束后才可冻结 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `ARCHITECTURE.md` | `3. 模块划分` | 架构模块职责必须回链到 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `API_CONTRACT.md` | `3. 接口清单` / `4. 接口明细` | 接口必须显式关联 F 编号 |
 | `PRD_RECTIFIED.md` | `3. 功能需求基线` | `DATA_MODEL.md` | `4. 表结构明细` + `建表 SQL` + `索引 SQL` | 数据表主标识符使用 `T-模块-NNN`，并输出可执行 SQL |
-| `PRD_RECTIFIED.md` + `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + 设计文档 + current change（如有） | 页面流程、状态、组件、视觉约束 | `UI_DESIGN_SPEC.md` / `PAGE_FLOW.md` / `SCREEN_INVENTORY.md` / `DESIGN_TOKENS.md` / `COMPONENT_GUIDELINES.md` / `STATE_MATRIX.md` / `UI_REVIEW_CHECKLIST.md` | 页面、状态、设计系统章节 | `ui-design-spec` 负责产出可直接供原型构建消费的设计基线 |
-| `UI_DESIGN_SPEC.md` + `PAGE_FLOW.md` + `SCREEN_INVENTORY.md` + `DESIGN_TOKENS.md` + `COMPONENT_GUIDELINES.md` + `STATE_MATRIX.md` | 页面结构、状态矩阵、视觉规范 | `frontend/design-prototype/*` + `PROTOTYPE_BUILD_NOTES.md` | 原型文件与构建说明 | `prototype-build` 只落地原型，不扩展需求 |
-| 需求边界文档 + 设计基线 + 原型文件 | 页面质量、状态覆盖、范围一致性 | `PROTOTYPE_CHECK_REPORT.md` | 检查明细与门禁结论 | `prototype-check` 用于开发前验收，存在阻塞项不得进入开发 |
-| `PROTOTYPE_CHECK_REPORT.md` + 设计文档 + 原型文件 | 问题编号与修复落点 | 更新后的设计文档/原型 + `PROTOTYPE_FIX_LOG.md` | 修复闭环章节 | `prototype-rectify` 必须输出已关闭/未关闭问题清单 |
+| `PRD_RECTIFIED.md` + `MVP_SCOPE.md` + `OUT_OF_SCOPE.md` + 设计文档 + current change（如有） | 页面流程、状态、组件、视觉约束 | `UI_DESIGN_SPEC.md` / `PAGE_FLOW.md` / `SCREEN_INVENTORY.md` / `DESIGN_TOKENS.md` / `COMPONENT_GUIDELINES.md` / `STATE_MATRIX.md` / `UI_REVIEW_CHECKLIST.md` / `DISPLAY_PROTOTYPE_SPEC.md` / `ACCEPTANCE_PROTOTYPE_SPEC.md` | 页面、状态、设计系统章节 | `ui-design-spec` 负责产出共享基线和双轨专用规则，供原型构建消费 |
+| `UI_DESIGN_SPEC.md` + `PAGE_FLOW.md` + `SCREEN_INVENTORY.md` + `DESIGN_TOKENS.md` + `COMPONENT_GUIDELINES.md` + `STATE_MATRIX.md` + `DISPLAY_PROTOTYPE_SPEC.md` + `ACCEPTANCE_PROTOTYPE_SPEC.md` | 页面结构、状态矩阵、视觉规范、双轨差异 | `frontend/design-prototype/*` + `PROTOTYPE_BUILD_NOTES.md` | 原型文件与构建说明 | `prototype-build` 默认构建 display，acceptance 按需显式构建 |
+| 需求边界文档 + 设计基线 + acceptance 原型文件 | 页面质量、状态覆盖、范围一致性 | `PROTOTYPE_CHECK_REPORT.md` | 检查明细与门禁结论 | `prototype-check` 用于 acceptance 开发前验收，存在阻塞项不得进入开发 |
+| `PROTOTYPE_CHECK_REPORT.md` + 设计文档 + 原型文件 | 问题编号与修复落点 | 更新后的设计文档/原型 + `PROTOTYPE_FIX_LOG.md` | 修复闭环章节 | `prototype-rectify` 必须优先关闭 acceptance 门禁问题，并输出已关闭/未关闭问题清单 |
 | `TEST_CASES.md` | `2. 用例清单` / `3. TC 与测试代码绑定规则` | 测试代码 | `@DisplayName` / `it()` | 测试代码必须绑定已分配的 TC 编号 |
 | `CHANGE_REQUEST.md` | `1. 变更请求列表` / `2. 变更明细` | `ITERATION_PLAN.md` | `2.1 纳入项` | 仅已批准且`纳入迭代=未纳入`的 CR 可被纳入当前迭代 |
 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` | 迭代范围、测试结果、缺陷状态、阻塞项 | `ITERATION_REVIEW.md` | `1. 迭代信息` / `2. KPI 快照` / `3. 根因分析` / `4. 门禁结论` | 复盘结论必须可追溯 |
@@ -208,7 +211,9 @@ RESEARCH_SUMMARY / REQUIREMENTS_CLARIFIED / CAPABILITY_CANDIDATES（可选） / 
 MVP_SCOPE / OUT_OF_SCOPE / FEATURE_PRIORITY → PRD_RAW
 PRD_RECTIFIED → ARCHITECTURE / API_CONTRACT / DATA_MODEL / UI_DESIGN_SPEC / PAGE_FLOW
 UI_DESIGN_SPEC / PAGE_FLOW / SCREEN_INVENTORY / DESIGN_TOKENS / COMPONENT_GUIDELINES / STATE_MATRIX
-→ 原型文件（prototype-build）→ PROTOTYPE_CHECK_REPORT（prototype-check）
+/ DISPLAY_PROTOTYPE_SPEC / ACCEPTANCE_PROTOTYPE_SPEC
+→ 原型文件（prototype-build，默认 display）
+→ acceptance 原型门禁（prototype-check）
 → PROTOTYPE_FIX_LOG（prototype-rectify，按需循环）
 PRD_RECTIFIED / API_CONTRACT → TEST_PLAN / TEST_CASES
 TEST_CASES → 测试代码
@@ -223,7 +228,7 @@ ITERATION_REVIEW → IMPROVEMENT_BACKLOG → 下一轮 ITERATION_PLAN
 
 ## 12. 冻结与变更规则
 
-- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md`、`STATE_MATRIX.md`、`RELEASE_BASELINE.md` 视为基线文档
+- `PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`、`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md`、`STATE_MATRIX.md`、`DISPLAY_PROTOTYPE_SPEC.md`、`ACCEPTANCE_PROTOTYPE_SPEC.md`、`RELEASE_BASELINE.md` 视为基线文档
 - 基线文档更新时，正文必须带【修改】或【变更】标记，并补充变更记录
 - 增量迭代优先局部更新，不允许整体重写导致基线丢失
 - 如果文档已废弃，需在文档信息中标注状态为 `已废弃`
@@ -238,6 +243,7 @@ ITERATION_REVIEW → IMPROVEMENT_BACKLOG → 下一轮 ITERATION_PLAN
 - [ ] 上游输入可追溯
 - [ ] 当前结论可以被下游直接消费
 - [ ] 风险和待确认项明确列出
+- [ ] 若为 PRD 文档，字段、规则、验收标准已达到可设计/可开发/可测试粒度
 
 ## 14. 禁止事项
 
