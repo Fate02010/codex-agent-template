@@ -14,25 +14,41 @@ description: 测试设计
 1. `docs/01-requirements/PRD_RECTIFIED.md` — 整改后的需求文档
 2. `docs/02-architecture/API_CONTRACT.md` — 接口契约
 3. `docs/02-architecture/DATA_MODEL.md` — 数据模型
-4. `tests/AGENTS.md` — 测试规范
+4. `tests/AGENTS.md`（可选）— 测试规范
 
 ## 输出
 
 1. `docs/03-testing/TEST_PLAN.md` — 测试计划
 2. `docs/03-testing/TEST_CASES.md` — 测试用例
 
+## 执行规则
+
+1. 冷启动规则（强制）：
+   - 若目标目录不存在，先创建目录。
+   - 若目标文件不存在，按本 Skill 内置结构创建完整文档。
+   - 若目标文件状态为 `模板`，整文件覆盖为正式产物结构。
+   - 若目标文件状态不为 `模板`，按章节标题增量更新，不按章节序号硬编码。
+2. `tests/AGENTS.md` 为软依赖：
+   - 存在时：按其规范增强测试层级、用例覆盖和命名规则。
+   - 不存在时：使用本 Skill 内置默认规范继续输出，不得阻塞。
+
 ## 执行流程
 
 > 下游默认按章节标题读取，不依赖章节序号。`TEST_CASES.md` 必须包含“2. 用例清单”和“3. TC 与测试代码绑定规则”。
+
+### 步骤 0：初始化输出载体（冷启动）
+
+- 确保 `docs/03-testing/` 存在。
+- 初始化 `TEST_PLAN.md` 与 `TEST_CASES.md`（缺失则创建、模板则覆盖）。
 
 ### 步骤 1：读取输入文档
 
 按以下顺序读取：
 
-1. `tests/AGENTS.md` — 理解测试规范和模板要求
-2. `docs/01-requirements/PRD_RECTIFIED.md` — 理解业务需求
-3. `docs/02-architecture/API_CONTRACT.md` — 理解接口设计
-4. `docs/02-architecture/DATA_MODEL.md` — 理解数据结构
+1. `docs/01-requirements/PRD_RECTIFIED.md` — 理解业务需求
+2. `docs/02-architecture/API_CONTRACT.md` — 理解接口设计
+3. `docs/02-architecture/DATA_MODEL.md` — 理解数据结构
+4. `tests/AGENTS.md`（可选）— 若存在则作为增强规范读取
 
 ### 步骤 2：输出测试计划（TEST_PLAN.md）
 
@@ -104,7 +120,7 @@ description: 测试设计
 
 ### 步骤 3：输出测试用例（TEST_CASES.md）
 
-按 `tests/AGENTS.md` 中的用例模板，为每个功能点生成测试用例：
+按本 Skill 默认模板为每个功能点生成测试用例；若 `tests/AGENTS.md` 存在则按其规则增强：
 
 ```markdown
 # 测试用例
@@ -178,7 +194,7 @@ description: 测试设计
 
 ### 步骤 4：用例覆盖检查
 
-按 `tests/AGENTS.md` 中的覆盖要求，确保每个功能点至少覆盖：
+按默认覆盖要求执行；若 `tests/AGENTS.md` 存在，优先以其覆盖要求补强：
 
 | 场景 | 是否覆盖 |
 |---|---|
@@ -213,11 +229,11 @@ description: 测试设计
 - [ ] 每个接口都有对应的接口测试用例
 - [ ] P0 用例覆盖所有冒烟路径
 - [ ] 用例编号连续、唯一
-- [ ] 用例格式符合 tests/AGENTS.md 模板
+- [ ] 用例格式符合本 Skill 默认模板（若存在 `tests/AGENTS.md`，则同时符合其规范）
 - [ ] 模块展示字段符合 `EN（中文）`
 - [ ] TC 编号模块部分与关联接口模块部分一致
 - [ ] 每个 TC 编号在映射表中都有对应的测试代码位置
-- [ ] 映射表中的方法名符合 `tests/AGENTS.md` § 3.1 的命名规范
+- [ ] 映射表中的方法名符合默认命名规范（若存在 `tests/AGENTS.md`，则同时符合其规范）
 - [ ] `TEST_PLAN.md` 与 `TEST_CASES.md` 文档信息状态均已更新为`已冻结`
 
 ### 步骤 7：提示结果

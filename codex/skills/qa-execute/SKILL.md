@@ -22,7 +22,51 @@ description: 执行真实测试并回写报告；若失败则强制进入 defect
 1. `docs/03-testing/TEST_REPORT.md`
 2. 更新后的 `docs/03-testing/TEST_CASES.md`
 
+## 执行规则
+
+1. 本 Skill 不补造上游业务输入；缺失关键输入时必须输出 `BLOCKED` 并回退上游阶段。
+2. 允许在输入缺失时创建或更新 `TEST_REPORT.md`，用于记录阻塞结论与回退建议。
+3. 若 `TEST_PLAN.md` 或 `TEST_CASES.md` 缺失，不得执行测试命令。
+
 ## 执行流程
+
+### 0. 前置校验与阻塞回写
+
+- 检查 `TEST_PLAN.md` 与 `TEST_CASES.md` 是否存在且可读取。
+- 若任一缺失：
+  - 生成或更新 `docs/03-testing/TEST_REPORT.md`。
+  - 写入结论：`BLOCKED`。
+  - 写入缺失输入清单、影响范围、回退建议（回到 `qa-design`）。
+  - 终止后续测试执行步骤。
+
+阻塞报告最小结构：
+
+```markdown
+# 测试报告
+
+## 文档信息
+- 文档类型：产物
+- 生成 Skill：`qa-execute`
+- 上游输入：`TEST_PLAN.md`、`TEST_CASES.md`、代码基线
+- 版本：vX.Y
+- 日期：YYYY-MM-DD
+- 状态：草稿
+
+## 1. 执行结论
+- 结论：BLOCKED
+- 原因：测试计划或测试用例缺失
+
+## 2. 缺失输入
+
+## 3. 影响范围
+
+## 4. 回退建议
+- 回退阶段：`qa-design`
+
+## 变更记录
+| 版本 | 日期 | 说明 |
+|---|---|---|
+```
 
 ### 1. 读取计划与用例
 
