@@ -49,6 +49,12 @@
 - 排序规则：utf8mb4_general_ci
 - 默认不使用物理外键，使用逻辑关联
 
+### 1.4 SQL 注释规范
+
+- 所有 `CREATE TABLE` 字段定义必须带 `COMMENT`，且注释内容必须为中文业务说明
+- 禁止字段缺失注释，禁止使用纯英文占位注释（如 `name`、`status`）
+- 表级 `COMMENT='...'` 必填，描述该表业务用途
+
 ## 2. 实体概览
 
 | 实体编号 | 实体名称 | 说明 | 关联需求 | 对应表 | 所属服务 |
@@ -84,6 +90,7 @@
 
 ```sql
 -- 请填写完整 CREATE TABLE 语句（MySQL 8.x）
+-- 强制要求：每个字段都必须包含中文 COMMENT 注释
 CREATE TABLE IF NOT EXISTS `t_xxx` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `created_by` varchar(64) DEFAULT NULL COMMENT '创建人',
@@ -133,6 +140,7 @@ CREATE TABLE IF NOT EXISTS `t_xxx` (
 - [ ] 每张表都能追溯到需求
 - [ ] 每张表都定义字段、索引和约束
 - [ ] 每张表都提供可执行的建表 SQL（CREATE TABLE）
+- [ ] 建表 SQL 的所有字段均带中文 COMMENT 注释（无缺失、无英文占位）
 - [ ] 每张表都提供可执行的索引 SQL（CREATE INDEX / ADD INDEX）
 - [ ] 状态字段和枚举值含义明确
 - [ ] 可以直接指导后端持久化实现

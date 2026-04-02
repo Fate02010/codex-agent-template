@@ -57,16 +57,27 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 
 ## Rules
 
-1. 修复顺序必须为：先 `阻塞`，再 `重要`，最后 `建议`。
-2. 文档和原型必须同步更新，禁止只改其一。
-3. 必须输出“已关闭问题清单”。
-4. 必须输出“未关闭问题清单”。
-5. 未关闭问题必须写明原因和后续建议。
-6. 不得超出 `<current-change>` 范围。
-7. 问题编号必须与 `PROTOTYPE_CHECK_REPORT.md` 保持一致。
-8. 无法确认的信息必须标记 `【待确认】`。
-9. 若问题同时影响 display 与 acceptance，必须分别说明修复落点。
-10. 若问题仅为 display 观感问题，默认不影响 acceptance 门禁优先级。
+1. 严重度口径必须与 `prototype-check` 一致：`阻塞（Blocker）`、`重要（Major）`、`建议（Minor/Suggestion）`。
+2. 修复顺序必须为：先 `阻塞`，再 `重要`，最后 `建议`。
+3. display 视觉问题分级规则：
+   - 凡影响 readable/actionable 的 display 视觉问题，最低定级为 `重要（Major）`
+   - 凡阻断主流程或导致页面不可用的 display 视觉问题，必须定级为 `阻塞（Blocker）`
+4. 视觉问题整改优先级必须先于流程状态与一般观感：
+   - 先修复视觉变形（layout deformation）与几何一致性（geometric consistency）阻塞项
+   - 再修复流程与状态问题
+   - 最后处理一般观感与建议项
+5. 复检必须执行强制断点覆盖（breakpoint coverage）：`1440`、`1200`、`992`、`768`、`375`。
+6. 未完成断点复检的问题，不得标记“已关闭”。
+7. 问题关闭必须附复检依据（页面、断点、结果、证据）。
+8. 文档和原型必须同步更新，禁止只改其一。
+9. 必须输出“已关闭问题清单”。
+10. 必须输出“未关闭问题清单”。
+11. 未关闭问题必须写明原因和后续建议。
+12. 不得超出 `<current-change>` 范围。
+13. 问题编号必须与 `PROTOTYPE_CHECK_REPORT.md` 保持一致。
+14. 无法确认的信息必须标记 `【待确认】`。
+15. 若问题同时影响 display 与 acceptance，必须分别说明修复落点。
+16. 若问题仅为 display 观感建议且不影响 readable/actionable，可在后置阶段处理，但不得挤占阻塞视觉几何问题优先级。
 
 ## Workflow
 
@@ -84,13 +95,17 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 
 ### 步骤 3：执行修复
 
-- 先处理 acceptance 阻塞问题，再处理 acceptance 重要问题，最后评估 display 观感建议项。
+- 先修复阻塞级视觉几何问题（layout deformation / geometric consistency）。
+- 再修复流程与状态问题（主路径、异常路径、状态落地）。
+- 最后处理一般观感与建议项（不影响 readable/actionable 的问题）。
 - 同步修订设计文档与原型文件。
 
 ### 步骤 4：复核与回写
 
-- 验证问题是否真正关闭。
+- 逐问题执行断点复检（`1440/1200/992/768/375`），并记录复检证据。
+- 验证问题是否真正关闭；未完成断点复检的条目不得关闭。
 - 将结果写入 `PROTOTYPE_FIX_LOG.md`：已关闭 / 未关闭。
+- 已关闭条目必须包含：页面、断点、复检结果、证据引用。
 
 ### 步骤 5：输出下一步建议
 
@@ -104,7 +119,10 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 - [ ] `PROTOTYPE_FIX_LOG.md` 已包含已关闭与未关闭问题清单。
 - [ ] 未关闭问题均有明确原因与后续处理建议。
 - [ ] 修复内容未超出 `<current-change>`。
-- [ ] acceptance 门禁问题优先于 display 观感问题处理。
+- [ ] 已按“视觉几何阻塞 -> 流程状态 -> 一般观感建议”顺序执行整改。
+- [ ] display 影响 readable/actionable 的问题已按 `重要` 或 `阻塞` 处理，未降级。
+- [ ] 已完成断点覆盖复检（`1440/1200/992/768/375`）。
+- [ ] 未完成断点复检的条目未被标记为已关闭，且关闭条目均附复检依据。
 
 ## Example
 

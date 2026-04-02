@@ -102,6 +102,19 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
    - 按钮可用/禁用与反馈
    - 编辑流程（打开、校验、提交、取消）
    - 弹窗流程（打开、关闭、确认、取消）
+15. 视觉几何硬约束（layout deformation / geometric consistency）：
+   - 强制断点覆盖（breakpoint coverage）：`1440`、`1200`、`992`、`768`、`375`
+   - 关键页面在任一强制断点下不得出现以下问题：
+     - 横向滚动
+     - 布局错位
+     - 组件重叠
+     - 文本溢出
+     - 按钮 / 输入框高度异常
+     - 表格列挤压不可读
+16. 构建后必须执行视觉几何自检：
+   - 自检属于 build 阶段前置门禁，不是建议项
+   - 任一关键页面在任一强制断点不满足 geometric consistency，或影响 readable/actionable，立即判定 build 未通过
+   - build 未通过时，不得进入 `prototype-check`
 
 ## Workflow
 
@@ -156,6 +169,18 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - 检查页面可打开、样式一致、交互链路完整。
 - 若输出两版，检查核心业务路径一致。
 
+### 步骤 7：视觉几何门禁自检（阻塞）
+
+- 对关键页面执行强制断点覆盖检查：`1440`、`1200`、`992`、`768`、`375`。
+- 逐页逐断点检查 layout deformation：
+  - 横向滚动
+  - 布局错位
+  - 组件重叠
+  - 文本溢出
+  - 按钮 / 输入框高度异常
+  - 表格列挤压不可读
+- 若任一页面任一断点不满足 geometric consistency，或影响 readable/actionable，直接阻塞并返回修复，不得流转 `prototype-check`。
+
 ## Quality Gate
 
 - [ ] 仅生成本期范围与 `<current-change>` 页面。
@@ -167,6 +192,8 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - [ ] `display` 版未出现验收辅助区、显式状态矩阵区块和过量实施字段。
 - [ ] `acceptance` 版可承接门禁检查所需状态、字段与辅助信息。
 - [ ] 已产出 `PROTOTYPE_BUILD_NOTES.md` 并登记双轨差异。
+- [ ] 已完成强制断点覆盖（`1440/1200/992/768/375`）并通过视觉几何门禁自检。
+- [ ] 任一关键页面在任一断点出现 layout deformation 且影响 readable/actionable 时，结论必须为 build 不通过且不得进入 `prototype-check`。
 
 ## Example
 
