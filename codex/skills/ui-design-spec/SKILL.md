@@ -39,13 +39,15 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 4. `docs/02-architecture/ARCHITECTURE.md`
 5. `docs/02-architecture/API_CONTRACT.md`
 6. `docs/02-architecture/DATA_MODEL.md`
-7. current change artifact（如项目启用 OpenSpec）：`<current-change>`
-8. 现有设计稿/页面截图（如有）
+7. `docs/02-design/BACKOFFICE_UI_SPEC.md`（后台管理项目强制）
+8. current change artifact（如项目启用 OpenSpec）：`<current-change>`
+9. 现有设计稿/页面截图（如有）
 
 输入降级策略：
 
 - 缺少 `MVP_SCOPE.md` / `OUT_OF_SCOPE.md` / `<current-change>` 时，必须显式标注范围风险为 `【待确认】`。
 - 对缺失但可合理补足的信息，可使用 `【设计推断】`，并注明依据来源。
+- 涉及后台管理页面但缺少 `BACKOFFICE_UI_SPEC.md` 时，结论必须为 `BLOCKED`，并回退执行 `backoffice-ui-spec`。
 
 ## Outputs
 
@@ -69,7 +71,7 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - 本 Skill 只输出设计基线文档，不直接输出 HTML/CSS 原型文件。
 - 设计基线文档必须显式承载“产品体验目标与指标”，不得仅描述页面字段与布局。
 - 后续原型必须可直接验证“产品体验目标与指标”，否则视为阻塞信息缺口。
-- 设计基线文档必须显式承载体验目标编号，并建立 `UX-TARGET -> BUILD-RULE -> UX-BLOCK` 映射。
+- 设计基线文档必须显式承载体验目标编号，并建立 `UX-TARGET -> BUILD-RULE -> BO-RULE -> UX-BLOCK` 映射。
 
 ## Rules
 
@@ -105,9 +107,14 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
    - `UX-TARGET-004`：每个危险动作必须定义风险动作防呆策略，至少包含确认、可撤销、危险分级
    - `UX-TARGET-005`：每个适用页面必须定义默认值与批量操作策略，明确默认值来源、批量入口和批量反馈
 14. 体验目标追溯映射（强制）：
-   - 必须在 `UI_REVIEW_CHECKLIST.md` 显式维护 `UX-TARGET -> BUILD-RULE -> UX-BLOCK` 映射表
-   - 每个 `UX-TARGET` 必须有至少一条 `BUILD-RULE` 与一条 `UX-BLOCK` 对应项
-15. 冷启动规则（强制）：
+   - 必须在 `UI_REVIEW_CHECKLIST.md` 显式维护 `UX-TARGET -> BUILD-RULE -> BO-RULE -> UX-BLOCK` 映射表
+   - 每个 `UX-TARGET` 必须有至少一条 `BUILD-RULE`、一条 `BO-RULE` 与一条 `UX-BLOCK` 对应项
+15. 后台规范消费约束（强制）：
+   - 涉及后台管理页面时，必须消费 `BACKOFFICE_UI_SPEC.md` 中 `BO-RULE-001~010`
+   - `UI_DESIGN_SPEC.md` 必须逐页回写：页面目标、主任务、主/次/危险操作、字段映射、状态标签语义、反馈规则
+   - `UI_DESIGN_SPEC.md` 必须逐页回写：筛选字段清单、查询与重置动作、主操作语义约束（是否含“选中/批量”）、选择机制声明、页面区块白名单
+   - `UI_REVIEW_CHECKLIST.md` 必须逐项回写 `BO-RULE-001~010` 的可判定检查项
+16. 冷启动规则（强制）：
    - 若目标目录不存在，先创建目录。
    - 若目标文件不存在，按本 Skill 的最小章节结构创建完整文档。
    - 若目标文件状态为 `模板`，整文件覆盖为正式产物结构。
@@ -139,6 +146,7 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - 提取 In Scope、Out of Scope、current change 边界。
 - 生成页面候选清单，并排除范围外页面。
 - 明确哪些信息属于共享基线，哪些只属于 display / acceptance 其中一轨。
+- 若页面类型包含“后台管理”，必须读取并对齐 `BACKOFFICE_UI_SPEC.md` 的 `BO-RULE-001~010`；缺失则 `BLOCKED`。
 
 ### 步骤 2：构建共享页面与流程基线
 
@@ -148,7 +156,17 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - 对后台管理页面必须额外声明：
   - 页面是否为列表页
   - 分页策略
+  - 筛选字段清单（至少 1 个）
+  - 查询与重置动作（必须同时存在）
   - 新建/编辑交互载体（默认弹窗）
+  - 页面目标与主任务（Top3）
+  - 主操作（唯一）、次操作、危险操作
+  - 主操作语义约束（文案若含“选中/批量”时必须声明选择机制）
+  - 选择机制声明（无/单选/多选 + 已选反馈）
+  - 技术字段与业务中文标签映射
+  - 状态标签颜色语义、禁用态、可点击态
+  - 空态/加载态/失败态/成功态反馈
+  - 页面区块白名单（允许出现的功能卡片/区块）
 - 对每个页面必须补充“产品体验目标与指标”：
   - `UX-TARGET-001` 关键任务路径（Top3 主任务）
   - `UX-TARGET-002` 首屏决策信息
@@ -179,11 +197,12 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - 产出 `COMPONENT_GUIDELINES.md`：组件变体、状态、禁用条件、组合规则、可访问性要求。
 - 产出 `UI_REVIEW_CHECKLIST.md`：拆分为 `display review` 与 `acceptance review` 两组检查项，并包含分页与新建/编辑交互形态检查。
 - 在 `UI_REVIEW_CHECKLIST.md` 中必须新增体验闭环映射表：
-  - `UX-TARGET-001 -> BUILD-RULE-001/002 -> UX-BLOCK-001`
-  - `UX-TARGET-002 -> BUILD-RULE-005 -> UX-BLOCK-003`
-  - `UX-TARGET-003 -> BUILD-RULE-005 -> UX-BLOCK-003`
-  - `UX-TARGET-004 -> BUILD-RULE-004/006 -> UX-BLOCK-003`
-  - `UX-TARGET-005 -> BUILD-RULE-001/005 -> UX-BLOCK-001/003`
+  - `UX-TARGET-001 -> BUILD-RULE-001/007 -> BO-RULE-001/008 -> UX-BLOCK-001/004`
+  - `UX-TARGET-002 -> BUILD-RULE-005/009 -> BO-RULE-001/010 -> UX-BLOCK-003/006`
+  - `UX-TARGET-003 -> BUILD-RULE-005/008 -> BO-RULE-002/009 -> UX-BLOCK-003/005`
+  - `UX-TARGET-004 -> BUILD-RULE-004/006 -> BO-RULE-003/006 -> UX-BLOCK-003`
+  - `UX-TARGET-005 -> BUILD-RULE-007/008 -> BO-RULE-004/009 -> UX-BLOCK-004/005`
+- 在 `UI_REVIEW_CHECKLIST.md` 中必须新增后台 Fail-fast 清单（`BO-RULE-001~010`），任一缺失标记为阻塞。
 
 ### 步骤 6：交付下游输入
 
@@ -198,10 +217,14 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - [ ] `DISPLAY_PROTOTYPE_SPEC.md` 已明确隐藏规则、动作后置规则与展示优先级。
 - [ ] `ACCEPTANCE_PROTOTYPE_SPEC.md` 已明确状态覆盖、关键字段、门禁可见性要求。
 - [ ] `UI_REVIEW_CHECKLIST.md` 已区分 display / acceptance 两类检查。
+- [ ] 后台管理页面已消费 `BACKOFFICE_UI_SPEC.md`，并覆盖 `BO-RULE-001~010`。
 - [ ] 后台管理列表页已声明分页策略，未出现“由原型阶段自行决定是否分页”。
+- [ ] 后台管理列表页已声明筛选字段清单，且包含“查询+重置”动作。
 - [ ] 后台管理新建/编辑已声明交互载体，默认弹窗，例外情况有明确依据。
+- [ ] 主操作文案含“选中/批量”的页面已声明选择机制与已选反馈口径。
+- [ ] 每个页面已声明页面区块白名单，未声明区块不得进入原型生成。
 - [ ] 每个页面已定义 `UX-TARGET-001/002/003/004/005` 对应内容；任一缺失即阻塞。
-- [ ] `UI_REVIEW_CHECKLIST.md` 已建立 `UX-TARGET -> BUILD-RULE -> UX-BLOCK` 映射，且无断链；任一断链即阻塞。
+- [ ] `UI_REVIEW_CHECKLIST.md` 已建立 `UX-TARGET -> BUILD-RULE -> BO-RULE -> UX-BLOCK` 映射，且无断链；任一断链即阻塞。
 - [ ] 设计基线产物可被后续原型直接验证上述体验目标与指标；若无法验证，结论必须为 FAIL 且阻塞进入下游。
 - [ ] 所有 `【待确认】` 与 `【设计推断】` 已显式标记并附依据。
 - [ ] 输出可直接进入 `prototype-build`，无阻塞信息缺口。
@@ -246,17 +269,19 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - 批量操作或默认值策略：默认筛选条件必须显式定义，批量启用/停用必须定义入口与批量反馈
 
 6. 体验闭环映射示例
-- `UX-TARGET-001`（关键任务路径） -> `BUILD-RULE-001`（分页区完整） -> `UX-BLOCK-001`（分页覆盖缺失）
-- `UX-TARGET-003`（步数上限） -> `BUILD-RULE-005`（关键路径无断链/无死路返回/无隐藏入口） -> `UX-BLOCK-003`（编辑闭环缺失）
+- `UX-TARGET-001`（关键任务路径） -> `BUILD-RULE-001`（分页区完整） -> `BO-RULE-008`（表格/筛选/分页闭环） -> `UX-BLOCK-001`（分页覆盖缺失）
+- `UX-TARGET-003`（步数上限） -> `BUILD-RULE-005`（关键路径无断链/无死路返回/无隐藏入口） -> `BO-RULE-002/007`（主按钮唯一/反馈闭环） -> `UX-BLOCK-003`（编辑闭环缺失）
 
 ## 版本信息
 
-- 当前版本：v1.2.0
-- 更新时间：2026-04-02
+- 当前版本：v1.4.0
+- 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.4.0 | 2026-04-03 | 【修改】接入 `BO-RULE-009/010`，新增后台筛选闭环、主操作语义一致性、页面区块白名单的设计输入强约束。 |
+| v1.3.0 | 2026-04-03 | 【修改】接入 `BACKOFFICE_UI_SPEC.md` 与 `BO-RULE-001~008`，新增后台 Fail-fast 消费与 `UX-TARGET -> BUILD-RULE -> BO-RULE -> UX-BLOCK` 映射。 |
 | v1.2.0 | 2026-04-02 | 【修改】新增 UX-TARGET 编号与 `UX-TARGET -> BUILD-RULE -> UX-BLOCK` 闭环映射规则，强化追溯与门禁一致性。 |
 | v1.1.0 | 2026-04-02 | 【修改】补强产品体验目标与指标，新增可验证性与阻塞/FAIL 门禁约束。 |

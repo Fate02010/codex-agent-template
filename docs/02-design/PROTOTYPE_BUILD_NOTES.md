@@ -4,7 +4,7 @@
 
 - 文档类型：模板（首次执行 Skill 后覆盖）
 - 生成 Skill：`prototype-build`
-- 上游输入：`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md`、`STATE_MATRIX.md`、`DISPLAY_PROTOTYPE_SPEC.md`、`ACCEPTANCE_PROTOTYPE_SPEC.md`
+- 上游输入：`UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md`、`DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md`、`STATE_MATRIX.md`、`DISPLAY_PROTOTYPE_SPEC.md`、`ACCEPTANCE_PROTOTYPE_SPEC.md`、`BACKOFFICE_UI_SPEC.md`
 - 版本：v0.0
 - 日期：—
 - 状态：模板 → 草稿 → 已冻结
@@ -70,6 +70,18 @@
 | 状态显式入口 |  |  |
 | 验收辅助信息 |  |  |
 | 契约核对字段 |  |  |
+
+## 7. BUILD-RULE 自检结果
+
+| 页面编号 | BUILD-RULE | 结果（PASS/FAIL） | 证据位置 |
+|---|---|---|---|
+| SCR-XXX-001 | BUILD-RULE-001 |  |  |
+
+## 8. BO-RULE 自检结果（后台管理）
+
+| 页面编号 | BO-RULE | 结果（PASS/FAIL） | 证据位置 |
+|---|---|---|---|
+| SCR-XXX-001 | BO-RULE-001 |  |  |
 
 ## 变更记录
 

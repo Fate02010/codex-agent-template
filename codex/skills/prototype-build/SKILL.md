@@ -37,15 +37,17 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 6. `docs/02-design/STATE_MATRIX.md`
 7. `docs/02-design/DISPLAY_PROTOTYPE_SPEC.md`
 8. `docs/02-design/ACCEPTANCE_PROTOTYPE_SPEC.md`
-9. `docs/01-requirements/MVP_SCOPE.md`
-10. `docs/01-requirements/OUT_OF_SCOPE.md`
-11. current change artifact（如项目启用 OpenSpec）：`<current-change>`
-12. 构建参数（可选）：`build_profile=display|acceptance|both`（默认 `display`）
+9. `docs/02-design/BACKOFFICE_UI_SPEC.md`（后台管理页面强制）
+10. `docs/01-requirements/MVP_SCOPE.md`
+11. `docs/01-requirements/OUT_OF_SCOPE.md`
+12. current change artifact（如项目启用 OpenSpec）：`<current-change>`
+13. 构建参数（可选）：`build_profile=display|acceptance|both`（默认 `display`）
 
 输入降级策略：
 
 - 双轨专用文档缺失时，不得私自猜测模式差异。
 - 必要信息不足时标记 `【待确认】`，禁止私自扩展范围。
+- 涉及后台管理页面但缺少 `BACKOFFICE_UI_SPEC.md` 时，结论必须为 build FAIL，并回退执行 `backoffice-ui-spec` / `ui-design-spec`。
 
 ## Outputs
 
@@ -123,8 +125,18 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 20. 交互效率硬约束（强制）：
    - `BUILD-RULE-005`：关键任务路径必须无断链、无死路返回、无隐藏入口
    - `BUILD-RULE-005`：关键任务步数必须满足 `UX-TARGET-003` 定义的上限
-21. 任一硬约束未满足时，结论必须为 build FAIL，且必须阻塞进入 `prototype-check`。
-22. 视觉几何硬约束（layout deformation / geometric consistency）：
+21. 后台高保真规范硬约束（强制）：
+   - 涉及后台管理页面时，必须满足 `BO-RULE-001~010`
+   - 任一页面出现信息层级不清晰、主按钮不唯一、技术字段直出、状态语义缺失、反馈闭环缺失、表格/筛选/分页闭环缺失、主操作语义不一致、页面区块越界，直接判定 build FAIL
+22. 列表筛选闭环硬约束（强制）：
+   - `BUILD-RULE-007`：含列表页面必须具备筛选区，且至少包含 1 个筛选字段
+   - `BUILD-RULE-007`：筛选区必须同时包含“查询”与“重置”动作
+23. 主操作语义一致性硬约束（强制）：
+   - `BUILD-RULE-008`：主操作文案含“选中/批量”时，页面必须存在选择机制（单选/多选）与已选反馈
+24. 页面区块白名单硬约束（强制）：
+   - `BUILD-RULE-009`：页面出现的功能卡片/区块必须在 `UI_DESIGN_SPEC.md` 的页面区块白名单声明
+25. 任一硬约束未满足时，结论必须为 build FAIL，且必须阻塞进入 `prototype-check`。
+26. 视觉几何硬约束（layout deformation / geometric consistency）：
    - 强制断点覆盖（breakpoint coverage）：`1440`、`1200`、`992`、`768`、`375`
    - 关键页面在任一强制断点下不得出现以下问题：
      - 横向滚动
@@ -133,7 +145,7 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
      - 文本溢出
      - 按钮 / 输入框高度异常
      - 表格列挤压不可读
-23. 构建后必须执行视觉几何自检：
+27. 构建后必须执行视觉几何自检：
    - 自检属于 build 阶段前置门禁，不是建议项
    - 任一关键页面在任一强制断点不满足 geometric consistency，或影响 readable/actionable，立即判定 build 未通过
    - build 未通过时，不得进入 `prototype-check`
@@ -195,7 +207,8 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
   - 哪些元素只在 acceptance 可见
   - 哪些动作在 display 被后置或隐藏
   - 页面清单、资产说明、已知限制
-  - `BUILD-RULE-001~006` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
+  - `BUILD-RULE-001~009` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
+  - `BO-RULE-001~010` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
 
 ### 步骤 6：自检
 
@@ -210,7 +223,11 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - 检查弹窗表单是否具备取消、确认动作。
 - 检查弹窗表单是否具备字段级校验反馈、全局失败反馈、提交成功状态回写。
 - 检查关键任务路径是否无断链、无死路返回、无隐藏入口，且步数满足上游步数上限。
-- 将 `BUILD-RULE-001~006` 检查结果写入 `PROTOTYPE_BUILD_NOTES.md` 结构化自检结果表。
+- 检查含列表页面是否具备筛选字段与“查询+重置”动作（`BUILD-RULE-007`）。
+- 检查主操作文案含“选中/批量”的页面是否具备选择机制与已选反馈（`BUILD-RULE-008`）。
+- 检查页面功能卡片/区块是否全部在页面白名单声明（`BUILD-RULE-009`）。
+- 检查后台页面是否满足 `BO-RULE-001~010`（信息层级、主按钮唯一、操作优先级、字段映射、文案中文化、状态语义、反馈闭环、列表闭环、语义一致性、区块白名单）。
+- 将 `BUILD-RULE-001~009` 与 `BO-RULE-001~010` 检查结果写入 `PROTOTYPE_BUILD_NOTES.md` 结构化自检结果表。
 - 任一检查项不满足，结论必须为 build FAIL，必须阻塞并返回修复，不得进入 `prototype-check`。
 
 ### 步骤 8：视觉几何门禁自检（阻塞）
@@ -240,10 +257,23 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - [ ] `BUILD-RULE-004`：弹窗表单必须具备取消、确认动作；任一缺失即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-005`：关键任务路径必须无断链、无死路返回、无隐藏入口，且步数不超过上游上限；任一不满足即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-006`：弹窗表单必须具备字段级校验反馈、全局失败反馈、提交成功状态回写；任一缺失即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-007`：含列表页面必须具备筛选区（>=1 筛选字段）且同时包含查询与重置动作；任一缺失即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-008`：主操作文案含“选中/批量”时必须具备选择机制与已选反馈；任一缺失即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-009`：页面功能卡片/区块必须在页面白名单声明；出现未声明区块即阻塞且 build FAIL。
+- [ ] `BO-RULE-001`：页面目标、主任务、首屏决策信息齐备；任一缺失即阻塞且 build FAIL。
+- [ ] `BO-RULE-002`：每页仅 1 个主按钮，且位置一致；不满足即阻塞且 build FAIL。
+- [ ] `BO-RULE-003`：主/次/危险操作分级清晰，危险操作不与主操作混淆；不满足即阻塞且 build FAIL。
+- [ ] `BO-RULE-004`：字段展示存在“技术字段 -> 业务中文标签”映射；缺失即阻塞且 build FAIL。
+- [ ] `BO-RULE-005`：UI 文案无技术字段直出，术语中文化且统一；不满足即阻塞且 build FAIL。
+- [ ] `BO-RULE-006`：状态标签定义颜色语义、禁用态、可点击态；缺任一即阻塞且 build FAIL。
+- [ ] `BO-RULE-007`：反馈覆盖空态/加载态/失败态/成功态；缺任一即阻塞且 build FAIL。
+- [ ] `BO-RULE-008`：列表页具备筛选-表格-分页完整闭环；缺任一即阻塞且 build FAIL。
+- [ ] `BO-RULE-009`：主操作语义与选择机制一致；不满足即阻塞且 build FAIL。
+- [ ] `BO-RULE-010`：页面区块白名单声明完整且无越界区块；不满足即阻塞且 build FAIL。
 - [ ] 样式资产拆分完整（`tokens/layout/components/styles`）。
 - [ ] `display` 版未出现验收辅助区、显式状态矩阵区块和过量实施字段。
 - [ ] `acceptance` 版可承接门禁检查所需状态、字段与辅助信息。
-- [ ] 已产出 `PROTOTYPE_BUILD_NOTES.md` 并登记双轨差异，且包含 `BUILD-RULE-001~006` 结构化自检结果表。
+- [ ] 已产出 `PROTOTYPE_BUILD_NOTES.md` 并登记双轨差异，且包含 `BUILD-RULE-001~009` 与 `BO-RULE-001~010` 结构化自检结果表。
 - [ ] 已完成强制断点覆盖（`1440/1200/992/768/375`）并通过视觉几何门禁自检。
 - [ ] 任一关键页面在任一断点出现 layout deformation 且影响 readable/actionable 时，结论必须为 build FAIL 且阻塞进入 `prototype-check`。
 - [ ] 任一硬规则不满足时，结论必须为 build FAIL 且阻塞进入 `prototype-check`。
@@ -281,12 +311,14 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 
 ## 版本信息
 
-- 当前版本：v1.2.0
-- 更新时间：2026-04-02
+- 当前版本：v1.4.0
+- 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.4.0 | 2026-04-03 | 【修改】新增 `BUILD-RULE-007/008/009`（筛选闭环、主操作语义一致性、页面区块白名单）并扩展 `BO-RULE-001~010` 构建门禁。 |
+| v1.3.0 | 2026-04-03 | 【修改】接入 `BACKOFFICE_UI_SPEC.md` 与 `BO-RULE-001~008` 构建期强制自检，命中即 build FAIL 并阻塞下游。 |
 | v1.2.0 | 2026-04-02 | 【修改】新增 BUILD-RULE-001~006、关键路径效率硬校验与结构化自检结果表，强化构建期可判定性。 |
 | v1.1.0 | 2026-04-02 | 【修改】将分页、模拟态弹窗、行内编辑预填、弹窗反馈闭环升级为构建阻塞规则并纳入 FAIL 门禁。 |
