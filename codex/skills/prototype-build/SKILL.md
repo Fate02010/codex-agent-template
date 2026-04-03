@@ -42,6 +42,9 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 11. `docs/01-requirements/OUT_OF_SCOPE.md`
 12. current change artifact（如项目启用 OpenSpec）：`<current-change>`
 13. 构建参数（可选）：`build_profile=display|acceptance|both`（默认 `display`）
+14. 视觉门禁参数（可选）：
+    - `visual_gate=on|off`（默认 `on`）
+    - `visual_gate_mode=build|strict`（默认 `build`）
 
 输入降级策略：
 
@@ -70,6 +73,10 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 通用输出：
 
 1. `docs/02-design/PROTOTYPE_BUILD_NOTES.md`
+2. `docs/02-design/.visual-check/<run-id>/audit-result.json`
+3. `docs/02-design/.visual-check/<run-id>/screenshots/<side>/<breakpoint>/*.png`
+4. `docs/02-design/.visual-check/<run-id>/VISUAL_GATE_REPORT.md`
+5. `docs/02-design/.visual-check/latest`（指向最新一次视觉门禁结果）
 
 ## Rules
 
@@ -126,7 +133,7 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
    - `BUILD-RULE-005`：关键任务路径必须无断链、无死路返回、无隐藏入口
    - `BUILD-RULE-005`：关键任务步数必须满足 `UX-TARGET-003` 定义的上限
 21. 后台高保真规范硬约束（强制）：
-   - 涉及后台管理页面时，必须满足 `BO-RULE-001~010`
+   - 涉及后台管理页面时，必须满足 `BO-RULE-001~022`
    - 任一页面出现信息层级不清晰、主按钮不唯一、技术字段直出、状态语义缺失、反馈闭环缺失、表格/筛选/分页闭环缺失、主操作语义不一致、页面区块越界，直接判定 build FAIL
 22. 列表筛选闭环硬约束（强制）：
    - `BUILD-RULE-007`：含列表页面必须具备筛选区，且至少包含 1 个筛选字段
@@ -136,7 +143,15 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 24. 页面区块白名单硬约束（强制）：
    - `BUILD-RULE-009`：页面出现的功能卡片/区块必须在 `UI_DESIGN_SPEC.md` 的页面区块白名单声明
 25. 任一硬约束未满足时，结论必须为 build FAIL，且必须阻塞进入 `prototype-check`。
-26. 视觉几何硬约束（layout deformation / geometric consistency）：
+26. 后台排版结构硬约束（强制）：
+   - `BUILD-RULE-010`：页面类型必须与布局模板匹配，且主任务关键区块首屏可见
+   - `BUILD-RULE-011`：列表主任务页禁止前置重表单压制列表主视图
+   - `BUILD-RULE-012`：列表页工具栏顺序必须为筛选 -> 结果 -> 分页
+   - `BUILD-RULE-013`：关键任务路径滚动预算默认 <= 1 屏，超限需有上游例外声明
+   - `BUILD-RULE-014`：分页语义必须完整且筛选后默认重置到第 1 页
+   - `BUILD-RULE-015`：同页不得并列双主流程（双主按钮/双主任务链）
+27. 任一 `BUILD-RULE-010~015` 不满足时，结论必须为 build FAIL 并阻塞进入 `prototype-check`。
+28. 视觉几何硬约束（layout deformation / geometric consistency）：
    - 强制断点覆盖（breakpoint coverage）：`1440`、`1200`、`992`、`768`、`375`
    - 关键页面在任一强制断点下不得出现以下问题：
      - 横向滚动
@@ -145,10 +160,23 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
      - 文本溢出
      - 按钮 / 输入框高度异常
      - 表格列挤压不可读
-27. 构建后必须执行视觉几何自检：
+29. 构建后必须执行视觉几何自检：
    - 自检属于 build 阶段前置门禁，不是建议项
    - 任一关键页面在任一强制断点不满足 geometric consistency，或影响 readable/actionable，立即判定 build 未通过
    - build 未通过时，不得进入 `prototype-check`
+30. 当 `visual_gate=on` 时，必须执行自动化视觉门禁脚本（Playwright + Chromium）：
+   - 脚本入口：`scripts/run_visual_gate.sh --phase build --profile <build_profile>`
+   - 自动安装策略：若 `playwright/chromium` 不存在，脚本必须先自动安装再执行检查
+   - 自动安装失败时，结论必须为 `BLOCKED`，并输出失败原因与重试命令
+31. 自动化视觉门禁脚本必须至少覆盖：
+   - 五个断点截图：`1440/1200/992/768/375`
+   - 几何检查：横向滚动、错位、重叠、文本溢出、控件高度异常、表格可读性
+   - 点击检查：导航选中态、新建/编辑弹窗、筛选查询/重置、分页可点击闭环
+32. 自动化视觉门禁结果必须包含：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
+33. 自动化门禁结果写入 `docs/02-design/.visual-check/<run-id>/audit-result.json`，并同步生成 `VISUAL_GATE_REPORT.md`。
+34. `visual_gate_mode=strict` 时，`Major` 及以上问题均阻塞进入 `prototype-check`；`visual_gate_mode=build` 时，仅 `Blocker` 阻塞。
+35. 自动化门禁脚本返回非 0 时，结论必须为 build FAIL；不得以人工观察替代通过。
+36. `visual_gate=off` 仅允许在上游明确豁免时使用，并必须在 `PROTOTYPE_BUILD_NOTES.md` 标记 `【风险】`。
 
 ## Workflow
 
@@ -160,6 +188,8 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
   - `acceptance`：仅输出内部验收版
   - `both`：同时输出两版
 - 未指定时默认按 `display` 执行。
+- 读取 `visual_gate`，未指定时默认 `on`。
+- 读取 `visual_gate_mode`，未指定时默认 `build`。
 
 ### 步骤 1：锁定构建范围
 
@@ -207,8 +237,8 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
   - 哪些元素只在 acceptance 可见
   - 哪些动作在 display 被后置或隐藏
   - 页面清单、资产说明、已知限制
-  - `BUILD-RULE-001~009` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
-  - `BO-RULE-001~010` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
+  - `BUILD-RULE-001~015` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
+  - `BO-RULE-001~022` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
 
 ### 步骤 6：自检
 
@@ -226,8 +256,14 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - 检查含列表页面是否具备筛选字段与“查询+重置”动作（`BUILD-RULE-007`）。
 - 检查主操作文案含“选中/批量”的页面是否具备选择机制与已选反馈（`BUILD-RULE-008`）。
 - 检查页面功能卡片/区块是否全部在页面白名单声明（`BUILD-RULE-009`）。
-- 检查后台页面是否满足 `BO-RULE-001~010`（信息层级、主按钮唯一、操作优先级、字段映射、文案中文化、状态语义、反馈闭环、列表闭环、语义一致性、区块白名单）。
-- 将 `BUILD-RULE-001~009` 与 `BO-RULE-001~010` 检查结果写入 `PROTOTYPE_BUILD_NOTES.md` 结构化自检结果表。
+- 检查页面类型与布局模板是否匹配，且主任务关键区块是否首屏可见（`BUILD-RULE-010`）。
+- 检查列表页是否存在前置重表单压制主列表（`BUILD-RULE-011`）。
+- 检查工具栏顺序是否符合筛选 -> 结果 -> 分页（`BUILD-RULE-012`）。
+- 检查关键任务路径滚动预算是否超限（`BUILD-RULE-013`）。
+- 检查分页语义是否完整，且筛选后是否重置第 1 页（`BUILD-RULE-014`）。
+- 检查同页是否存在双主流程冲突（`BUILD-RULE-015`）。
+- 检查后台页面是否满足 `BO-RULE-001~022`（含页面类型匹配、首屏可见、跨屏依赖、工具栏顺序、分页语义等）。
+- 将 `BUILD-RULE-001~015` 与 `BO-RULE-001~022` 检查结果写入 `PROTOTYPE_BUILD_NOTES.md` 结构化自检结果表。
 - 任一检查项不满足，结论必须为 build FAIL，必须阻塞并返回修复，不得进入 `prototype-check`。
 
 ### 步骤 8：视觉几何门禁自检（阻塞）
@@ -241,6 +277,17 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
   - 按钮 / 输入框高度异常
   - 表格列挤压不可读
 - 若任一页面任一断点不满足 geometric consistency，或影响 readable/actionable，直接阻塞并返回修复，不得流转 `prototype-check`。
+
+### 步骤 9：执行自动化视觉门禁（Playwright + Chromium）
+
+- 当 `visual_gate=on` 时，执行：
+  - `scripts/run_visual_gate.sh --phase build --profile <build_profile>`
+- 脚本职责：
+  - 自动检测 `node/npx` 可用性
+  - 自动安装 `playwright` 与 `chromium`（若缺失）
+  - 生成截图、JSON 结果与 Markdown 报告
+- 若脚本返回非 0（包含安装失败、执行失败、命中阻塞），结论必须为 build FAIL 并停止流转。
+- 若 `visual_gate=off`，必须在 `PROTOTYPE_BUILD_NOTES.md` 记录豁免理由、风险影响、责任人。
 
 ## Quality Gate
 
@@ -260,6 +307,12 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - [ ] `BUILD-RULE-007`：含列表页面必须具备筛选区（>=1 筛选字段）且同时包含查询与重置动作；任一缺失即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-008`：主操作文案含“选中/批量”时必须具备选择机制与已选反馈；任一缺失即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-009`：页面功能卡片/区块必须在页面白名单声明；出现未声明区块即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-010`：页面类型与布局模板匹配，且主任务关键区块首屏可见；不满足即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-011`：列表页禁止前置重表单压制主列表；不满足即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-012`：工具栏顺序为筛选 -> 结果 -> 分页；不满足即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-013`：关键任务路径滚动预算默认 <= 1 屏；超限且无例外即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-014`：分页语义完整且筛选后默认重置第 1 页；不满足即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-015`：同页无双主流程冲突；不满足即阻塞且 build FAIL。
 - [ ] `BO-RULE-001`：页面目标、主任务、首屏决策信息齐备；任一缺失即阻塞且 build FAIL。
 - [ ] `BO-RULE-002`：每页仅 1 个主按钮，且位置一致；不满足即阻塞且 build FAIL。
 - [ ] `BO-RULE-003`：主/次/危险操作分级清晰，危险操作不与主操作混淆；不满足即阻塞且 build FAIL。
@@ -270,13 +323,19 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - [ ] `BO-RULE-008`：列表页具备筛选-表格-分页完整闭环；缺任一即阻塞且 build FAIL。
 - [ ] `BO-RULE-009`：主操作语义与选择机制一致；不满足即阻塞且 build FAIL。
 - [ ] `BO-RULE-010`：页面区块白名单声明完整且无越界区块；不满足即阻塞且 build FAIL。
+- [ ] `BO-RULE-011~022`：页面类型匹配、首屏可见、前置重表单限制、跨屏依赖、工具栏顺序、分页语义、筛选后分页重置等均满足；任一不满足即阻塞且 build FAIL。
 - [ ] 样式资产拆分完整（`tokens/layout/components/styles`）。
 - [ ] `display` 版未出现验收辅助区、显式状态矩阵区块和过量实施字段。
 - [ ] `acceptance` 版可承接门禁检查所需状态、字段与辅助信息。
-- [ ] 已产出 `PROTOTYPE_BUILD_NOTES.md` 并登记双轨差异，且包含 `BUILD-RULE-001~009` 与 `BO-RULE-001~010` 结构化自检结果表。
+- [ ] 已产出 `PROTOTYPE_BUILD_NOTES.md` 并登记双轨差异，且包含 `BUILD-RULE-001~015` 与 `BO-RULE-001~022` 结构化自检结果表。
 - [ ] 已完成强制断点覆盖（`1440/1200/992/768/375`）并通过视觉几何门禁自检。
 - [ ] 任一关键页面在任一断点出现 layout deformation 且影响 readable/actionable 时，结论必须为 build FAIL 且阻塞进入 `prototype-check`。
 - [ ] 任一硬规则不满足时，结论必须为 build FAIL 且阻塞进入 `prototype-check`。
+- [ ] `visual_gate=on` 时已执行 `run_visual_gate.sh`，并产出 `audit-result.json` 与 `VISUAL_GATE_REPORT.md`。
+- [ ] 自动化视觉门禁已覆盖导航选中态、新建/编辑弹窗、筛选查询/重置、分页可点击闭环。
+- [ ] 自动化视觉门禁结果已包含 `layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
+- [ ] `visual_gate_mode=build` 下 `Blocker` 阻塞已生效；`visual_gate_mode=strict` 下 `Major` 阻塞已生效。
+- [ ] 自动安装 `playwright/chromium` 失败时已输出 `BLOCKED` 并终止构建。
 
 ## Example
 
@@ -311,13 +370,15 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 
 ## 版本信息
 
-- 当前版本：v1.4.0
+- 当前版本：v1.6.0
 - 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.6.0 | 2026-04-03 | 【修改】新增 `BUILD-RULE-010~015` 与后台排版结构门禁，扩展 `BO-RULE` 消费范围到 `001~022` 并要求输出布局治理度量字段。 |
+| v1.5.0 | 2026-04-03 | 【修改】新增自动化视觉门禁参数（`visual_gate`/`visual_gate_mode`）、`run_visual_gate.sh` 执行要求与 Playwright+Chromium 自动安装策略。 |
 | v1.4.0 | 2026-04-03 | 【修改】新增 `BUILD-RULE-007/008/009`（筛选闭环、主操作语义一致性、页面区块白名单）并扩展 `BO-RULE-001~010` 构建门禁。 |
 | v1.3.0 | 2026-04-03 | 【修改】接入 `BACKOFFICE_UI_SPEC.md` 与 `BO-RULE-001~008` 构建期强制自检，命中即 build FAIL 并阻塞下游。 |
 | v1.2.0 | 2026-04-02 | 【修改】新增 BUILD-RULE-001~006、关键路径效率硬校验与结构化自检结果表，强化构建期可判定性。 |

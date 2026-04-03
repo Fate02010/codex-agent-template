@@ -47,6 +47,9 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 
 - `frontend/design-prototype/display/*.html`
 - `frontend/design-prototype/display/assets/*.css`
+- 视觉门禁参数（可选）：
+  - `visual_gate_source=latest|rerun`（默认 `latest`）
+  - `visual_gate_profile=acceptance|both`（默认 `both`）
 
 输入降级策略：
 
@@ -57,6 +60,9 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 ## Outputs
 
 1. `docs/02-design/PROTOTYPE_CHECK_REPORT.md`
+2. `docs/02-design/.visual-check/<run-id>/audit-result.json`
+3. `docs/02-design/.visual-check/<run-id>/VISUAL_GATE_REPORT.md`
+4. `docs/02-design/.visual-check/<run-id>/screenshots/<side>/<breakpoint>/*.png`
 
 报告必须包含：
 
@@ -120,7 +126,13 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - `UX-BLOCK-004`：列表筛选闭环缺失（对应 `BUILD-RULE-007`，追溯 `UX-TARGET-001/005`）
    - `UX-BLOCK-005`：主操作语义与选择机制不一致（对应 `BUILD-RULE-008`，追溯 `UX-TARGET-003/005`）
    - `UX-BLOCK-006`：页面区块越界（对应 `BUILD-RULE-009`，追溯 `UX-TARGET-002/003`）
-11. 命中 `UX-BLOCK-001~006` 任一项时，结论必须为 FAIL，且不允许进入 `dev-implement`。
+   - `UX-BLOCK-007`：主任务首屏不可见（对应 `BUILD-RULE-010`，追溯 `UX-TARGET-001/002`）
+   - `UX-BLOCK-008`：列表前置重表单或跨屏依赖（对应 `BUILD-RULE-011/013`，追溯 `UX-TARGET-001/003`）
+   - `UX-BLOCK-009`：页面类型与布局模板不匹配（对应 `BUILD-RULE-010`，追溯 `UX-TARGET-001`）
+   - `UX-BLOCK-010`：同页双主流程冲突（对应 `BUILD-RULE-015`，追溯 `UX-TARGET-003`）
+   - `UX-BLOCK-011`：分页语义缺失或不可达（对应 `BUILD-RULE-014`，追溯 `UX-TARGET-005`）
+   - `UX-BLOCK-012`：筛选后分页未重置（对应 `BUILD-RULE-014`，追溯 `UX-TARGET-005`）
+11. 命中 `UX-BLOCK-001~012` 任一项时，结论必须为 FAIL，且不允许进入 `dev-implement`。
 12. `UX-BLOCK-003` 判定必须同时覆盖以下项：
    - 编辑弹窗无预填当前行数据
    - 缺少字段级校验反馈
@@ -135,6 +147,18 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - `BO-RULE-008` 表格闭环：筛选/表格/分页任一关键要素缺失即 FAIL
    - `BO-RULE-009` 主操作语义一致：主按钮文案含“选中/批量”但无选择机制或已选反馈即 FAIL
    - `BO-RULE-010` 页面区块白名单：出现未声明功能卡片/区块即 FAIL
+   - `BO-RULE-011` 页面类型与布局模板匹配：不匹配即 FAIL
+   - `BO-RULE-012` 主任务首屏可见：首屏看不到主任务关键区块即 FAIL
+   - `BO-RULE-013` 列表前置重表单限制：出现“上重表单下长列表”且无解耦策略即 FAIL
+   - `BO-RULE-014` 跨屏依赖禁止：关键任务滚动预算超限且无例外依据即 FAIL
+   - `BO-RULE-015` 双主流程冲突禁止：同层双主流程/双主按钮抢焦点即 FAIL
+   - `BO-RULE-016` 工具栏顺序规范：筛选/结果/分页顺序缺失即 FAIL
+   - `BO-RULE-017` 列表闭环优先级：首屏无列表闭环关键元素即 FAIL
+   - `BO-RULE-018` 行操作一致性：行操作入口漂移或缺失即 FAIL
+   - `BO-RULE-019` 批量语义一致：批量文案无选择机制/已选反馈即 FAIL
+   - `BO-RULE-020` 表单复杂度分层：复杂表单无分层组织即 FAIL
+   - `BO-RULE-021` 分页语义与可达性：分页核心语义缺失或不可达即 FAIL
+   - `BO-RULE-022` 筛选后分页重置：筛选/排序后未回到第 1 页即 FAIL
 15. 命中任一后台 Fail-fast 门禁项时，必须直接判定 `阻塞（Blocker）`，不得降级为建议。
 16. 主问题清单中的阻塞项必须填写关联 `UX-TARGET`、关联 `BUILD-RULE` 与关联 `BO-RULE` 字段。
 17. 无法确认的信息必须标记 `【待确认】`。
@@ -149,6 +173,24 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - 若 `PROTOTYPE_CHECK_REPORT.md` 不存在，按本 Skill 内置结构创建完整报告。
    - 若报告状态为 `模板`，整文件覆盖为正式产物结构。
    - 若报告状态不为 `模板`，按章节标题增量更新，不按章节序号硬编码。
+22. 自动化视觉门禁执行规则（强制）：
+   - `visual_gate_source=latest` 时，优先读取 `docs/02-design/.visual-check/latest/audit-result.json`
+   - 当 `latest` 缺失或不可读时，必须自动回退执行：
+     - `scripts/run_visual_gate.sh --phase check --profile <visual_gate_profile>`
+23. 自动安装规则（强制）：
+   - 自动化脚本必须检测并自动安装 `playwright` 与 `chromium`（若缺失）
+   - 安装失败时，结论必须为 `BLOCKED`，并写明失败原因、重试命令、影响范围
+24. 自动化门禁结果消费规则（强制）：
+   - 必须将 `audit-result.json` 中的 `Blocker/Major/Minor` 映射到主问题清单
+   - `UX-BLOCK-*` 与 `BO-RULE Fail-fast` 命中必须保持阻塞级别，不得降级
+   - 必须消费以下布局度量字段：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`
+25. 自动化点击检查必须覆盖：
+   - 导航点击后选中态检查（`.active/.is-active/[aria-current=page]/[aria-selected=true]`）
+   - 新建/编辑点击后弹窗可见检查
+   - 编辑弹窗预填检查
+   - 筛选查询/重置动作可见与可点击检查
+   - 分页上一页/下一页/页码交互检查
+26. 自动化结果命中 `UX-BLOCK-001~012` 任一项时，必须立即 FAIL 并早停。
 
 ## Workflow
 
@@ -195,6 +237,12 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 | UX-BLOCK-004 | 筛选闭环缺失 | 含列表页面缺少筛选字段，或缺少查询/重置动作任一项 | FAIL（阻塞） |
 | UX-BLOCK-005 | 语义一致性缺失 | 主操作文案含“选中/批量”但无选择机制或已选反馈 | FAIL（阻塞） |
 | UX-BLOCK-006 | 页面区块越界 | 页面出现未在白名单声明的功能卡片/区块 | FAIL（阻塞） |
+| UX-BLOCK-007 | 主任务首屏不可见 | 首屏未看到主任务关键区块与关键入口 | FAIL（阻塞） |
+| UX-BLOCK-008 | 列表压制/跨屏依赖 | 列表页出现前置重表单压制主任务，或关键路径滚动预算超限 | FAIL（阻塞） |
+| UX-BLOCK-009 | 页面类型错配 | 页面类型与布局模板不匹配 | FAIL（阻塞） |
+| UX-BLOCK-010 | 双主流程冲突 | 同页并列双主流程或双主按钮抢焦点 | FAIL（阻塞） |
+| UX-BLOCK-011 | 分页语义缺失 | 缺少 prev/next/page/total/current 任一语义 | FAIL（阻塞） |
+| UX-BLOCK-012 | 分页重置缺失 | 筛选/排序后未回到第 1 页 | FAIL（阻塞） |
 
 ## 3.2 后台可冻结门禁（Fail-fast）
 | 编号 | 门禁项 | 判定条件 | 结论 |
@@ -206,6 +254,18 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 | BO-RULE-008 | 表格/筛选/分页闭环 | 缺筛选、表格或分页关键元素任一项 | FAIL（阻塞） |
 | BO-RULE-009 | 主操作语义一致 | 主按钮文案含“选中/批量”但无选择机制或已选反馈 | FAIL（阻塞） |
 | BO-RULE-010 | 页面区块白名单 | 出现未声明的功能卡片/区块 | FAIL（阻塞） |
+| BO-RULE-011 | 页面类型与布局模板匹配 | 页面类型与布局模板不匹配 | FAIL（阻塞） |
+| BO-RULE-012 | 主任务首屏可见 | 首屏看不到主任务关键区块 | FAIL（阻塞） |
+| BO-RULE-013 | 列表前置重表单限制 | 出现“上重表单下长列表”且无解耦策略 | FAIL（阻塞） |
+| BO-RULE-014 | 跨屏依赖禁止 | 关键任务滚动预算超限且无例外依据 | FAIL（阻塞） |
+| BO-RULE-015 | 双主流程冲突禁止 | 同层双主流程/双主按钮抢焦点 | FAIL（阻塞） |
+| BO-RULE-016 | 工具栏顺序规范 | 筛选/结果/分页顺序缺失 | FAIL（阻塞） |
+| BO-RULE-017 | 列表闭环优先级 | 首屏无列表闭环关键元素 | FAIL（阻塞） |
+| BO-RULE-018 | 行操作一致性 | 行操作入口漂移或缺失 | FAIL（阻塞） |
+| BO-RULE-019 | 批量语义一致 | 批量文案无选择机制/已选反馈 | FAIL（阻塞） |
+| BO-RULE-020 | 表单复杂度分层 | 复杂表单无分层组织 | FAIL（阻塞） |
+| BO-RULE-021 | 分页语义与可达性 | 分页语义缺失或不可达 | FAIL（阻塞） |
+| BO-RULE-022 | 筛选后分页重置 | 筛选后未重置至第 1 页 | FAIL（阻塞） |
 
 ## 4. 非门禁观察（display，可选）
 | 编号 | 类型 | 页面 | 观察项 | 影响 | 建议 |
@@ -219,6 +279,22 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 | 版本 | 日期 | 说明 |
 |---|---|---|
 ```
+
+### 步骤 0.5：加载或执行自动化视觉门禁
+
+- 读取 `visual_gate_source`（默认 `latest`）。
+- 读取 `visual_gate_profile`（默认 `both`）。
+- `visual_gate_source=latest`：
+  - 尝试读取 `docs/02-design/.visual-check/latest/audit-result.json`
+  - 若不存在或不可读，自动执行：
+    - `scripts/run_visual_gate.sh --phase check --profile <visual_gate_profile>`
+- `visual_gate_source=rerun`：
+  - 直接执行：
+    - `scripts/run_visual_gate.sh --phase check --profile <visual_gate_profile>`
+- 若脚本执行失败或安装失败：
+  - 输出 `BLOCKED`
+  - 在报告中写明失败原因、重试命令、影响页面
+  - 终止准入判定，不得输出 PASS/有条件通过
 
 ### 步骤 1：建立验收边界
 
@@ -253,6 +329,13 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 9. 对关键路径效率执行专项检查：
    - 关键任务路径必须无断链、无死路返回、无隐藏入口
    - 关键任务步数必须不超过上游 `UX-TARGET-003` 定义的上限
+10. 对后台排版结构执行专项检查：
+   - 页面类型与布局模板是否匹配（`BO-RULE-011` / `UX-BLOCK-009`）
+   - 首屏是否可见主任务关键区块（`BO-RULE-012` / `UX-BLOCK-007`）
+   - 列表页是否存在前置重表单压制（`BO-RULE-013` / `UX-BLOCK-008`）
+   - 关键任务路径是否跨屏依赖（`BO-RULE-014` / `UX-BLOCK-008`）
+   - 同页是否存在双主流程冲突（`BO-RULE-015` / `UX-BLOCK-010`）
+   - 工具栏顺序、分页语义、筛选后分页重置是否完整（`BO-RULE-016/021/022`）
 
 ### 步骤 3：执行契约一致性抽检
 
@@ -271,6 +354,8 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 - 按 `阻塞 > 重要 > 建议` 顺序整理问题。
 - 主问题清单覆盖 acceptance 与 display 两侧可阻塞问题。
 - 每条问题必须带页面、断点、关联 `UX-TARGET`、关联 `BUILD-RULE`、关联 `BO-RULE`、定位描述与证据。
+- 必须优先消费自动化结果：`docs/02-design/.visual-check/<run-id>/audit-result.json`。
+- 自动化结果中的问题必须带入证据路径（截图路径、DOM 快照路径、点击步骤）。
 - 仅不影响 readable/actionable 的 display 事项可单列为“非门禁观察”。
 - 必须优先使用固定阻塞编号输出体验门禁问题：
   - `UX-BLOCK-001`（分页覆盖缺失）
@@ -279,7 +364,13 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
   - `UX-BLOCK-004`（列表筛选闭环缺失）
   - `UX-BLOCK-005`（主操作语义与选择机制不一致）
   - `UX-BLOCK-006`（页面区块越界）
-  - `BO-RULE-001/002/005/006/008/009/010`（后台可冻结门禁 Fail-fast）
+  - `UX-BLOCK-007`（主任务首屏不可见）
+  - `UX-BLOCK-008`（列表压制/跨屏依赖）
+  - `UX-BLOCK-009`（页面类型错配）
+  - `UX-BLOCK-010`（双主流程冲突）
+  - `UX-BLOCK-011`（分页语义缺失）
+  - `UX-BLOCK-012`（分页重置缺失）
+  - `BO-RULE-001~022`（后台可冻结门禁 Fail-fast）
 - 其余问题类型可继续使用：
   - `双轨漂移`
   - `展示过曝`
@@ -292,8 +383,8 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
   - acceptance 是否允许进入 `dev-implement`（是/否）
   - 若 acceptance 缺失或不合格，建议执行 `prototype-build` / `prototype-rectify`
 - 命中任一 FAIL 条件时，结论级别必须为 FAIL，不得降级为观察项。
-- 命中 `UX-BLOCK-001~006` 任一项时，必须写明“阻塞，且不允许进入 `dev-implement`”。
-- 命中任一后台 Fail-fast 门禁项（`BO-RULE-001/002/005/006/008/009/010`）时，必须写明“阻塞，且不允许进入 `dev-implement`”。
+- 命中 `UX-BLOCK-001~012` 任一项时，必须写明“阻塞，且不允许进入 `dev-implement`”。
+- 命中任一后台 Fail-fast 门禁项（`BO-RULE-001~022`）时，必须写明“阻塞，且不允许进入 `dev-implement`”。
 - 命中任一 `UX-BLOCK` 后必须立即结束准入判定，不得继续输出“有条件通过”或等价结论。
 - 命中任一后台 Fail-fast 门禁项后必须立即结束准入判定，不得继续输出“有条件通过”或等价结论。
 
@@ -314,18 +405,29 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 - [ ] `BO-RULE-008` 表格/筛选/分页闭环门禁已检查并通过；命中时结论必须 FAIL。
 - [ ] `BO-RULE-009` 主操作语义一致门禁已检查并通过；命中时结论必须 FAIL。
 - [ ] `BO-RULE-010` 页面区块白名单门禁已检查并通过；命中时结论必须 FAIL。
+- [ ] `BO-RULE-011~022` 后台排版治理门禁已检查并通过；命中任一项时结论必须 FAIL。
 - [ ] `UX-BLOCK-001` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
 - [ ] `UX-BLOCK-002` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
 - [ ] `UX-BLOCK-003` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
 - [ ] `UX-BLOCK-004` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
 - [ ] `UX-BLOCK-005` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
 - [ ] `UX-BLOCK-006` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
+- [ ] `UX-BLOCK-007` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
+- [ ] `UX-BLOCK-008` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
+- [ ] `UX-BLOCK-009` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
+- [ ] `UX-BLOCK-010` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
+- [ ] `UX-BLOCK-011` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
+- [ ] `UX-BLOCK-012` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
 - [ ] 关键任务路径已验证无断链、无死路返回、无隐藏入口，且步数不超过上游上限。
 - [ ] display / acceptance 已覆盖断点 `1440/1200/992/768/375`。
 - [ ] display 影响 readable/actionable 的问题已进入主问题清单并参与 FAIL 判定。
 - [ ] 体验门禁失败时结论必须为 FAIL，且必须阻塞，不允许进入 `dev-implement`。
 - [ ] 命中任一 `UX-BLOCK` 时已立即结束准入判定并输出 FAIL，不存在通过项抵消。
 - [ ] 无阻塞项才允许进入 `dev-implement`。
+- [ ] 已成功读取 `audit-result.json`；若缺失已自动触发 `run_visual_gate.sh` 重跑。
+- [ ] 自动化脚本已覆盖导航选中态、新建/编辑弹窗、编辑预填、筛选查询/重置、分页交互。
+- [ ] 自动化结果已消费布局度量字段：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
+- [ ] 自动安装 `playwright/chromium` 失败时结论为 `BLOCKED`，未产生误判 PASS。
 
 ## Example
 
@@ -389,13 +491,15 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 
 ## 版本信息
 
-- 当前版本：v1.4.0
+- 当前版本：v1.6.0
 - 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.6.0 | 2026-04-03 | 【修改】新增 `UX-BLOCK-007~012` 与 `BO-RULE-011~022` 排版 Fail-fast 门禁，接入布局度量字段消费。 |
+| v1.5.0 | 2026-04-03 | 【修改】新增自动化视觉门禁消费规则（`visual_gate_source`/`visual_gate_profile`）、`run_visual_gate.sh` 自动重跑与 Playwright+Chromium 自动安装 `BLOCKED` 处理。 |
 | v1.4.0 | 2026-04-03 | 【修改】新增 `UX-BLOCK-004/005/006` 与 `BO-RULE-009/010` Fail-fast 门禁，强化筛选闭环、选中语义与区块白名单阻塞判定。 |
 | v1.3.0 | 2026-04-03 | 【修改】接入 `BACKOFFICE_UI_SPEC.md` 与 `BO-RULE-001~008` Fail-fast 门禁，主问题清单新增 `关联 BO-RULE` 字段。 |
 | v1.2.0 | 2026-04-02 | 【修改】新增 UX-BLOCK 命中 FAIL 早停规则、阻塞项追溯字段（UX-TARGET/BUILD-RULE）与关键路径效率门禁。 |
