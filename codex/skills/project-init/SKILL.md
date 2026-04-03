@@ -26,7 +26,20 @@ description: 初始化项目可运行骨架（后端 Maven 多模块 + MyBatis-P
 - 前端：`frontend/<project-name>/web` 后台管理骨架（Vue3 + TS + Element Plus）
 - 测试：`tests/api/` 基础目录
 
+## 执行层级导读（Progressive Disclosure）
+
+- `P0 必检（阻塞）`：技术栈约束解析、目录骨架可运行、后端多模块与前端管理端结构满足基线。
+- `P1 扩展（覆盖）`：配置补齐、测试目录初始化、注释规范占位完整。
+- `P2 参考（说明）`：说明文本仅作参考，不参与放行。
+- 执行顺序必须为：先过 `P0 Gate`，再进入 `P1`；`P2` 不得覆盖 `P0` 结论。
+
 ## 执行流程
+
+### 步骤 0：P0 Gate（阻塞）
+
+1. 校验 `AGENTS.md` 与局部约束可读。
+2. 校验当前仓库确实处于“无可运行工程骨架”或“需补齐骨架”场景。
+3. 任一不满足时输出 `BLOCKED` 并停止，不进入后续步骤。
 
 ### 步骤 1：读取约束并判定场景
 
@@ -122,6 +135,24 @@ description: 初始化项目可运行骨架（后端 Maven 多模块 + MyBatis-P
 - [ ] `resources/error` 多语言配置存在
 - [ ] 前端默认包含 Element Plus
 - [ ] 前端目录使用 `frontend/<project-name>/web`
+
+## Quality Gate（分层）
+
+### P0 Gate（阻塞，最小必检）
+
+- [ ] 后端父模块 + common + 至少 1 个业务模块存在。
+- [ ] 前端后台管理骨架存在且可安装运行。
+- [ ] 任一结构性缺失时结论必须为 `FAIL/BLOCKED`。
+
+### P1 Coverage Checklist（扩展覆盖）
+
+- [ ] MyBatis-Plus 基线接入完整（依赖、扫描、拦截器）。
+- [ ] 前端基础能力与目录规范完整。
+- [ ] 测试目录与示例初始化完成。
+
+### P2 Reference Checklist（参考）
+
+- [ ] 说明文本已更新，且不改变 `P0` 判定口径。
 
 ## 注意事项
 

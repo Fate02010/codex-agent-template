@@ -21,6 +21,13 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 2. `docs/02-architecture/API_CONTRACT.md`
 3. `docs/02-architecture/DATA_MODEL.md`
 
+## 执行层级导读（Progressive Disclosure）
+
+- `P0 必检（阻塞）`：需求基线冻结、设计边界不越权、三份设计文档可落地。
+- `P1 扩展（覆盖）`：事务/幂等/并发、非功能量化、追溯矩阵与架构图一致性。
+- `P2 参考（说明）`：模板与说明文本仅作参考，不参与放行。
+- 执行顺序必须为：先过 `P0 Gate`，再进入 `P1`；`P2` 不得覆盖 `P0` 结论。
+
 ## 规则
 
 1. 仅在 `PRD_RECTIFIED.md` 为 `已冻结` 时执行，非冻结必须回退 `prd-rectify`。
@@ -58,6 +65,8 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
    - 若目标文件不存在，按本 Skill 的最小结构创建完整文档。
    - 若目标文件状态为 `模板`，整文件覆盖为正式产物结构。
    - 若目标文件状态不为 `模板`，按章节标题增量更新，不按章节序号硬编码。
+12. 规则去重：
+   - `规则` 为主定义，`执行流程` 与后续检查仅引用编号与结论，不重复整段规则文本。
 
 ## 执行流程
 
@@ -65,6 +74,12 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 
 - `PRD_RECTIFIED.md` 必须是 `已冻结`。
 - 非冻结状态时终止并返回 `prd-rectify`。
+
+### 步骤 0.5：P0 Gate（阻塞）
+
+- 校验三份目标文档输出路径可用。
+- 校验范围边界与需求编号可追溯。
+- 任一不满足时输出 `BLOCKED/FAIL` 并停止，不进入后续步骤。
 
 ### 步骤 1：初始化输出载体（冷启动）
 
@@ -276,6 +291,25 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 - 下一步使用 `architecture-review` 对设计基线执行结构化评审。
 - 若评审存在问题，进入 `architecture-rectify` 关闭问题并完成设计冻结。
 - 设计基线完成冻结后，方可进入 `qa-design`。
+
+## Quality Gate（分层）
+
+### P0 Gate（阻塞，最小必检）
+
+- [ ] `PRD_RECTIFIED.md` 为 `已冻结`。
+- [ ] `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 均已输出且结构可判定。
+- [ ] 任一关键设计约束缺失（接口粒度、表结构约束、SQL、追溯矩阵）时结论必须为 `FAIL/BLOCKED`。
+
+### P1 Coverage Checklist（扩展覆盖）
+
+- [ ] 架构图（System Context/Component/Deployment）与正文一致。
+- [ ] 写操作事务/幂等/并发边界完整。
+- [ ] 非功能量化基线与可观测性要求完整。
+- [ ] `F -> API -> T -> TC` 追溯矩阵完整。
+
+### P2 Reference Checklist（参考）
+
+- [ ] 模板与说明文本已更新，且不改变 `P0` 判定口径。
 
 ## 注意事项
 

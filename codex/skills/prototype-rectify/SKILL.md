@@ -55,6 +55,13 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 10. 更新后的 `frontend/design-prototype/acceptance/assets/*.css`
 11. `docs/02-design/PROTOTYPE_FIX_LOG.md`
 
+## 执行层级导读（Progressive Disclosure）
+
+- `P0 必检（阻塞）`：阻塞问题优先级、断点复检闭环、关闭判定证据。
+- `P1 扩展（覆盖）`：重要/建议项治理、文档与原型双侧同步完整。
+- `P2 参考（说明）`：示例与说明文本仅作参考，不参与放行。
+- 执行顺序必须为：先过 `P0 Gate`，再进入 `P1`；`P2` 不得覆盖 `P0` 结论。
+
 ## Rules
 
 1. 严重度口径必须与 `prototype-check` 一致：`阻塞（Blocker）`、`重要（Major）`、`建议（Minor/Suggestion）`。
@@ -78,8 +85,14 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 14. 无法确认的信息必须标记 `【待确认】`。
 15. 若问题同时影响 display 与 acceptance，必须分别说明修复落点。
 16. 若问题仅为 display 观感建议且不影响 readable/actionable，可在后置阶段处理，但不得挤占阻塞视觉几何问题优先级。
+17. 规则去重：`Rules` 保留主定义，`Workflow` 与 `Quality Gate` 仅引用编号与结论，不重复整段规则文本。
 
 ## Workflow
+
+### 步骤 0：P0 Gate（阻塞）
+
+- 校验 `PROTOTYPE_CHECK_REPORT.md` 可读，且问题编号可追溯到页面与断点。
+- 若无法建立问题 -> 修复落点映射，结论必须为 `BLOCKED`，不得进入步骤 1~5。
 
 ### 步骤 1：解析问题并排序
 
@@ -112,17 +125,26 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 - 若仍有阻塞项，建议继续 `prototype-rectify`。
 - 若无阻塞项，建议回到 `prototype-check` 复检并申请进入开发。
 
-## Quality Gate
+## Quality Gate（分层）
+
+### P0 Gate（阻塞，最小必检）
 
 - [ ] 阻塞问题优先关闭，未跳过优先级顺序。
 - [ ] 修复项已同步到文档与原型。
+- [ ] 已完成断点覆盖复检（`1440/1200/992/768/375`）。
+- [ ] 未完成断点复检的条目未被标记为已关闭，且关闭条目均附复检依据。
+
+### P1 Coverage Checklist（扩展覆盖）
+
 - [ ] `PROTOTYPE_FIX_LOG.md` 已包含已关闭与未关闭问题清单。
 - [ ] 未关闭问题均有明确原因与后续处理建议。
 - [ ] 修复内容未超出 `<current-change>`。
 - [ ] 已按“视觉几何阻塞 -> 流程状态 -> 一般观感建议”顺序执行整改。
 - [ ] display 影响 readable/actionable 的问题已按 `重要` 或 `阻塞` 处理，未降级。
-- [ ] 已完成断点覆盖复检（`1440/1200/992/768/375`）。
-- [ ] 未完成断点复检的条目未被标记为已关闭，且关闭条目均附复检依据。
+
+### P2 Reference Checklist（参考）
+
+- [ ] Example 与说明文本已更新，且不改变 `P0` 判定口径。
 
 ## Example
 
