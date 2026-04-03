@@ -10,7 +10,6 @@ RUN_ID="${RUN_ID:-$(date +%Y%m%d-%H%M%S)}"
 REPO_ROOT="${REPO_ROOT:-}"
 PROTOTYPE_ROOT="${PROTOTYPE_ROOT:-}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-}"
-TOOLS_DIR="${PLAYWRIGHT_TOOLS_DIR:-/tmp/codex-visual-gate}"
 
 usage() {
   cat <<'USAGE'
@@ -129,7 +128,7 @@ run_emit_report() {
   fi
 }
 
-for cmd in node npm npx; do
+for cmd in node npm; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     write_blocked_result "缺少运行依赖：$cmd" "安装 Node.js 后重试。"
     run_emit_report
@@ -139,38 +138,44 @@ for cmd in node npm npx; do
   fi
 done
 
-mkdir -p "$TOOLS_DIR"
-if [[ ! -f "$TOOLS_DIR/package.json" ]]; then
-  npm --prefix "$TOOLS_DIR" init -y >/dev/null 2>&1 || true
-fi
-
-if [[ ! -f "$TOOLS_DIR/node_modules/playwright/package.json" ]]; then
-  if ! npm --prefix "$TOOLS_DIR" install --no-audit --no-fund playwright@1.52.0 >/tmp/codex-visual-gate-install.log 2>&1; then
-    write_blocked_result "playwright 安装失败" "查看 /tmp/codex-visual-gate-install.log 并重试。"
+if ! command -v playwright >/dev/null 2>&1; then
+  if ! npm install -g --no-audit --no-fund playwright >/tmp/codex-visual-gate-install.log 2>&1; then
+    write_blocked_result "playwright 全局安装失败" "查看 /tmp/codex-visual-gate-install.log 并重试。"
     run_emit_report
     ln -sfn "$RUN_DIR" "$OUTPUT_ROOT/latest"
     exit 20
   fi
 fi
 
-PLAYWRIGHT_BIN="$TOOLS_DIR/node_modules/.bin/playwright"
-if [[ ! -x "$PLAYWRIGHT_BIN" ]]; then
-  write_blocked_result "playwright CLI 不可用" "删除 $TOOLS_DIR 后重试安装。"
+PLAYWRIGHT_BIN="$(command -v playwright || true)"
+if [[ -z "$PLAYWRIGHT_BIN" ]]; then
+  write_blocked_result "playwright CLI 不可用" "确认 npm 全局安装目录在 PATH 后重试。"
   run_emit_report
   ln -sfn "$RUN_DIR" "$OUTPUT_ROOT/latest"
   exit 20
 fi
 
-if ! "$PLAYWRIGHT_BIN" install chromium >/tmp/codex-visual-gate-chromium.log 2>&1; then
-  write_blocked_result "chromium 安装失败" "查看 /tmp/codex-visual-gate-chromium.log 并重试。"
-  run_emit_report
-  ln -sfn "$RUN_DIR" "$OUTPUT_ROOT/latest"
-  exit 20
+# Chromium 安装检查：优先用 --list 判断；缺失时再安装
+CHROMIUM_INSTALLED=0
+if "$PLAYWRIGHT_BIN" install --list >/tmp/codex-visual-gate-browsers.log 2>&1; then
+  if grep -qi "chromium" /tmp/codex-visual-gate-browsers.log; then
+    CHROMIUM_INSTALLED=1
+  fi
 fi
 
-PLAYWRIGHT_NODE_ENTRY="$TOOLS_DIR/node_modules/playwright/index.mjs"
+if [[ "$CHROMIUM_INSTALLED" -ne 1 ]]; then
+  if ! "$PLAYWRIGHT_BIN" install chromium >/tmp/codex-visual-gate-chromium.log 2>&1; then
+    write_blocked_result "chromium 安装失败" "查看 /tmp/codex-visual-gate-chromium.log 并重试。"
+    run_emit_report
+    ln -sfn "$RUN_DIR" "$OUTPUT_ROOT/latest"
+    exit 20
+  fi
+fi
+
+GLOBAL_NODE_ROOT="$(npm root -g 2>/dev/null || true)"
+PLAYWRIGHT_NODE_ENTRY="${GLOBAL_NODE_ROOT}/playwright/index.mjs"
 if [[ ! -f "$PLAYWRIGHT_NODE_ENTRY" ]]; then
-  write_blocked_result "playwright 模块入口缺失" "检查 $TOOLS_DIR/node_modules/playwright 是否完整。"
+  write_blocked_result "playwright 全局模块入口缺失" "检查 npm 全局目录中的 playwright 包是否完整。"
   run_emit_report
   ln -sfn "$RUN_DIR" "$OUTPUT_ROOT/latest"
   exit 20

@@ -166,7 +166,7 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
    - build 未通过时，不得进入 `prototype-check`
 30. 当 `visual_gate=on` 时，必须执行自动化视觉门禁脚本（Playwright + Chromium）：
    - 脚本入口：`scripts/run_visual_gate.sh --phase build --profile <build_profile>`
-   - 自动安装策略：若 `playwright/chromium` 不存在，脚本必须先自动安装再执行检查
+   - 自动安装策略：若 `playwright/chromium` 不存在，脚本必须先执行全局安装（`npm install -g playwright` + `playwright install chromium`）再执行检查
    - 自动安装失败时，结论必须为 `BLOCKED`，并输出失败原因与重试命令
 31. 自动化视觉门禁脚本必须至少覆盖：
    - 五个断点截图：`1440/1200/992/768/375`
@@ -283,8 +283,8 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - 当 `visual_gate=on` 时，执行：
   - `scripts/run_visual_gate.sh --phase build --profile <build_profile>`
 - 脚本职责：
-  - 自动检测 `node/npx` 可用性
-  - 自动安装 `playwright` 与 `chromium`（若缺失）
+  - 自动检测 `node/npm` 可用性
+  - 自动全局安装 `playwright` 与 `chromium`（若缺失）
   - 生成截图、JSON 结果与 Markdown 报告
 - 若脚本返回非 0（包含安装失败、执行失败、命中阻塞），结论必须为 build FAIL 并停止流转。
 - 若 `visual_gate=off`，必须在 `PROTOTYPE_BUILD_NOTES.md` 记录豁免理由、风险影响、责任人。
@@ -335,7 +335,7 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - [ ] 自动化视觉门禁已覆盖导航选中态、新建/编辑弹窗、筛选查询/重置、分页可点击闭环。
 - [ ] 自动化视觉门禁结果已包含 `layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
 - [ ] `visual_gate_mode=build` 下 `Blocker` 阻塞已生效；`visual_gate_mode=strict` 下 `Major` 阻塞已生效。
-- [ ] 自动安装 `playwright/chromium` 失败时已输出 `BLOCKED` 并终止构建。
+- [ ] 自动全局安装 `playwright/chromium` 失败时已输出 `BLOCKED` 并终止构建。
 
 ## Example
 
@@ -370,13 +370,14 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 
 ## 版本信息
 
-- 当前版本：v1.6.0
+- 当前版本：v1.6.1
 - 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.6.1 | 2026-04-03 | 【修改】将视觉门禁依赖策略明确为全局安装：`playwright` 缺失时全局安装，`chromium` 缺失时全局安装。 |
 | v1.6.0 | 2026-04-03 | 【修改】新增 `BUILD-RULE-010~015` 与后台排版结构门禁，扩展 `BO-RULE` 消费范围到 `001~022` 并要求输出布局治理度量字段。 |
 | v1.5.0 | 2026-04-03 | 【修改】新增自动化视觉门禁参数（`visual_gate`/`visual_gate_mode`）、`run_visual_gate.sh` 执行要求与 Playwright+Chromium 自动安装策略。 |
 | v1.4.0 | 2026-04-03 | 【修改】新增 `BUILD-RULE-007/008/009`（筛选闭环、主操作语义一致性、页面区块白名单）并扩展 `BO-RULE-001~010` 构建门禁。 |

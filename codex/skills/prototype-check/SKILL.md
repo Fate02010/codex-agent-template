@@ -178,7 +178,7 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - 当 `latest` 缺失或不可读时，必须自动回退执行：
      - `scripts/run_visual_gate.sh --phase check --profile <visual_gate_profile>`
 23. 自动安装规则（强制）：
-   - 自动化脚本必须检测并自动安装 `playwright` 与 `chromium`（若缺失）
+   - 自动化脚本必须检测并执行全局安装：`playwright` 缺失时执行 `npm install -g playwright`，`chromium` 缺失时执行 `playwright install chromium`
    - 安装失败时，结论必须为 `BLOCKED`，并写明失败原因、重试命令、影响范围
 24. 自动化门禁结果消费规则（强制）：
    - 必须将 `audit-result.json` 中的 `Blocker/Major/Minor` 映射到主问题清单
@@ -427,7 +427,7 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 - [ ] 已成功读取 `audit-result.json`；若缺失已自动触发 `run_visual_gate.sh` 重跑。
 - [ ] 自动化脚本已覆盖导航选中态、新建/编辑弹窗、编辑预填、筛选查询/重置、分页交互。
 - [ ] 自动化结果已消费布局度量字段：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
-- [ ] 自动安装 `playwright/chromium` 失败时结论为 `BLOCKED`，未产生误判 PASS。
+- [ ] 自动全局安装 `playwright/chromium` 失败时结论为 `BLOCKED`，未产生误判 PASS。
 
 ## Example
 
@@ -491,13 +491,14 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 
 ## 版本信息
 
-- 当前版本：v1.6.0
+- 当前版本：v1.6.1
 - 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.6.1 | 2026-04-03 | 【修改】将自动安装规则明确为全局安装：缺 `playwright` 时执行 `npm install -g playwright`，缺 `chromium` 时执行 `playwright install chromium`。 |
 | v1.6.0 | 2026-04-03 | 【修改】新增 `UX-BLOCK-007~012` 与 `BO-RULE-011~022` 排版 Fail-fast 门禁，接入布局度量字段消费。 |
 | v1.5.0 | 2026-04-03 | 【修改】新增自动化视觉门禁消费规则（`visual_gate_source`/`visual_gate_profile`）、`run_visual_gate.sh` 自动重跑与 Playwright+Chromium 自动安装 `BLOCKED` 处理。 |
 | v1.4.0 | 2026-04-03 | 【修改】新增 `UX-BLOCK-004/005/006` 与 `BO-RULE-009/010` Fail-fast 门禁，强化筛选闭环、选中语义与区块白名单阻塞判定。 |
