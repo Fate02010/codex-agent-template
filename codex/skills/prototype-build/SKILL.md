@@ -35,14 +35,15 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 4. `docs/02-design/DESIGN_TOKENS.md`
 5. `docs/02-design/COMPONENT_GUIDELINES.md`
 6. `docs/02-design/STATE_MATRIX.md`
-7. `docs/02-design/DISPLAY_PROTOTYPE_SPEC.md`
-8. `docs/02-design/ACCEPTANCE_PROTOTYPE_SPEC.md`
-9. `docs/02-design/BACKOFFICE_UI_SPEC.md`（后台管理页面强制）
-10. `docs/01-requirements/MVP_SCOPE.md`
-11. `docs/01-requirements/OUT_OF_SCOPE.md`
-12. current change artifact（如项目启用 OpenSpec）：`<current-change>`
-13. 构建参数（可选）：`build_profile=display|acceptance|both`（默认 `display`）
-14. 视觉门禁参数（可选）：
+7. `docs/02-design/MOCK_DATA_SPEC.md`
+8. `docs/02-design/DISPLAY_PROTOTYPE_SPEC.md`
+9. `docs/02-design/ACCEPTANCE_PROTOTYPE_SPEC.md`
+10. `docs/02-design/BACKOFFICE_UI_SPEC.md`（后台管理页面强制）
+11. `docs/01-requirements/MVP_SCOPE.md`
+12. `docs/01-requirements/OUT_OF_SCOPE.md`
+13. current change artifact（如项目启用 OpenSpec）：`<current-change>`
+14. 构建参数（可选）：`build_profile=display|acceptance|both`（默认 `display`）
+15. 视觉门禁参数（可选）：
     - `visual_gate=on|off`（默认 `on`）
     - `visual_gate_mode=build|strict`（默认 `build`）
 
@@ -77,6 +78,7 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 3. `docs/02-design/.visual-check/<run-id>/screenshots/<side>/<breakpoint>/*.png`
 4. `docs/02-design/.visual-check/<run-id>/VISUAL_GATE_REPORT.md`
 5. `docs/02-design/.visual-check/latest`（指向最新一次视觉门禁结果）
+6. `frontend/design-prototype/<side>/data/*.json`（模拟数据文件）
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -112,12 +114,28 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
    - 门禁可消费
 12. `acceptance` 版允许保留验收辅助信息，供 `prototype-check` 消费。
 13. 两版的核心业务路径必须一致，不得出现流程分叉为两套产品。
-14. 交互必须接近真实场景，至少包括：
+14. 交互必须按 `UI_DESIGN_SPEC.md` 中的“交互实现清单”实现：
+   - 必须实现的交互：全部实现
+   - 可选实现的交互：根据时间和资源决定是否实现
+   - 不需要实现的交互：不实现
+15. 必须实现的交互至少包括：
    - 菜单展示与高亮联动
    - 页面跳转与返回路径
    - 按钮可用/禁用与反馈
-   - 编辑流程（打开、校验、提交、取消）
-   - 弹窗流程（打开、关闭、确认、取消）
+   - 筛选查询与重置
+   - 分页点击与数据更新
+   - 新建/编辑弹窗打开与关闭
+   - 编辑弹窗预填当前行数据
+   - 表单提交模拟（加载态 -> 成功态 -> 关闭弹窗 -> 刷新列表）
+   - 表单取消
+   - 批量操作（勾选 -> 批量按钮可用 -> 确认框 -> 执行）
+16. 可选实现的交互包括：
+   - 表单字段级校验（如：手机号格式校验）
+   - 表单提交失败模拟（失败态 -> 错误提示）
+17. 不需要实现的交互包括：
+   - 真实接口调用
+   - 真实业务逻辑
+   - 真实数据持久化
 15. 后台管理硬约束：
    - 后台管理列表页默认必须包含分页组件，不得仅以滚动加载或整页长列表替代
    - 后台管理“新建 / 编辑”默认必须采用弹窗交互
@@ -178,6 +196,11 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
    - 脚本入口：`scripts/run_visual_gate.sh --phase build --profile <build_profile>`
    - 自动安装策略：若 `playwright/chromium` 不存在，脚本必须先执行全局安装（`npm install -g playwright` + `playwright install chromium`）再执行检查
    - 自动安装失败时，结论必须为 `BLOCKED`，并输出失败原因与重试命令
+   - 降级策略：
+     - 若脚本执行失败（包含安装失败、执行失败），且用户明确豁免，可降级为人工检查
+     - 人工检查必须覆盖：五个断点截图（1440/1200/992/768/375）、几何检查（横向滚动、错位、重叠、文本溢出、控件高度异常、表格可读性）
+     - 人工检查结果必须记录到 `PROTOTYPE_BUILD_NOTES.md`，并标记 `【人工检查】` + `【风险】`
+     - 人工检查结果必须包含：检查人、检查时间、检查结论、证据（截图路径）
 31. 自动化视觉门禁脚本必须至少覆盖：
    - 五个断点截图：`1440/1200/992/768/375`
    - 几何检查：横向滚动、错位、重叠、文本溢出、控件高度异常、表格可读性
@@ -189,6 +212,14 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 36. `visual_gate=off` 仅允许在上游明确豁免时使用，并必须在 `PROTOTYPE_BUILD_NOTES.md` 标记 `【风险】`。
 37. 规则去重约束（强制）：
    - `Rules` 保留主定义，`Workflow` 与 `Quality Gate` 仅引用规则编号与结论，不重复整段规则文本。
+38. 原型样式必须基于生产环境组件库（`Element Plus`）：
+   - 按钮样式必须与 `Element Plus ElButton` 一致
+   - 表格样式必须与 `Element Plus ElTable` 一致
+   - 分页样式必须与 `Element Plus ElPagination` 一致
+   - 表单样式必须与 `Element Plus ElForm` 一致
+   - 弹窗样式必须与 `Element Plus ElDialog` 一致
+39. 若组件库无法满足设计要求，必须在 `COMPONENT_GUIDELINES.md` 中标记 `【需要自定义】`
+40. 原型必须引入组件库 CDN 或等价静态样式来源，基于 `Element Plus` 组件库样式生成原型样式
 
 ## Workflow
 
@@ -230,6 +261,23 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - `acceptance`：
   - 保留门禁所需的状态、字段和辅助信息
   - 可显式承接 `STATE_MATRIX.md` 与契约抽检要求
+
+### 步骤 3.5：生成模拟数据
+
+- 读取 `MOCK_DATA_SPEC.md`
+- 为每个页面生成模拟数据 JSON 文件
+- 输出到 `frontend/design-prototype/<side>/data/*.json`
+- 模拟数据必须覆盖：
+  - 典型值（用于展示正常场景）
+  - 边界值（用于验证溢出、截断）
+  - 空值（用于验证空态）
+  - 特殊字符（用于验证转义、安全）
+- 模拟数据文件示例：
+  - `frontend/design-prototype/display/data/member-list.json`
+  - 字段至少包含：`total`、`current_page`、`page_size`、`data[]`
+  - `data[]` 示例需包含正常值、超长名称、边界积分值、不同状态值
+- HTML 页面必须使用本地模拟数据驱动渲染，例如：
+  - `fetch('./data/member-list.json').then(...).then(renderMemberList)`
 
 ### 步骤 4：补齐静态跳转与真实感交互
 

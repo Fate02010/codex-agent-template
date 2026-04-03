@@ -35,18 +35,21 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 7. `docs/02-design/DESIGN_TOKENS.md`
 8. `docs/02-design/COMPONENT_GUIDELINES.md`
 9. `docs/02-design/STATE_MATRIX.md`
-10. `docs/02-design/DISPLAY_PROTOTYPE_SPEC.md`
-11. `docs/02-design/ACCEPTANCE_PROTOTYPE_SPEC.md`
-12. `docs/02-design/BACKOFFICE_UI_SPEC.md`（后台管理页面强制）
-13. `docs/02-architecture/API_CONTRACT.md`
-14. `frontend/design-prototype/acceptance/*.html`
-15. `frontend/design-prototype/acceptance/assets/*.css`
-16. current change artifact（如项目启用 OpenSpec）：`<current-change>`
+10. `docs/02-design/MOCK_DATA_SPEC.md`
+11. `docs/02-design/DISPLAY_PROTOTYPE_SPEC.md`
+12. `docs/02-design/ACCEPTANCE_PROTOTYPE_SPEC.md`
+13. `docs/02-design/BACKOFFICE_UI_SPEC.md`（后台管理页面强制）
+14. `docs/02-architecture/API_CONTRACT.md`
+15. `frontend/design-prototype/acceptance/*.html`
+16. `frontend/design-prototype/acceptance/assets/*.css`
+17. `frontend/design-prototype/acceptance/data/*.json`
+18. current change artifact（如项目启用 OpenSpec）：`<current-change>`
 
 可选参考输入：
 
 - `frontend/design-prototype/display/*.html`
 - `frontend/design-prototype/display/assets/*.css`
+- `frontend/design-prototype/display/data/*.json`
 - 视觉门禁参数（可选）：
   - `visual_gate_source=latest|rerun`（默认 `latest`）
   - `visual_gate_profile=acceptance|both`（默认 `both`）
@@ -311,6 +314,11 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 - 若脚本执行失败或安装失败：
   - 输出 `BLOCKED`
   - 在报告中写明失败原因、重试命令、影响页面
+  - 降级策略：
+    - 若用户明确豁免，可降级为人工检查
+    - 人工检查必须覆盖：五个断点截图、几何检查、点击检查
+    - 人工检查结果必须记录到 `PROTOTYPE_CHECK_REPORT.md`，并标记 `【人工检查】` + `【风险】`
+    - 人工检查结果必须包含：检查人、检查时间、检查结论、证据（截图路径）
   - 终止准入判定，不得输出 PASS/有条件通过
 
 ### 步骤 1：建立验收边界
@@ -343,10 +351,35 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - `UX-BLOCK-001`：检查分页覆盖是否完整（总数、当前页、页码、上一页、下一页）
    - `UX-BLOCK-002`：检查新建/编辑是否使用模拟态弹窗且未跳独立编辑页
    - `UX-BLOCK-003`：检查编辑弹窗是否预填当前行数据，且具备字段级校验反馈、全局失败反馈、提交成功状态回写闭环
-9. 对关键路径效率执行专项检查：
+9. 模拟数据质量检查：
+   - 验证每个页面是否有对应的模拟数据文件
+   - 验证模拟数据是否覆盖典型值、边界值、空值
+   - 验证列表数据量是否符合规范（最少、最多、典型）
+   - 验证状态覆盖是否完整（每个状态至少 1 条数据）
+   - 验证字段长度是否覆盖边界值（最小长度、最大长度）
+   - 验证字段值是否符合 `MOCK_DATA_SPEC.md` 定义的规则
+10. 组件库一致性检查：
+   - 验证原型使用的组件样式是否与生产环境组件库一致
+   - 验证按钮样式是否与 `Element Plus ElButton` 一致
+   - 验证表格样式是否与 `Element Plus ElTable` 一致
+   - 验证分页样式是否与 `Element Plus ElPagination` 一致
+   - 验证表单样式是否与 `Element Plus ElForm` 一致
+   - 验证弹窗样式是否与 `Element Plus ElDialog` 一致
+   - 若存在自定义样式，验证是否在 `COMPONENT_GUIDELINES.md` 中标记 `【需要自定义】`
+11. 交互完整性检查：
+   - 验证“必须实现的交互”是否全部实现
+   - 验证菜单高亮是否正常
+   - 验证页面跳转是否正常
+   - 验证筛选查询/重置是否正常
+   - 验证分页点击是否正常
+   - 验证新建/编辑弹窗是否正常
+   - 验证编辑弹窗是否预填当前行数据
+   - 验证表单提交是否模拟加载态 -> 成功态 -> 关闭弹窗 -> 刷新列表
+   - 验证批量操作是否正常
+12. 对关键路径效率执行专项检查：
    - 关键任务路径必须无断链、无死路返回、无隐藏入口
    - 关键任务步数必须不超过上游 `UX-TARGET-003` 定义的上限
-10. 对后台排版结构执行专项检查：
+13. 对后台排版结构执行专项检查：
    - 页面类型与布局模板是否匹配（`BO-RULE-011` / `UX-BLOCK-009`）
    - 首屏是否可见主任务关键区块（`BO-RULE-012` / `UX-BLOCK-007`）
    - `data-layout-template=列表主视图` 是否满足“筛选区 -> 结果区 -> 分页区”三段式（`BO-RULE-011` / `UX-BLOCK-009`）

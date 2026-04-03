@@ -35,11 +35,14 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 8. `docs/02-design/DESIGN_TOKENS.md`（如有）
 9. `docs/02-design/COMPONENT_GUIDELINES.md`（如有）
 10. `docs/02-design/STATE_MATRIX.md`（如有）
-11. `frontend/design-prototype/display/*.html`
-12. `frontend/design-prototype/display/assets/*.css`
-13. `frontend/design-prototype/acceptance/*.html`
-14. `frontend/design-prototype/acceptance/assets/*.css`
-15. current change artifact（如项目启用 OpenSpec）：`<current-change>`
+11. `docs/02-design/MOCK_DATA_SPEC.md`（如有）
+12. `frontend/design-prototype/display/*.html`
+13. `frontend/design-prototype/display/assets/*.css`
+14. `frontend/design-prototype/display/data/*.json`
+15. `frontend/design-prototype/acceptance/*.html`
+16. `frontend/design-prototype/acceptance/assets/*.css`
+17. `frontend/design-prototype/acceptance/data/*.json`
+18. current change artifact（如项目启用 OpenSpec）：`<current-change>`
 
 ## Outputs
 
@@ -53,7 +56,9 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 8. 更新后的 `frontend/design-prototype/display/assets/*.css`
 9. 更新后的 `frontend/design-prototype/acceptance/*.html`
 10. 更新后的 `frontend/design-prototype/acceptance/assets/*.css`
-11. `docs/02-design/PROTOTYPE_FIX_LOG.md`
+11. 更新后的 `frontend/design-prototype/display/data/*.json`
+12. 更新后的 `frontend/design-prototype/acceptance/data/*.json`
+13. `docs/02-design/PROTOTYPE_FIX_LOG.md`
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -110,6 +115,11 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
 
 - 先修复阻塞级视觉几何问题（layout deformation / geometric consistency）。
 - 再修复流程与状态问题（主路径、异常路径、状态落地）。
+- 修复模拟数据问题：
+  - 若问题涉及模拟数据缺失，补充模拟数据文件
+  - 若问题涉及模拟数据不符合规范，修正模拟数据
+  - 若问题涉及边界值缺失，补充边界值数据
+  - 若问题涉及状态覆盖不完整，补充状态数据
 - 最后处理一般观感与建议项（不影响 readable/actionable 的问题）。
 - 同步修订设计文档与原型文件。
 
