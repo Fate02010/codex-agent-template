@@ -22,6 +22,7 @@ description: 在 PRD_RAW 完成后执行工程化评审，识别阻塞设计/开
 ## 输出
 
 - `docs/01-requirements/PRD_REVIEW_ISSUES.md` — PRD 评审问题清单
+- `docs/01-requirements/PRD_REVIEW_FAILFAST_REPORT.md` — Fail-fast 自动扫描报告
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -34,6 +35,9 @@ description: 在 PRD_RAW 完成后执行工程化评审，识别阻塞设计/开
 
 1. `P0 Gate` 未通过时，评审结论必须为 `不通过`。
 2. 规则去重：Fail-fast 主定义保留在评审维度与判定规则中，后续章节仅引用编号与结论。
+3. 在进入人工逐项评审前，必须执行自动化 Fail-fast 扫描：
+   - `scripts/run_prd_gate.sh --mode review --repo-root "$PWD"`
+   - 任一门禁失败时必须直接输出 `不通过`，不得降级为建议项。
 
 ## 执行流程
 
@@ -47,7 +51,29 @@ description: 在 PRD_RAW 完成后执行工程化评审，识别阻塞设计/开
 
 读取 `docs/01-requirements/PRD_RAW.md`，理解业务背景和需求范围。
 
+### 步骤 1.5：执行 Fail-fast 门禁扫描（P0 阻塞）
+
+在进入逐项评审前，必须先执行：
+
+`scripts/run_prd_gate.sh --mode review --repo-root "$PWD"`
+
+扫描范围（自动化）：
+
+1. 信息层级检查（页面目标、主任务、首屏主任务区块）
+2. 主按钮唯一性检查
+3. 文案中文化检查（技术字段直出）
+4. 状态标签完整性检查（标签文案、颜色语义、禁用态、可点击态）
+5. 交互闭环检查（空态、加载态、失败态、成功态）
+6. 页面类型与布局模板匹配、工具栏顺序、筛选后分页重置
+
+判定规则：
+
+- 任一门禁失败，直接标记 `🔴 阻塞` 并输出 `不通过`
+- Fail-fast 失败时，不得以后续检查项抵消
+
 ### 步骤 2：逐项评审
+
+先消费 `PRD_REVIEW_FAILFAST_REPORT.md` 的失败项，再补充人工审查问题，避免“Fail-fast 与评审维度”分裂。
 
 按以下维度逐项检查 PRD，记录发现的问题：
 
@@ -193,6 +219,7 @@ Fail-fast 判定规则：
 ### P0 Gate（阻塞，最小必检）
 
 - [ ] `UI可冻结门禁检查清单（Fail-fast）` 已逐项检查；任一缺失即 `🔴 阻塞`。
+- [ ] `scripts/run_prd_gate.sh --mode review` 已执行并生成 `PRD_REVIEW_FAILFAST_REPORT.md`；任一失败即 `不通过`。
 - [ ] 存在任一 `🔴 阻塞` 时评审结论必须为 `不通过`。
 - [ ] 问题清单中每个阻塞项均有证据与可执行修复建议。
 

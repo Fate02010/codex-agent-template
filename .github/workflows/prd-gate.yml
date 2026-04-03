@@ -1,0 +1,108 @@
+name: prd-gate
+
+on:
+  pull_request:
+    paths:
+      - 'docs/01-requirements/PRD_RAW.md'
+      - 'docs/01-requirements/PRD_REVIEW_ISSUES.md'
+      - 'docs/01-requirements/PRD_RECTIFIED.md'
+      - 'codex/skills/prd-compose/**'
+      - 'codex/skills/prd-review/**'
+      - 'codex/skills/prd-rectify/**'
+      - 'codex/skills/solution-design/**'
+      - '.github/workflows/prd-gate.yml'
+  push:
+    paths:
+      - 'docs/01-requirements/PRD_RAW.md'
+      - 'docs/01-requirements/PRD_REVIEW_ISSUES.md'
+      - 'docs/01-requirements/PRD_RECTIFIED.md'
+      - 'codex/skills/prd-compose/**'
+      - 'codex/skills/prd-review/**'
+      - 'codex/skills/prd-rectify/**'
+      - 'codex/skills/solution-design/**'
+      - '.github/workflows/prd-gate.yml'
+
+jobs:
+  prd-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Script Syntax Check
+        run: |
+          node --check codex/skills/prd-review/scripts/prd_gate.spec.mjs
+
+      - name: Detect Non-template PRD Files
+        id: detect
+        shell: bash
+        run: |
+          is_real() {
+            local file="$1"
+            if [[ ! -f "$file" ]]; then
+              echo 0
+              return
+            fi
+            local status_line
+            status_line="$(grep -E "^\s*-\s*状态[:：]" "$file" | head -n1 || true)"
+            if [[ -z "$status_line" ]]; then
+              echo 0
+              return
+            fi
+            if echo "$status_line" | grep -Eq "模板|->|→"; then
+              echo 0
+              return
+            fi
+            echo 1
+          }
+
+          raw_real="$(is_real docs/01-requirements/PRD_RAW.md)"
+          review_real="$(is_real docs/01-requirements/PRD_REVIEW_ISSUES.md)"
+          rectified_real="$(is_real docs/01-requirements/PRD_RECTIFIED.md)"
+
+          echo "raw_real=$raw_real" >> "$GITHUB_OUTPUT"
+          echo "review_real=$review_real" >> "$GITHUB_OUTPUT"
+          echo "rectified_real=$rectified_real" >> "$GITHUB_OUTPUT"
+
+          echo "raw_real=$raw_real"
+          echo "review_real=$review_real"
+          echo "rectified_real=$rectified_real"
+
+      - name: Run Compose Gate
+        if: steps.detect.outputs.raw_real == '1'
+        run: |
+          codex/skills/prd-compose/scripts/run_prd_gate.sh \
+            --mode compose \
+            --repo-root "$PWD"
+
+      - name: Run Review Fail-fast Gate
+        if: steps.detect.outputs.raw_real == '1'
+        run: |
+          codex/skills/prd-review/scripts/run_prd_gate.sh \
+            --mode review \
+            --repo-root "$PWD"
+
+      - name: Run Rectify Freeze Gate
+        if: steps.detect.outputs.rectified_real == '1' && steps.detect.outputs.review_real == '1'
+        run: |
+          codex/skills/prd-rectify/scripts/run_prd_gate.sh \
+            --mode rectify \
+            --repo-root "$PWD"
+
+      - name: Run Solution Precheck Gate
+        if: steps.detect.outputs.rectified_real == '1'
+        run: |
+          codex/skills/solution-design/scripts/run_prd_gate.sh \
+            --mode solution-precheck \
+            --repo-root "$PWD"
+
+      - name: Skip Notice
+        if: steps.detect.outputs.raw_real != '1' && steps.detect.outputs.rectified_real != '1'
+        run: |
+          echo "PRD files are still template-like. Content gate skipped; script syntax gate already passed."

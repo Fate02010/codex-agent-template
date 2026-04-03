@@ -14,6 +14,7 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 1. `docs/01-requirements/PRD_RECTIFIED.md`
 2. `docs/01-requirements/MVP_SCOPE.md`（如有）
 3. 相关变更文档（迭代场景）
+4. `docs/01-requirements/PRD_RECTIFIED_GATE_REPORT.md`（冻结门禁报告，强制）
 
 ## 输出
 
@@ -31,41 +32,44 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 ## 规则
 
 1. 仅在 `PRD_RECTIFIED.md` 为 `已冻结` 时执行，非冻结必须回退 `prd-rectify`。
-2. 设计结论不得超出需求基线和范围边界。
-3. 外部接口与内部接口必须分层，路径域必须分离（`/api/v1/**` 与 `/internal/v1/**`）。
-4. `API_CONTRACT.md` 每个接口必须达到可实现粒度：
+2. 在设计开始前，必须执行冻结补偿检查：
+   - `scripts/run_prd_gate.sh --mode solution-precheck --repo-root "$PWD"`
+   - 若冻结状态或冻结门禁报告不满足，结论必须为 `BLOCKED` 并回退 `prd-rectify`。
+3. 设计结论不得超出需求基线和范围边界。
+4. 外部接口与内部接口必须分层，路径域必须分离（`/api/v1/**` 与 `/internal/v1/**`）。
+5. `API_CONTRACT.md` 每个接口必须达到可实现粒度：
    - 接口所属功能中文名称（与 PRD 功能点一致）
    - 请求参数与返回字段
    - 每个请求字段必须标注位置：`body` 或 `uri`
    - 参数级约束（长度、范围、精度、格式、枚举、空值策略）
    - 至少 1 组成功示例与 1 组失败示例
    - 兼容策略（新增字段、废弃字段、版本影响）
-5. `DATA_MODEL.md` 每张表必须达到可落地粒度：
+6. `DATA_MODEL.md` 每张表必须达到可落地粒度：
    - 主键、唯一约束、非空约束、默认值
    - 关联关系（外键或逻辑关联）
    - 索引定义与索引用途说明（对应查询场景）
    - 可执行建表 SQL 与索引 SQL
    - 所有字段必须带中文 `COMMENT` 注释（禁止缺失注释或英文占位注释）
-6. 关键状态变更流程必须给出实现边界：
+7. 关键状态变更流程必须给出实现边界：
    - 事务边界（同事务与最终一致性的划分）
    - 幂等策略（幂等键来源、重复请求处理）
    - 并发策略（冲突检测、锁或版本控制、失败处理）
-7. 必须输出非功能量化基线：
+8. 必须输出非功能量化基线：
    - 性能目标（响应时间、吞吐等）
    - 审计要求（关键操作审计字段与保留要求）
    - 可观测性要求（日志最小字段与告警触发条件）
-8. 必须输出 `F -> API -> T -> TC` 追溯矩阵；`TC` 可先占位，后续由 `qa-design` 补全。
-9. `ARCHITECTURE.md` 必须包含以下架构图，且与正文一致：
+9. 必须输出 `F -> API -> T -> TC` 追溯矩阵；`TC` 可先占位，后续由 `qa-design` 补全。
+10. `ARCHITECTURE.md` 必须包含以下架构图，且与正文一致：
    - 系统上下文图（System Context）
    - 组件架构图（Component）
    - 部署架构图（Deployment）
-10. 架构图可使用 Mermaid、PlantUML 或等价文本图表达；不得仅写“见附件”而无正文图示。
-11. 冷启动规则（强制）：
+11. 架构图可使用 Mermaid、PlantUML 或等价文本图表达；不得仅写“见附件”而无正文图示。
+12. 冷启动规则（强制）：
    - 若目标目录不存在，先创建目录。
    - 若目标文件不存在，按本 Skill 的最小结构创建完整文档。
    - 若目标文件状态为 `模板`，整文件覆盖为正式产物结构。
    - 若目标文件状态不为 `模板`，按章节标题增量更新，不按章节序号硬编码。
-12. 规则去重：
+13. 规则去重：
    - `规则` 为主定义，`执行流程` 与后续检查仅引用编号与结论，不重复整段规则文本。
 
 ## 执行流程
@@ -73,12 +77,14 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 ### 步骤 0：校验需求基线
 
 - `PRD_RECTIFIED.md` 必须是 `已冻结`。
-- 非冻结状态时终止并返回 `prd-rectify`。
+- 必须执行：`scripts/run_prd_gate.sh --mode solution-precheck --repo-root "$PWD"`。
+- 非冻结状态或 precheck 未通过时终止并返回 `prd-rectify`。
 
 ### 步骤 0.5：P0 Gate（阻塞）
 
 - 校验三份目标文档输出路径可用。
 - 校验范围边界与需求编号可追溯。
+- 校验 `PRD_RECTIFIED_GATE_REPORT.md` 对应机器结果已通过（verdict=PASS）。
 - 任一不满足时输出 `BLOCKED/FAIL` 并停止，不进入后续步骤。
 
 ### 步骤 1：初始化输出载体（冷启动）
@@ -297,6 +303,7 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 ### P0 Gate（阻塞，最小必检）
 
 - [ ] `PRD_RECTIFIED.md` 为 `已冻结`。
+- [ ] `scripts/run_prd_gate.sh --mode solution-precheck` 已执行通过，且 `PRD_SOLUTION_PRECHECK_REPORT.md` 结论为通过。
 - [ ] `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 均已输出且结构可判定。
 - [ ] 任一关键设计约束缺失（接口粒度、表结构约束、SQL、追溯矩阵）时结论必须为 `FAIL/BLOCKED`。
 
