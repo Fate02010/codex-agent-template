@@ -78,6 +78,13 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 4. `docs/02-design/.visual-check/<run-id>/VISUAL_GATE_REPORT.md`
 5. `docs/02-design/.visual-check/latest`（指向最新一次视觉门禁结果）
 
+## 执行层级导读（Progressive Disclosure）
+
+- `P0 必检（阻塞）`：构建范围、`BUILD-RULE-010~015`、关键 `BO-RULE`、视觉门禁阻塞项。
+- `P1 扩展（覆盖）`：双轨一致性、自动化覆盖维度、结构化报告完整性。
+- `P2 参考（说明）`：示例与背景说明，仅用于复用，不参与放行。
+- 执行顺序必须为：先过 `P0 Gate`，再执行 `P1`；`P2` 不得覆盖 `P0` 结论。
+
 ## Rules
 
 1. 仅覆盖本期确认范围与 `<current-change>` 页面。
@@ -144,9 +151,12 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
    - `BUILD-RULE-009`：页面出现的功能卡片/区块必须在 `UI_DESIGN_SPEC.md` 的页面区块白名单声明
 25. 任一硬约束未满足时，结论必须为 build FAIL，且必须阻塞进入 `prototype-check`。
 26. 后台排版结构硬约束（强制）：
-   - `BUILD-RULE-010`：页面类型必须与布局模板匹配，且主任务关键区块首屏可见
-   - `BUILD-RULE-011`：列表主任务页禁止前置重表单压制列表主视图
-   - `BUILD-RULE-012`：列表页工具栏顺序必须为筛选 -> 结果 -> 分页
+   - `BUILD-RULE-010`：页面类型必须与布局模板匹配；当 `data-layout-template=列表主视图` 时，页面主结构必须为筛选区 -> 结果区 -> 分页区三段式，且主任务关键区块首屏可见
+   - `BUILD-RULE-011`：列表主视图结果区下方不允许出现业务工作台/处理卡片/迁移面板/评估面板/映射维护面板等下置业务处理区；命中即 build FAIL
+   - `BUILD-RULE-011`：禁入检测必须同时覆盖“命名枚举 + 语义识别”（含 `tag-evaluation`、`xxx-evaluation`、`assessment`、`workbench/workspace/action-panel/processing-panel/migrate-panel/mapping-panel` 及同义命名）
+   - `BUILD-RULE-011`：`data-block-whitelist` 不得豁免禁入项；命中时必须按固定映射输出：`BUILD-RULE-011 + BO-RULE-017 + UX-BLOCK-008`（Blocker/FAIL）
+   - `BUILD-RULE-012`：列表页工具栏顺序必须为筛选 -> 结果 -> 分页，且分页区必须承接结果区
+   - `BUILD-RULE-012`：列表主视图分页视觉一致性必须满足统一容器结构 `table-footer + summary + pagination`；布局错位或独立漂浮分页必须按 `BUILD-RULE-011 + BO-RULE-017 + UX-BLOCK-008` 输出 Blocker/FAIL
    - `BUILD-RULE-013`：关键任务路径滚动预算默认 <= 1 屏，超限需有上游例外声明
    - `BUILD-RULE-014`：分页语义必须完整且筛选后默认重置到第 1 页
    - `BUILD-RULE-015`：同页不得并列双主流程（双主按钮/双主任务链）
@@ -177,6 +187,8 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 34. `visual_gate_mode=strict` 时，`Major` 及以上问题均阻塞进入 `prototype-check`；`visual_gate_mode=build` 时，仅 `Blocker` 阻塞。
 35. 自动化门禁脚本返回非 0 时，结论必须为 build FAIL；不得以人工观察替代通过。
 36. `visual_gate=off` 仅允许在上游明确豁免时使用，并必须在 `PROTOTYPE_BUILD_NOTES.md` 标记 `【风险】`。
+37. 规则去重约束（强制）：
+   - `Rules` 保留主定义，`Workflow` 与 `Quality Gate` 仅引用规则编号与结论，不重复整段规则文本。
 
 ## Workflow
 
@@ -190,6 +202,12 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - 未指定时默认按 `display` 执行。
 - 读取 `visual_gate`，未指定时默认 `on`。
 - 读取 `visual_gate_mode`，未指定时默认 `build`。
+
+### 步骤 0.5：P0 Gate（阻塞）
+
+- 校验 `docs/02-design/` 基线输入是否齐备且可消费。
+- 校验涉及后台页面时 `BACKOFFICE_UI_SPEC.md` 可用。
+- 任一缺失时输出 `build FAIL/BLOCKED` 并停止，不进入步骤 1~9。
 
 ### 步骤 1：锁定构建范围
 
@@ -257,8 +275,9 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - 检查主操作文案含“选中/批量”的页面是否具备选择机制与已选反馈（`BUILD-RULE-008`）。
 - 检查页面功能卡片/区块是否全部在页面白名单声明（`BUILD-RULE-009`）。
 - 检查页面类型与布局模板是否匹配，且主任务关键区块是否首屏可见（`BUILD-RULE-010`）。
-- 检查列表页是否存在前置重表单压制主列表（`BUILD-RULE-011`）。
-- 检查工具栏顺序是否符合筛选 -> 结果 -> 分页（`BUILD-RULE-012`）。
+- 检查 `data-layout-template=列表主视图` 是否满足三段式（筛选区 -> 结果区 -> 分页区）（`BUILD-RULE-010`）。
+- 检查列表页是否存在前置重表单压制主列表，或结果区下方出现业务工作台/处理卡片/迁移面板/评估面板/映射维护面板（`BUILD-RULE-011`）。
+- 检查工具栏顺序是否符合筛选 -> 结果 -> 分页，且分页承接结果区（`BUILD-RULE-012`）。
 - 检查关键任务路径滚动预算是否超限（`BUILD-RULE-013`）。
 - 检查分页语义是否完整，且筛选后是否重置第 1 页（`BUILD-RULE-014`）。
 - 检查同页是否存在双主流程冲突（`BUILD-RULE-015`）。
@@ -289,9 +308,21 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - 若脚本返回非 0（包含安装失败、执行失败、命中阻塞），结论必须为 build FAIL 并停止流转。
 - 若 `visual_gate=off`，必须在 `PROTOTYPE_BUILD_NOTES.md` 记录豁免理由、风险影响、责任人。
 
-## Quality Gate
+## Quality Gate（分层）
+
+### P0 Gate（阻塞，最小必检）
 
 - [ ] 仅生成本期范围与 `<current-change>` 页面。
+- [ ] `BUILD-RULE-010`：页面类型与布局模板匹配；`data-layout-template=列表主视图` 时必须满足三段式（筛选区 -> 结果区 -> 分页区）且主任务关键区块首屏可见；不满足即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-011`：列表页禁止前置重表单压制主列表，且禁止在结果区下方放置业务工作台/处理卡片/迁移面板/评估面板/映射维护面板；命中即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-011`：禁入检测必须覆盖命名枚举 + 语义识别，且 `data-block-whitelist` 不得豁免禁入项；命中时必须输出 `BUILD-RULE-011 + BO-RULE-017 + UX-BLOCK-008` 的 Blocker/FAIL。
+- [ ] `BUILD-RULE-012`：工具栏顺序为筛选 -> 结果 -> 分页，且分页承接结果区；不满足即阻塞且 build FAIL。
+- [ ] 列表主视图分页视觉一致性必须满足 `table-footer + summary + pagination`；布局错位或独立漂浮分页必须阻塞且 build FAIL。
+- [ ] 任一硬规则不满足时，结论必须为 build FAIL 且阻塞进入 `prototype-check`。
+- [ ] `visual_gate=on` 时已执行 `run_visual_gate.sh`，并产出 `audit-result.json` 与 `VISUAL_GATE_REPORT.md`。
+
+### P1 Coverage Checklist（扩展覆盖）
+
 - [ ] 输出符合 `build_profile` 约定，未指定时默认仅生成 `display`。
 - [ ] HTML 页面全部可本地打开。
 - [ ] 主流程页面静态跳转可达，菜单联动正常。
@@ -307,9 +338,9 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - [ ] `BUILD-RULE-007`：含列表页面必须具备筛选区（>=1 筛选字段）且同时包含查询与重置动作；任一缺失即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-008`：主操作文案含“选中/批量”时必须具备选择机制与已选反馈；任一缺失即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-009`：页面功能卡片/区块必须在页面白名单声明；出现未声明区块即阻塞且 build FAIL。
-- [ ] `BUILD-RULE-010`：页面类型与布局模板匹配，且主任务关键区块首屏可见；不满足即阻塞且 build FAIL。
-- [ ] `BUILD-RULE-011`：列表页禁止前置重表单压制主列表；不满足即阻塞且 build FAIL。
-- [ ] `BUILD-RULE-012`：工具栏顺序为筛选 -> 结果 -> 分页；不满足即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-010`：页面类型与布局模板匹配；`data-layout-template=列表主视图` 时必须满足三段式（筛选区 -> 结果区 -> 分页区）且主任务关键区块首屏可见；不满足即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-011`：列表页禁止前置重表单压制主列表，且禁止在结果区下方放置业务工作台/处理卡片/迁移面板/评估面板/映射维护面板；命中即阻塞且 build FAIL。
+- [ ] `BUILD-RULE-012`：工具栏顺序为筛选 -> 结果 -> 分页，且分页承接结果区；不满足即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-013`：关键任务路径滚动预算默认 <= 1 屏；超限且无例外即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-014`：分页语义完整且筛选后默认重置第 1 页；不满足即阻塞且 build FAIL。
 - [ ] `BUILD-RULE-015`：同页无双主流程冲突；不满足即阻塞且 build FAIL。
@@ -336,6 +367,10 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - [ ] 自动化视觉门禁结果已包含 `layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
 - [ ] `visual_gate_mode=build` 下 `Blocker` 阻塞已生效；`visual_gate_mode=strict` 下 `Major` 阻塞已生效。
 - [ ] 自动全局安装 `playwright/chromium` 失败时已输出 `BLOCKED` 并终止构建。
+
+### P2 Reference Checklist（参考）
+
+- [ ] Example 与说明文本已更新，且不改变 `P0` 判定口径。
 
 ## Example
 
@@ -370,13 +405,16 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 
 ## 版本信息
 
-- 当前版本：v1.6.1
+- 当前版本：v1.9.0
 - 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.9.0 | 2026-04-03 | 【修改】补强列表主视图硬门禁：禁入检测升级为“命名枚举 + 语义识别”，白名单不得豁免禁入项；新增分页视觉一致性强制门禁（`table-footer + summary + pagination`），命中统一按 `BUILD-RULE-011 + BO-RULE-017 + UX-BLOCK-008` 输出 Blocker/FAIL。 |
+| v1.8.0 | 2026-04-03 | 【修改】按 Progressive Disclosure 重排：新增 `P0/P1/P2` 导读、`P0 Gate` 阻塞前置、分层 Quality Gate，并约束 Workflow/Quality Gate 采用规则编号引用。 |
+| v1.7.0 | 2026-04-03 | 【修改】强化 `BUILD-RULE-010/011/012`：列表主视图三段式结构强制化，禁止结果区下方下置业务处理区，命中即 build FAIL（阻塞）。 |
 | v1.6.1 | 2026-04-03 | 【修改】将视觉门禁依赖策略明确为全局安装：`playwright` 缺失时全局安装，`chromium` 缺失时全局安装。 |
 | v1.6.0 | 2026-04-03 | 【修改】新增 `BUILD-RULE-010~015` 与后台排版结构门禁，扩展 `BO-RULE` 消费范围到 `001~022` 并要求输出布局治理度量字段。 |
 | v1.5.0 | 2026-04-03 | 【修改】新增自动化视觉门禁参数（`visual_gate`/`visual_gate_mode`）、`run_visual_gate.sh` 执行要求与 Playwright+Chromium 自动安装策略。 |

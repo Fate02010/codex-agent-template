@@ -71,6 +71,13 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 - 问题明细与修复建议
 - display 与 acceptance 两侧的可判定问题证据
 
+## 执行层级导读（Progressive Disclosure）
+
+- `P0 必检（阻塞）`：主门禁对象、`UX-BLOCK` 阻塞判定、后台 Fail-fast、自动化结果阻塞消费。
+- `P1 扩展（覆盖）`：display 量化检查、契约抽检、问题清单完整字段与证据链。
+- `P2 参考（说明）`：示例与背景说明，仅作参考，不参与放行。
+- 执行顺序必须为：先过 `P0 Gate`，再执行 `P1`；`P2` 不得覆盖 `P0` 结论。
+
 ## Rules
 
 1. 默认只检查本次范围与 `<current-change>`，不做无边界全站巡检。
@@ -127,7 +134,7 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - `UX-BLOCK-005`：主操作语义与选择机制不一致（对应 `BUILD-RULE-008`，追溯 `UX-TARGET-003/005`）
    - `UX-BLOCK-006`：页面区块越界（对应 `BUILD-RULE-009`，追溯 `UX-TARGET-002/003`）
    - `UX-BLOCK-007`：主任务首屏不可见（对应 `BUILD-RULE-010`，追溯 `UX-TARGET-001/002`）
-   - `UX-BLOCK-008`：列表前置重表单或跨屏依赖（对应 `BUILD-RULE-011/013`，追溯 `UX-TARGET-001/003`）
+   - `UX-BLOCK-008`：列表前置重表单、下置业务处理区或跨屏依赖（对应 `BUILD-RULE-011/013`，追溯 `UX-TARGET-001/003`）
    - `UX-BLOCK-009`：页面类型与布局模板不匹配（对应 `BUILD-RULE-010`，追溯 `UX-TARGET-001`）
    - `UX-BLOCK-010`：同页双主流程冲突（对应 `BUILD-RULE-015`，追溯 `UX-TARGET-003`）
    - `UX-BLOCK-011`：分页语义缺失或不可达（对应 `BUILD-RULE-014`，追溯 `UX-TARGET-005`）
@@ -149,16 +156,19 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - `BO-RULE-010` 页面区块白名单：出现未声明功能卡片/区块即 FAIL
    - `BO-RULE-011` 页面类型与布局模板匹配：不匹配即 FAIL
    - `BO-RULE-012` 主任务首屏可见：首屏看不到主任务关键区块即 FAIL
-   - `BO-RULE-013` 列表前置重表单限制：出现“上重表单下长列表”且无解耦策略即 FAIL
+   - `BO-RULE-013` 列表前置重表单限制：出现“上重表单下长列表”或列表主视图结果区下方出现业务处理区即 FAIL
    - `BO-RULE-014` 跨屏依赖禁止：关键任务滚动预算超限且无例外依据即 FAIL
    - `BO-RULE-015` 双主流程冲突禁止：同层双主流程/双主按钮抢焦点即 FAIL
    - `BO-RULE-016` 工具栏顺序规范：筛选/结果/分页顺序缺失即 FAIL
-   - `BO-RULE-017` 列表闭环优先级：首屏无列表闭环关键元素即 FAIL
+   - `BO-RULE-017` 列表闭环优先级：首屏无列表闭环关键元素，或列表主视图下置业务处理区抢占主流程焦点即 FAIL
    - `BO-RULE-018` 行操作一致性：行操作入口漂移或缺失即 FAIL
    - `BO-RULE-019` 批量语义一致：批量文案无选择机制/已选反馈即 FAIL
    - `BO-RULE-020` 表单复杂度分层：复杂表单无分层组织即 FAIL
    - `BO-RULE-021` 分页语义与可达性：分页核心语义缺失或不可达即 FAIL
    - `BO-RULE-022` 筛选后分页重置：筛选/排序后未回到第 1 页即 FAIL
+   - 列表主视图禁入检测必须覆盖“命名枚举 + 语义识别”（评估/处理/迁移/映射/执行/工作台）
+   - `data-block-whitelist` 不得豁免禁入项；白名单命中禁入词同样必须 FAIL
+   - 列表主视图分页视觉一致性必须满足统一容器 `table-footer + summary + pagination`；不满足必须 FAIL
 15. 命中任一后台 Fail-fast 门禁项时，必须直接判定 `阻塞（Blocker）`，不得降级为建议。
 16. 主问题清单中的阻塞项必须填写关联 `UX-TARGET`、关联 `BUILD-RULE` 与关联 `BO-RULE` 字段。
 17. 无法确认的信息必须标记 `【待确认】`。
@@ -183,7 +193,7 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 24. 自动化门禁结果消费规则（强制）：
    - 必须将 `audit-result.json` 中的 `Blocker/Major/Minor` 映射到主问题清单
    - `UX-BLOCK-*` 与 `BO-RULE Fail-fast` 命中必须保持阻塞级别，不得降级
-   - 必须消费以下布局度量字段：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`
+   - 必须消费以下布局度量字段：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`、`paginationConsistencyCheck`
 25. 自动化点击检查必须覆盖：
    - 导航点击后选中态检查（`.active/.is-active/[aria-current=page]/[aria-selected=true]`）
    - 新建/编辑点击后弹窗可见检查
@@ -191,6 +201,8 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - 筛选查询/重置动作可见与可点击检查
    - 分页上一页/下一页/页码交互检查
 26. 自动化结果命中 `UX-BLOCK-001~012` 任一项时，必须立即 FAIL 并早停。
+27. 规则去重约束（强制）：
+   - `Rules` 保留主定义，`Workflow` 与 `Quality Gate` 仅引用规则编号与结论，不重复整段规则文本。
 
 ## Workflow
 
@@ -198,6 +210,11 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 
 - 确保 `docs/02-design/` 存在。
 - 初始化 `PROTOTYPE_CHECK_REPORT.md`（缺失则创建、模板则覆盖）。
+
+### 步骤 0.2：P0 Gate（阻塞）
+
+- 校验 acceptance 目标资产与核心输入可用（需求边界、设计基线、原型目录）。
+- 若缺失导致无法执行 `UX-BLOCK` 与 `BO-RULE` 判定，必须输出 `BLOCKED/FAIL` 并停止，不进入后续步骤。
 
 `PROTOTYPE_CHECK_REPORT.md` 最小结构：
 
@@ -238,7 +255,7 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 | UX-BLOCK-005 | 语义一致性缺失 | 主操作文案含“选中/批量”但无选择机制或已选反馈 | FAIL（阻塞） |
 | UX-BLOCK-006 | 页面区块越界 | 页面出现未在白名单声明的功能卡片/区块 | FAIL（阻塞） |
 | UX-BLOCK-007 | 主任务首屏不可见 | 首屏未看到主任务关键区块与关键入口 | FAIL（阻塞） |
-| UX-BLOCK-008 | 列表压制/跨屏依赖 | 列表页出现前置重表单压制主任务，或关键路径滚动预算超限 | FAIL（阻塞） |
+| UX-BLOCK-008 | 列表压制/下置处理区/跨屏依赖 | 列表页出现前置重表单压制主任务，或列表主视图结果区下方出现业务处理区，或关键路径滚动预算超限 | FAIL（阻塞） |
 | UX-BLOCK-009 | 页面类型错配 | 页面类型与布局模板不匹配 | FAIL（阻塞） |
 | UX-BLOCK-010 | 双主流程冲突 | 同页并列双主流程或双主按钮抢焦点 | FAIL（阻塞） |
 | UX-BLOCK-011 | 分页语义缺失 | 缺少 prev/next/page/total/current 任一语义 | FAIL（阻塞） |
@@ -256,11 +273,11 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 | BO-RULE-010 | 页面区块白名单 | 出现未声明的功能卡片/区块 | FAIL（阻塞） |
 | BO-RULE-011 | 页面类型与布局模板匹配 | 页面类型与布局模板不匹配 | FAIL（阻塞） |
 | BO-RULE-012 | 主任务首屏可见 | 首屏看不到主任务关键区块 | FAIL（阻塞） |
-| BO-RULE-013 | 列表前置重表单限制 | 出现“上重表单下长列表”且无解耦策略 | FAIL（阻塞） |
+| BO-RULE-013 | 列表前置重表单限制 | 出现“上重表单下长列表”，或列表主视图结果区下方出现业务处理区 | FAIL（阻塞） |
 | BO-RULE-014 | 跨屏依赖禁止 | 关键任务滚动预算超限且无例外依据 | FAIL（阻塞） |
 | BO-RULE-015 | 双主流程冲突禁止 | 同层双主流程/双主按钮抢焦点 | FAIL（阻塞） |
 | BO-RULE-016 | 工具栏顺序规范 | 筛选/结果/分页顺序缺失 | FAIL（阻塞） |
-| BO-RULE-017 | 列表闭环优先级 | 首屏无列表闭环关键元素 | FAIL（阻塞） |
+| BO-RULE-017 | 列表闭环优先级 | 首屏无列表闭环关键元素，或列表主视图下置业务处理区抢占主流程焦点 | FAIL（阻塞） |
 | BO-RULE-018 | 行操作一致性 | 行操作入口漂移或缺失 | FAIL（阻塞） |
 | BO-RULE-019 | 批量语义一致 | 批量文案无选择机制/已选反馈 | FAIL（阻塞） |
 | BO-RULE-020 | 表单复杂度分层 | 复杂表单无分层组织 | FAIL（阻塞） |
@@ -332,7 +349,12 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 10. 对后台排版结构执行专项检查：
    - 页面类型与布局模板是否匹配（`BO-RULE-011` / `UX-BLOCK-009`）
    - 首屏是否可见主任务关键区块（`BO-RULE-012` / `UX-BLOCK-007`）
+   - `data-layout-template=列表主视图` 是否满足“筛选区 -> 结果区 -> 分页区”三段式（`BO-RULE-011` / `UX-BLOCK-009`）
    - 列表页是否存在前置重表单压制（`BO-RULE-013` / `UX-BLOCK-008`）
+   - 列表主视图结果区下方是否出现业务工作台/处理卡片/迁移面板/评估面板/映射维护面板（`BUILD-RULE-011` / `BO-RULE-017` / `UX-BLOCK-008`）
+   - 上述下置业务区检测必须覆盖命名枚举 + 语义识别（含 `tag-evaluation`、`xxx-evaluation`、`assessment`、`workbench/workspace/action-panel/processing-panel/migrate-panel/mapping-panel`）
+   - `data-block-whitelist` 是否包含禁入项；命中时必须按 `BUILD-RULE-011 + BO-RULE-017 + UX-BLOCK-008` 输出 Blocker/FAIL
+   - 列表主视图分页视觉一致性是否满足 `table-footer + summary + pagination`（命中错位/漂浮分页时必须按 `BUILD-RULE-011 + BO-RULE-017 + UX-BLOCK-008` 输出 Blocker/FAIL）
    - 关键任务路径是否跨屏依赖（`BO-RULE-014` / `UX-BLOCK-008`）
    - 同页是否存在双主流程冲突（`BO-RULE-015` / `UX-BLOCK-010`）
    - 工具栏顺序、分页语义、筛选后分页重置是否完整（`BO-RULE-016/021/022`）
@@ -365,7 +387,7 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
   - `UX-BLOCK-005`（主操作语义与选择机制不一致）
   - `UX-BLOCK-006`（页面区块越界）
   - `UX-BLOCK-007`（主任务首屏不可见）
-  - `UX-BLOCK-008`（列表压制/跨屏依赖）
+  - `UX-BLOCK-008`（列表压制/下置处理区/跨屏依赖）
   - `UX-BLOCK-009`（页面类型错配）
   - `UX-BLOCK-010`（双主流程冲突）
   - `UX-BLOCK-011`（分页语义缺失）
@@ -388,10 +410,22 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 - 命中任一 `UX-BLOCK` 后必须立即结束准入判定，不得继续输出“有条件通过”或等价结论。
 - 命中任一后台 Fail-fast 门禁项后必须立即结束准入判定，不得继续输出“有条件通过”或等价结论。
 
-## Quality Gate
+## Quality Gate（分层）
+
+### P0 Gate（阻塞，最小必检）
 
 - [ ] 已输出 `PROTOTYPE_CHECK_REPORT.md` 且问题字段完整。
 - [ ] 主门禁对象为 acceptance，且 display 已执行量化门禁检查。
+- [ ] `BO-RULE-011~022` 后台排版治理门禁已检查并通过；命中任一项时结论必须 FAIL。
+- [ ] `列表主视图` 三段式结构（筛选区 -> 结果区 -> 分页区）已检查并通过；不满足时结论必须 FAIL（阻塞）。
+- [ ] `列表主视图` 结果区下方业务处理区禁入已检查并通过；命中 `workbench/workspace/action-panel/processing-panel/migrate-panel/evaluation-panel/mapping-panel` 任一项时，必须按 `BUILD-RULE-011` + `BO-RULE-017` + `UX-BLOCK-008` 输出阻塞 FAIL。
+- [ ] `列表主视图` 下置业务区禁入检测已覆盖“命名枚举 + 语义识别”，且 `data-block-whitelist` 不得豁免禁入项；命中时必须按 `BUILD-RULE-011` + `BO-RULE-017` + `UX-BLOCK-008` 输出阻塞 FAIL。
+- [ ] 列表主视图分页视觉一致性（`table-footer + summary + pagination`）已检查并通过；布局错位或独立漂浮分页时必须按 `BUILD-RULE-011` + `BO-RULE-017` + `UX-BLOCK-008` 输出阻塞 FAIL。
+- [ ] `UX-BLOCK-008/009/010` 未命中；任一命中时结论必须为 FAIL，且阻塞进入 `dev-implement`。
+- [ ] 命中任一 `UX-BLOCK` 时已立即结束准入判定并输出 FAIL，不存在通过项抵消。
+
+### P1 Coverage Checklist（扩展覆盖）
+
 - [ ] acceptance 与 `UI_DESIGN_SPEC.md`、`PAGE_FLOW.md`、`SCREEN_INVENTORY.md` 一致。
 - [ ] acceptance 与 `STATE_MATRIX.md`、`ACCEPTANCE_PROTOTYPE_SPEC.md` 一致。
 - [ ] acceptance 视觉规范与 `DESIGN_TOKENS.md`、`COMPONENT_GUIDELINES.md` 一致。
@@ -405,7 +439,6 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 - [ ] `BO-RULE-008` 表格/筛选/分页闭环门禁已检查并通过；命中时结论必须 FAIL。
 - [ ] `BO-RULE-009` 主操作语义一致门禁已检查并通过；命中时结论必须 FAIL。
 - [ ] `BO-RULE-010` 页面区块白名单门禁已检查并通过；命中时结论必须 FAIL。
-- [ ] `BO-RULE-011~022` 后台排版治理门禁已检查并通过；命中任一项时结论必须 FAIL。
 - [ ] `UX-BLOCK-001` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
 - [ ] `UX-BLOCK-002` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
 - [ ] `UX-BLOCK-003` 未命中；若命中，结论必须为 FAIL，且阻塞进入 `dev-implement`。
@@ -428,6 +461,10 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 - [ ] 自动化脚本已覆盖导航选中态、新建/编辑弹窗、编辑预填、筛选查询/重置、分页交互。
 - [ ] 自动化结果已消费布局度量字段：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
 - [ ] 自动全局安装 `playwright/chromium` 失败时结论为 `BLOCKED`，未产生误判 PASS。
+
+### P2 Reference Checklist（参考）
+
+- [ ] Example 与说明文本已更新，且不改变 `P0` 判定口径。
 
 ## Example
 
@@ -491,13 +528,16 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 
 ## 版本信息
 
-- 当前版本：v1.6.1
+- 当前版本：v1.9.0
 - 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.9.0 | 2026-04-03 | 【修改】新增“白名单不可豁免禁入项”与“命名枚举 + 语义识别”门禁口径；新增分页视觉一致性强制门禁（`table-footer + summary + pagination`），并要求命中统一映射 `BUILD-RULE-011 + BO-RULE-017 + UX-BLOCK-008`（Blocker/FAIL）。 |
+| v1.8.0 | 2026-04-03 | 【修改】按 Progressive Disclosure 重排：新增 `P0/P1/P2` 导读、`P0 Gate` 阻塞前置、分层 Quality Gate，并约束 Workflow/Quality Gate 采用规则编号引用。 |
+| v1.7.0 | 2026-04-03 | 【修改】将“列表主视图结果区下方业务处理区”纳入 `UX-BLOCK-008` / `BO-RULE-013/017` 阻塞判定，并要求固定映射 `BUILD-RULE-011 + BO-RULE-017 + UX-BLOCK-008`。 |
 | v1.6.1 | 2026-04-03 | 【修改】将自动安装规则明确为全局安装：缺 `playwright` 时执行 `npm install -g playwright`，缺 `chromium` 时执行 `playwright install chromium`。 |
 | v1.6.0 | 2026-04-03 | 【修改】新增 `UX-BLOCK-007~012` 与 `BO-RULE-011~022` 排版 Fail-fast 门禁，接入布局度量字段消费。 |
 | v1.5.0 | 2026-04-03 | 【修改】新增自动化视觉门禁消费规则（`visual_gate_source`/`visual_gate_profile`）、`run_visual_gate.sh` 自动重跑与 Playwright+Chromium 自动安装 `BLOCKED` 处理。 |

@@ -73,6 +73,13 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - 后续原型必须可直接验证“产品体验目标与指标”，否则视为阻塞信息缺口。
 - 设计基线文档必须显式承载体验目标编号，并建立 `UX-TARGET -> BUILD-RULE -> BO-RULE -> UX-BLOCK` 映射。
 
+## 执行层级导读（Progressive Disclosure）
+
+- `P0 必检（阻塞）`：范围边界、后台规则消费、体验目标映射、列表主视图结构约束齐备。
+- `P1 扩展（覆盖）`：双轨专用文档、自动化可测性、评审清单映射齐备。
+- `P2 参考（说明）`：示例与说明文本仅作参考，不得覆盖 `P0` 判定。
+- 执行顺序必须为：先过 `P0 Gate`，再进入 `P1`；`P2` 不参与放行。
+
 ## Rules
 
 1. 页面设计必须受 `PRD_RECTIFIED.md`、`MVP_SCOPE.md`、`OUT_OF_SCOPE.md`、`<current-change>` 共同约束。
@@ -114,6 +121,10 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
    - `UI_DESIGN_SPEC.md` 必须逐页回写：页面目标、主任务、主/次/危险操作、字段映射、状态标签语义、反馈规则
    - `UI_DESIGN_SPEC.md` 必须逐页回写：筛选字段清单、查询与重置动作、主操作语义约束（是否含“选中/批量”）、选择机制声明、页面区块白名单
    - `UI_DESIGN_SPEC.md` 必须逐页回写：页面类型、布局模板、首屏主任务区块、主路径滚动预算、列表/维护解耦策略、工具栏顺序、筛选后分页重置规则
+   - 当布局模板为 `列表主视图` 时，页面主结构必须为“筛选区 -> 结果区 -> 分页区”三段式
+   - `列表主视图` 的结果区下方不允许定义业务工作台、处理卡片、迁移动作面板、评估面板、映射维护面板等下置业务处理区
+   - 列表处理动作承载方式必须限定为：弹窗、独立处理页、同页 Tab；不允许与列表主流程并列抢焦点
+   - `UI_DESIGN_SPEC.md` 必须逐页回写 `data-layout-template` 与 `data-block-id` 命名约束，供门禁脚本自动判定
    - `UI_REVIEW_CHECKLIST.md` 必须逐项回写 `BO-RULE-001~022` 的可判定检查项
 16. 冷启动规则（强制）：
    - 若目标目录不存在，先创建目录。
@@ -126,7 +137,9 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
    - `data-testid` 命名建议：`<page-id>-<region>-<role>`（示例：`lvl-list-filter-query-btn`）
 18. 自动化门禁对齐约束（强制）：
    - `UI_REVIEW_CHECKLIST.md` 必须补充“自动化检查映射表”
-   - 映射表至少包含：`检查项`、`选择器`、`预期行为`、`对应 BUILD-RULE`、`对应 BO-RULE`、`对应 UX-BLOCK`
+	 - 映射表至少包含：`检查项`、`选择器`、`预期行为`、`对应 BUILD-RULE`、`对应 BO-RULE`、`对应 UX-BLOCK`
+19. 规则去重约束（强制）：
+   - `Rules` 保留主定义，`Workflow` 与 `Quality Gate` 仅引用编号与结论，不重复长段规则文本。
 
 ## Workflow
 
@@ -134,6 +147,12 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 
 - 确保 `docs/02-design/` 存在。
 - 对 9 份输出文档执行初始化（缺失则创建、模板则覆盖）。
+
+### 步骤 0.5：P0 Gate（阻塞）
+
+- 校验范围边界输入（In Scope / Out of Scope / `<current-change>`）可用。
+- 校验后台场景已具备 `BACKOFFICE_UI_SPEC.md`（含 `BO-RULE-001~022`）消费条件。
+- 任一不满足时必须 `BLOCKED`，不得进入步骤 1~6。
 
 每份文档最小章节要求：
 
@@ -154,7 +173,7 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - 提取 In Scope、Out of Scope、current change 边界。
 - 生成页面候选清单，并排除范围外页面。
 - 明确哪些信息属于共享基线，哪些只属于 display / acceptance 其中一轨。
-- 若页面类型包含“后台管理”，必须读取并对齐 `BACKOFFICE_UI_SPEC.md` 的 `BO-RULE-001~010`；缺失则 `BLOCKED`。
+- 若页面类型包含“后台管理”，必须读取并对齐 `BACKOFFICE_UI_SPEC.md` 的 `BO-RULE-001~022`；缺失则 `BLOCKED`。
 
 ### 步骤 2：构建共享页面与流程基线
 
@@ -178,9 +197,15 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
   - 空态/加载态/失败态/成功态反馈
   - 页面区块白名单（允许出现的功能卡片/区块）
   - 首屏主任务区块（首屏必须可见）
+  - `data-layout-template`（列表主视图 / 表单主视图 / 双栏处理视图）
+  - 当 `data-layout-template=列表主视图` 时，`data-block-id` 仅允许：`filter/query/result/table/pagination` 及其同义命名
+  - 当 `data-layout-template=列表主视图` 时，`data-block-id` 不允许：`workbench/workspace/action-panel/processing-panel/migrate-panel/evaluation-panel/mapping-panel` 及其同义命名
+  - 当 `data-layout-template=列表主视图` 时，禁入检测必须同时覆盖“命名枚举 + 语义识别”（评估/处理/迁移/映射/执行/工作台）
+  - 当 `data-layout-template=列表主视图` 时，`data-block-whitelist` 不允许豁免禁入项
   - 主路径滚动预算（默认 <= 1 屏）
   - 列表/维护解耦策略（弹窗 / 抽屉 / Tab / 独立页）
   - 工具栏顺序（筛选 -> 结果 -> 分页）
+  - 分页视觉一致性（强制）：统一容器结构 `table-footer + summary + pagination`
   - 筛选后分页重置规则（默认回到第 1 页）
   - 自动化定位选择器清单（`data-testid`）
 - 对每个页面必须补充“产品体验目标与指标”：
@@ -228,7 +253,7 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
   - 主操作语义一致性 -> `BUILD-RULE-008` / `BO-RULE-009` / `UX-BLOCK-005`
   - 页面类型匹配 -> `BUILD-RULE-010` / `BO-RULE-011` / `UX-BLOCK-009`
   - 首屏主任务可见 -> `BUILD-RULE-010` / `BO-RULE-012` / `UX-BLOCK-007`
-  - 列表前置重表单限制 -> `BUILD-RULE-011` / `BO-RULE-013` / `UX-BLOCK-008`
+  - 列表主视图下置业务处理区禁止（含前置重表单压制） -> `BUILD-RULE-011` / `BO-RULE-013/017` / `UX-BLOCK-008`
   - 跨屏依赖禁止 -> `BUILD-RULE-013` / `BO-RULE-014` / `UX-BLOCK-008`
   - 双主流程冲突 -> `BUILD-RULE-015` / `BO-RULE-015` / `UX-BLOCK-010`
   - 分页语义与重置 -> `BUILD-RULE-014` / `BO-RULE-021/022` / `UX-BLOCK-011/012`
@@ -237,16 +262,27 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 
 - 明确标注“共享基线由两轨共用，双轨差异以 `DISPLAY_PROTOTYPE_SPEC.md` 与 `ACCEPTANCE_PROTOTYPE_SPEC.md` 为准”。
 
-## Quality Gate
+## Quality Gate（分层）
+
+### P0 Gate（阻塞，最小必检）
+
+- [ ] 页面与流程全部在 In Scope / `<current-change>` 内。
+- [ ] 后台管理页面已消费 `BACKOFFICE_UI_SPEC.md`，并覆盖 `BO-RULE-001~022`。
+- [ ] `列表主视图` 已声明三段式结构（筛选区 -> 结果区 -> 分页区）；缺失即阻塞。
+- [ ] `列表主视图` 已声明禁止下置业务处理区（workbench/workspace/action-panel/processing-panel/migrate-panel/evaluation-panel/mapping-panel）；命中即阻塞。
+- [ ] 已声明“命名枚举 + 语义识别”禁入检测，且 `data-block-whitelist` 不得豁免禁入项；不满足即阻塞。
+- [ ] 已声明分页视觉一致性强制门禁（`table-footer + summary + pagination`）；不满足即阻塞。
+- [ ] 列表处理动作承载已限定为弹窗/独立处理页/同页 Tab；未限定即阻塞。
+- [ ] `UI_REVIEW_CHECKLIST.md` 已建立 `UX-TARGET -> BUILD-RULE -> BO-RULE -> UX-BLOCK` 映射，且无断链；任一断链即阻塞。
+
+### P1 Coverage Checklist（扩展覆盖）
 
 - [ ] 已输出 9 份设计基线文档且路径正确。
-- [ ] 页面与流程全部在 In Scope / `<current-change>` 内。
 - [ ] 未出现超范围页面、字段、交互。
 - [ ] `STATE_MATRIX.md` 覆盖 9 类状态且作为 acceptance 强约束输入。
 - [ ] `DISPLAY_PROTOTYPE_SPEC.md` 已明确隐藏规则、动作后置规则与展示优先级。
 - [ ] `ACCEPTANCE_PROTOTYPE_SPEC.md` 已明确状态覆盖、关键字段、门禁可见性要求。
 - [ ] `UI_REVIEW_CHECKLIST.md` 已区分 display / acceptance 两类检查。
-- [ ] 后台管理页面已消费 `BACKOFFICE_UI_SPEC.md`，并覆盖 `BO-RULE-001~022`。
 - [ ] 后台管理列表页已声明分页策略，未出现“由原型阶段自行决定是否分页”。
 - [ ] 后台管理列表页已声明筛选字段清单，且包含“查询+重置”动作。
 - [ ] 后台管理新建/编辑已声明交互载体，默认弹窗，例外情况有明确依据。
@@ -259,10 +295,13 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 - [ ] 列表页已声明列表/维护解耦策略，避免“上重表单下长列表”强耦合。
 - [ ] 列表页已声明工具栏顺序与筛选后分页重置规则。
 - [ ] 每个页面已定义 `UX-TARGET-001/002/003/004/005` 对应内容；任一缺失即阻塞。
-- [ ] `UI_REVIEW_CHECKLIST.md` 已建立 `UX-TARGET -> BUILD-RULE -> BO-RULE -> UX-BLOCK` 映射，且无断链；任一断链即阻塞。
 - [ ] 设计基线产物可被后续原型直接验证上述体验目标与指标；若无法验证，结论必须为 FAIL 且阻塞进入下游。
 - [ ] 所有 `【待确认】` 与 `【设计推断】` 已显式标记并附依据。
 - [ ] 输出可直接进入 `prototype-build`，无阻塞信息缺口。
+
+### P2 Reference Checklist（参考）
+
+- [ ] Example 与说明文本已更新，且不改变 `P0` 门禁口径。
 
 ## Example
 
@@ -309,13 +348,16 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 
 ## 版本信息
 
-- 当前版本：v1.6.0
+- 当前版本：v1.9.0
 - 更新时间：2026-04-03
 
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |---|---|---|
+| v1.9.0 | 2026-04-03 | 【修改】新增“白名单不可豁免禁入项”与“命名枚举 + 语义识别”禁入口径；将分页视觉一致性（`table-footer + summary + pagination`）提升为强制门禁。 |
+| v1.8.0 | 2026-04-03 | 【修改】按 Progressive Disclosure 重排：新增 `P0/P1/P2` 导读、`P0 Gate` 阻塞前置、分层 Quality Gate，并约束 Workflow/Quality Gate 采用规则编号引用。 |
+| v1.7.0 | 2026-04-03 | 【修改】新增列表主视图三段式与下置业务处理区禁入硬约束，强制回写 `data-layout-template/data-block-id` 规则，直连 `BUILD-RULE-011`、`BO-RULE-013/017`、`UX-BLOCK-008`。 |
 | v1.6.0 | 2026-04-03 | 【修改】接入 `BO-RULE-011~022` 后台排版治理：页面类型匹配、首屏可见、滚动预算、解耦策略、分页语义与重置规则。 |
 | v1.5.0 | 2026-04-03 | 【修改】新增自动化可测性约束：关键元素稳定选择器（`data-testid`）与自动化视觉/点击检查映射表。 |
 | v1.4.0 | 2026-04-03 | 【修改】接入 `BO-RULE-009/010`，新增后台筛选闭环、主操作语义一致性、页面区块白名单的设计输入强约束。 |

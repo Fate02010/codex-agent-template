@@ -33,6 +33,71 @@ const sides = profile === "both" ? ["display", "acceptance"] : [profile];
 const issues = [];
 let issueSeq = 1;
 const pageMetrics = [];
+const listMainViewRuleConfig = {
+  listTemplate: "列表主视图",
+  allowedTokens: [
+    "filter",
+    "query",
+    "search",
+    "search-form",
+    "query-form",
+    "result",
+    "results",
+    "result-table",
+    "table",
+    "data-table",
+    "pagination",
+    "pager",
+    "page-nav",
+    "pagebar",
+    "page-bar",
+  ],
+  forbiddenTokens: [
+    "workbench",
+    "workspace",
+    "workspace-panel",
+    "workbench-panel",
+    "action-panel",
+    "actionpanel",
+    "action-workbench",
+    "processing-panel",
+    "processingpanel",
+    "process-panel",
+    "processpanel",
+    "migrate-panel",
+    "migratepanel",
+    "migration-panel",
+    "migrationpanel",
+    "evaluation-panel",
+    "evaluationpanel",
+    "mapping-panel",
+    "mappingpanel",
+    "mapping-maintain",
+    "mapping-maintenance",
+    "tag-evaluation",
+    "evaluation",
+    "assessment",
+    "assessment-panel",
+    "execute-panel",
+    "execution-panel",
+    "processing-workbench",
+  ],
+  semanticTokens: [
+    "evaluation",
+    "assessment",
+    "process",
+    "processing",
+    "migrate",
+    "migration",
+    "mapping",
+    "execute",
+    "execution",
+    "workbench",
+    "workspace",
+    "action",
+  ],
+  semanticChinesePattern: "评估|处理|迁移|映射|执行|工作台",
+};
 
 const addIssue = ({
   level,
@@ -192,8 +257,21 @@ const clickEvalForPrefill = () => {
   });
 };
 
-const pageStructureEval = () => {
+const pageStructureEval = (ruleConfig = {}) => {
   const viewportHeight = window.innerHeight;
+  const normalizeToken = (value) =>
+    String(value || "")
+      .toLowerCase()
+      .trim()
+      .replace(/[_\s]+/g, "-");
+  const hasToken = (value, tokens) => tokens.some((token) => value === token || value.includes(token));
+  const allowedTokens = Array.isArray(ruleConfig.allowedTokens) ? ruleConfig.allowedTokens.map(normalizeToken) : [];
+  const forbiddenTokens = Array.isArray(ruleConfig.forbiddenTokens) ? ruleConfig.forbiddenTokens.map(normalizeToken) : [];
+  const semanticTokens = Array.isArray(ruleConfig.semanticTokens) ? ruleConfig.semanticTokens.map(normalizeToken) : [];
+  const semanticChineseRegex = ruleConfig.semanticChinesePattern
+    ? new RegExp(String(ruleConfig.semanticChinesePattern), "i")
+    : /评估|处理|迁移|映射|执行|工作台/i;
+  const listTemplateExpected = String(ruleConfig.listTemplate || "列表主视图").trim();
   const byVisible = (el) => {
     const style = window.getComputedStyle(el);
     const rect = el.getBoundingClientRect();
@@ -206,6 +284,11 @@ const pageStructureEval = () => {
     document.querySelector(".ant-table") ||
     document.querySelector("[data-table]");
   const tableRect = table ? table.getBoundingClientRect() : null;
+  const resultContainer =
+    document.querySelector("[data-block-id='result'],[data-block-id='results'],[data-block-id='result-table'],[data-block-id='table']") ||
+    document.querySelector("[data-block-id*='result'],[data-block-id*='table']");
+  const resultRect = resultContainer ? resultContainer.getBoundingClientRect() : null;
+  const resultBottom = resultRect ? resultRect.bottom : tableRect ? tableRect.bottom : null;
 
   let tableHeaderVisible = false;
   let firstRowVisible = false;
@@ -235,15 +318,12 @@ const pageStructureEval = () => {
   const filterVisible =
     !!filterQuery && byVisible(filterQuery) && !!filterReset && byVisible(filterReset);
 
-  const pagination =
-    document.querySelector(".el-pagination") ||
-    document.querySelector(".ant-pagination") ||
-    document.querySelector("[data-pagination]") ||
-    Array.from(document.querySelectorAll("button,a,[role='button']")).some((el) =>
-      /上一页|下一页|prev|next/i.test((el.textContent || "").trim())
-    );
   const paginationNode =
     document.querySelector(".el-pagination,.ant-pagination,[data-pagination]") || null;
+  const paginationByText = Array.from(document.querySelectorAll("button,a,[role='button']")).some((el) =>
+    /上一页|下一页|prev|next/i.test((el.textContent || "").trim())
+  );
+  const pagination = !!paginationNode || paginationByText;
   const paginationTop = paginationNode ? paginationNode.getBoundingClientRect().top : null;
 
   const editable = Array.from(document.querySelectorAll("input,select,textarea")).filter(byVisible);
@@ -265,6 +345,14 @@ const pageStructureEval = () => {
   const layoutTemplate = (document.body?.getAttribute("data-layout-template") || "").trim();
   const declaredLayoutType = bodyType || "UNDECLARED";
   const declaredLayoutTemplate = layoutTemplate || "UNDECLARED";
+  const hasListTemplate = layoutTemplate === listTemplateExpected;
+  const listMainViewByFallback =
+    !hasListTemplate &&
+    !!table &&
+    !!pagination &&
+    (filterVisible || bodyType === "查看型页面" || (!!tableRect && tableRect.top < viewportHeight * 1.2));
+  const listMainViewDetected = hasListTemplate || listMainViewByFallback;
+  const listMainViewDetectionSource = hasListTemplate ? "data-layout-template" : listMainViewByFallback ? "table+pagination" : "none";
 
   const inferredLayoutType = (() => {
     const hasTable = !!table;
@@ -283,20 +371,141 @@ const pageStructureEval = () => {
 
   const tableTop = tableRect ? tableRect.top : null;
   const scrollCostScreens = tableTop && tableTop > 0 ? Number((tableTop / viewportHeight).toFixed(2)) : 0;
+  const filterAnchorTop = filterQuery ? filterQuery.getBoundingClientRect().top : null;
+  const threeSegmentPass =
+    !!filterVisible &&
+    !!table &&
+    !!pagination &&
+    filterAnchorTop !== null &&
+    tableRect &&
+    paginationTop !== null &&
+    filterAnchorTop <= tableRect.top &&
+    tableRect.top <= paginationTop;
 
   const toolbarOrderCheck = {
     hasFilter: !!filterVisible,
     hasTable: !!table,
     hasPagination: !!pagination,
-    pass:
-      filterVisible &&
-      !!table &&
-      !!pagination &&
-      tableRect &&
-      paginationTop !== null &&
-      filterQuery.getBoundingClientRect().top <= tableRect.top &&
-      tableRect.top <= paginationTop,
+    pass: threeSegmentPass,
   };
+
+  const paginationConsistency = (() => {
+    if (!listMainViewDetected) {
+      return { pass: true, reason: "not-list-main-view" };
+    }
+    const footerSelector =
+      "[data-block-id='table-footer'],[data-block-id*='table-footer'],[data-testid='table-footer'],[data-testid*='table-footer'],.table-footer,[class*='table-footer']";
+    const tableFooterNode =
+      (paginationNode && paginationNode.closest(footerSelector)) ||
+      document.querySelector(footerSelector);
+    const summarySelector =
+      "[data-block-id='summary'],[data-block-id*='summary'],[data-testid='summary'],[data-testid*='summary'],.summary,[class*='summary'],[data-role='summary']";
+    const summaryNodeBySelector =
+      tableFooterNode && tableFooterNode.querySelector(summarySelector)
+        ? tableFooterNode.querySelector(summarySelector)
+        : null;
+    const summaryNodeByText =
+      tableFooterNode &&
+      Array.from(tableFooterNode.querySelectorAll("*")).find((el) => {
+        if (!byVisible(el)) return false;
+        const text = (el.textContent || "").trim();
+        return /共\s*\d+\s*条|第\s*\d+\s*页|total|当前页|current/i.test(text);
+      });
+    const summaryNode = summaryNodeBySelector && byVisible(summaryNodeBySelector) ? summaryNodeBySelector : summaryNodeByText || null;
+    const footerTop = tableFooterNode ? tableFooterNode.getBoundingClientRect().top : null;
+    const paginationInsideFooter = !!(tableFooterNode && paginationNode && tableFooterNode.contains(paginationNode));
+    const summaryInsideFooter = !!(tableFooterNode && summaryNode && tableFooterNode.contains(summaryNode));
+    const footerAfterResult = resultBottom !== null && footerTop !== null ? footerTop >= resultBottom - 4 : false;
+    const paginationNotFloating = resultBottom !== null && paginationTop !== null ? paginationTop >= resultBottom - 4 : false;
+    const reasons = [];
+    if (!tableFooterNode) reasons.push("missing-table-footer");
+    if (!paginationNode) reasons.push("missing-pagination-node");
+    if (!summaryNode) reasons.push("missing-summary-node");
+    if (tableFooterNode && paginationNode && !paginationInsideFooter) reasons.push("pagination-not-in-table-footer");
+    if (tableFooterNode && summaryNode && !summaryInsideFooter) reasons.push("summary-not-in-table-footer");
+    if (tableFooterNode && resultBottom !== null && !footerAfterResult) reasons.push("table-footer-not-below-result");
+    if (paginationNode && resultBottom !== null && !paginationNotFloating) reasons.push("floating-pagination");
+    return {
+      pass: reasons.length === 0,
+      reason: reasons.join(","),
+      hasTableFooter: !!tableFooterNode,
+      hasSummary: !!summaryNode,
+      hasPaginationNode: !!paginationNode,
+    };
+  })();
+
+  const listMainViewBlocks = (() => {
+    const nodes = Array.from(document.querySelectorAll("[data-block-id]"));
+    const whitelistRaw = (document.body?.getAttribute("data-block-whitelist") || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const whitelistNorm = whitelistRaw.map(normalizeToken);
+    const whitelistForbidden = whitelistRaw.filter((raw, idx) => hasToken(whitelistNorm[idx], forbiddenTokens));
+    const matchesSemantic = (raw, norm) =>
+      hasToken(norm, semanticTokens) || semanticChineseRegex.test(String(raw || ""));
+    if (!nodes.length) {
+      return {
+        ids: [],
+        allowed: [],
+        forbidden: [],
+        forbiddenBelowResult: [],
+        unknown: [],
+        unknownBelowResult: [],
+        semanticBlockedUnknownBelowResult: [],
+        whitelistForbidden,
+      };
+    }
+    const details = nodes
+      .map((el) => {
+        const raw = (el.getAttribute("data-block-id") || "").trim();
+        if (!raw) return null;
+        const rect = el.getBoundingClientRect();
+        return {
+          raw,
+          norm: normalizeToken(raw),
+          top: rect.top,
+        };
+      })
+      .filter(Boolean);
+    const allowed = [];
+    const forbidden = [];
+    const forbiddenBelowResult = [];
+    const unknown = [];
+    const unknownBelowResult = [];
+    const semanticBlockedUnknownBelowResult = [];
+    for (const detail of details) {
+      const isAllowed = hasToken(detail.norm, allowedTokens);
+      const isForbidden = hasToken(detail.norm, forbiddenTokens);
+      const isBelowResult = resultBottom === null ? true : detail.top >= resultBottom - 1;
+      if (isAllowed) allowed.push(detail.raw);
+      if (isForbidden) {
+        forbidden.push(detail.raw);
+        if (isBelowResult) {
+          forbiddenBelowResult.push(detail.raw);
+        }
+      }
+      if (!isAllowed && !isForbidden) {
+        unknown.push(detail.raw);
+        if (isBelowResult) {
+          unknownBelowResult.push(detail.raw);
+          if (matchesSemantic(detail.raw, detail.norm)) {
+            semanticBlockedUnknownBelowResult.push(detail.raw);
+          }
+        }
+      }
+    }
+    return {
+      ids: details.map((d) => d.raw),
+      allowed,
+      forbidden,
+      forbiddenBelowResult,
+      unknown,
+      unknownBelowResult,
+      semanticBlockedUnknownBelowResult,
+      whitelistForbidden,
+    };
+  })();
 
   return {
     viewportHeight,
@@ -313,6 +522,20 @@ const pageStructureEval = () => {
     inferredLayoutType,
     scrollCost: scrollCostScreens,
     toolbarOrderCheck,
+    listMainView: {
+      detected: listMainViewDetected,
+      detectionSource: listMainViewDetectionSource,
+      threeSegmentPass,
+      blockIds: listMainViewBlocks.ids,
+      allowedBlockIds: listMainViewBlocks.allowed,
+      forbiddenBlockIds: listMainViewBlocks.forbidden,
+      forbiddenBelowResult: listMainViewBlocks.forbiddenBelowResult,
+      unknownBlockIds: listMainViewBlocks.unknown,
+      unknownBelowResult: listMainViewBlocks.unknownBelowResult,
+      semanticBlockedUnknownBelowResult: listMainViewBlocks.semanticBlockedUnknownBelowResult,
+      whitelistForbiddenIds: listMainViewBlocks.whitelistForbidden,
+      paginationConsistency,
+    },
   };
 };
 
@@ -428,7 +651,7 @@ const analyzePage = async (browser, side, htmlFile) => {
   await page.waitForTimeout(150);
 
   const interactionShot = path.join(sideDir, "1440", pageName.replace(/\.html$/, "-interaction.png"));
-  const structure = await page.evaluate(pageStructureEval);
+  const structure = await page.evaluate(pageStructureEval, listMainViewRuleConfig);
 
   const metricItem = {
     side,
@@ -440,6 +663,9 @@ const analyzePage = async (browser, side, htmlFile) => {
     formDensityBeforeList: structure.formDensityBeforeList,
     toolbarOrderCheck: structure.toolbarOrderCheck?.pass ? "PASS" : "FAIL",
     pageResetCheck: "UNKNOWN",
+    listMainViewDetected: structure.listMainView?.detected ? "YES" : "NO",
+    listMainViewSource: structure.listMainView?.detectionSource || "none",
+    paginationConsistencyCheck: structure.listMainView?.paginationConsistency?.pass ? "PASS" : structure.listMainView?.detected ? "FAIL" : "N/A",
   };
 
   if (structure.hasTable) {
@@ -514,6 +740,98 @@ const analyzePage = async (browser, side, htmlFile) => {
         location: "toolbar-order",
         impact: "列表闭环顺序混乱，降低查询与处理效率。",
         suggestion: "调整页面结构顺序，确保筛选/结果/分页语义清晰。",
+        evidence: relRunPath(interactionShot),
+      });
+    }
+  }
+
+  if (structure.listMainView?.detected) {
+    if (!structure.listMainView.threeSegmentPass) {
+      addIssue({
+        level: "Blocker",
+        type: "layout-structure",
+        side,
+        page: pageName,
+        breakpoint: "1440",
+        buildRule: "BUILD-RULE-010",
+        boRule: "BO-RULE-011",
+        uxBlock: "UX-BLOCK-009",
+        description: "列表主视图未满足三段式结构（筛选区 -> 结果区 -> 分页区）。",
+        location: `list-main-view:${structure.listMainView.detectionSource}`,
+        impact: "列表主流程结构不稳定，关键任务闭环不可判定。",
+        suggestion: "按三段式重排列表主视图，并确保筛选、结果、分页连续可见。",
+        evidence: relRunPath(interactionShot),
+      });
+    }
+
+    if ((structure.listMainView.whitelistForbiddenIds || []).length > 0) {
+      addIssue({
+        level: "Blocker",
+        type: "layout-structure",
+        side,
+        page: pageName,
+        breakpoint: "1440",
+        buildRule: "BUILD-RULE-011",
+        boRule: "BO-RULE-017",
+        uxBlock: "UX-BLOCK-008",
+        description: "data-block-whitelist 包含禁入项，白名单不得豁免禁入规则。",
+        location: `data-block-whitelist=${structure.listMainView.whitelistForbiddenIds.join(", ")}`,
+        impact: "禁入区块可能被错误放行，列表主流程门禁失效。",
+        suggestion: "移除白名单中的禁入项；禁入规则必须始终阻塞。",
+        evidence: relRunPath(interactionShot),
+      });
+    }
+
+    if ((structure.listMainView.forbiddenBelowResult || []).length > 0) {
+      addIssue({
+        level: "Blocker",
+        type: "layout-structure",
+        side,
+        page: pageName,
+        breakpoint: "1440",
+        buildRule: "BUILD-RULE-011",
+        boRule: "BO-RULE-017",
+        uxBlock: "UX-BLOCK-008",
+        description: "列表主视图结果区下方出现下置业务处理区。",
+        location: `data-block-id=${structure.listMainView.forbiddenBelowResult.join(", ")}`,
+        impact: "列表主流程被业务处理工作台抢焦点，无法通过开发前门禁。",
+        suggestion: "将处理区迁移到弹窗、独立处理页或同页 Tab，不允许下置在列表结果区后。",
+        evidence: relRunPath(interactionShot),
+      });
+    }
+
+    if ((structure.listMainView.semanticBlockedUnknownBelowResult || []).length > 0) {
+      addIssue({
+        level: "Blocker",
+        type: "layout-structure",
+        side,
+        page: pageName,
+        breakpoint: "1440",
+        buildRule: "BUILD-RULE-011",
+        boRule: "BO-RULE-017",
+        uxBlock: "UX-BLOCK-008",
+        description: "列表主视图结果区下方出现语义命中的未知业务处理区。",
+        location: `unknown data-block-id=${structure.listMainView.semanticBlockedUnknownBelowResult.join(", ")}`,
+        impact: "未知命名规避命中导致下置业务区漏检，列表主流程被抢焦点。",
+        suggestion: "将处理区迁移到弹窗、独立处理页或同页 Tab；不得通过改名绕过门禁。",
+        evidence: relRunPath(interactionShot),
+      });
+    }
+
+    if (structure.listMainView.paginationConsistency && !structure.listMainView.paginationConsistency.pass) {
+      addIssue({
+        level: "Blocker",
+        type: "layout-structure",
+        side,
+        page: pageName,
+        breakpoint: "1440",
+        buildRule: "BUILD-RULE-011",
+        boRule: "BO-RULE-017",
+        uxBlock: "UX-BLOCK-008",
+        description: "列表主视图分页视觉一致性不通过，未满足 table-footer + summary + pagination 统一结构。",
+        location: `pagination-consistency=${structure.listMainView.paginationConsistency.reason || "unknown"}`,
+        impact: "分页与结果区断裂或漂浮，列表主流程闭环不可判定。",
+        suggestion: "统一分页容器为 table-footer，并确保 summary 与 pagination 同容器且位于结果区下方。",
         evidence: relRunPath(interactionShot),
       });
     }
@@ -919,6 +1237,9 @@ audit.summary = {
     .join("; "),
   toolbarOrderCheck: pageMetrics.map((m) => `${m.side}:${m.page}:${m.toolbarOrderCheck}`).join("; "),
   pageResetCheck: pageMetrics.map((m) => `${m.side}:${m.page}:${m.pageResetCheck}`).join("; "),
+  paginationConsistencyCheck: pageMetrics
+    .map((m) => `${m.side}:${m.page}:${m.paginationConsistencyCheck || "N/A"}`)
+    .join("; "),
 };
 
 await fs.writeFile(path.join(runDir, "audit-result.json"), JSON.stringify(audit, null, 2), "utf8");
