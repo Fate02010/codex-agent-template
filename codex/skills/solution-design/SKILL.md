@@ -15,12 +15,14 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 2. `docs/01-requirements/MVP_SCOPE.md`（如有）
 3. 相关变更文档（迭代场景）
 4. `docs/01-requirements/PRD_RECTIFIED_GATE_REPORT.md`（冻结门禁报告，强制）
+5. `openspec/project.md`（如项目启用 OpenSpec，则作为项目元信息与变更上下文补充输入）
 
 ## 输出
 
 1. `docs/02-architecture/ARCHITECTURE.md`
 2. `docs/02-architecture/API_CONTRACT.md`
 3. `docs/02-architecture/DATA_MODEL.md`
+4. `docs/01-requirements/PRD_SOLUTION_PRECHECK_REPORT.md`（由 `scripts/run_prd_gate.sh --mode solution-precheck` 自动生成）
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -34,7 +36,8 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 1. 仅在 `PRD_RECTIFIED.md` 为 `已冻结` 时执行，非冻结必须回退 `prd-rectify`。
 2. 在设计开始前，必须执行冻结补偿检查：
    - `scripts/run_prd_gate.sh --mode solution-precheck --repo-root "$PWD"`
-   - 若冻结状态或冻结门禁报告不满足，结论必须为 `BLOCKED` 并回退 `prd-rectify`。
+   - 该检查会自动生成 `PRD_SOLUTION_PRECHECK_REPORT.md`
+   - 若冻结状态、冻结门禁报告或 precheck 报告不满足，结论必须为 `BLOCKED` 并回退 `prd-rectify`。
 3. 设计结论不得超出需求基线和范围边界。
 4. 外部接口与内部接口必须分层，路径域必须分离（`/api/v1/**` 与 `/internal/v1/**`）。
 5. `API_CONTRACT.md` 每个接口必须达到可实现粒度：
@@ -77,14 +80,15 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 ### 步骤 0：校验需求基线
 
 - `PRD_RECTIFIED.md` 必须是 `已冻结`。
-- 必须执行：`scripts/run_prd_gate.sh --mode solution-precheck --repo-root "$PWD"`。
+- 必须执行规则 2 定义的冻结补偿检查。
 - 非冻结状态或 precheck 未通过时终止并返回 `prd-rectify`。
 
 ### 步骤 0.5：P0 Gate（阻塞）
 
 - 校验三份目标文档输出路径可用。
 - 校验范围边界与需求编号可追溯。
-- 校验 `PRD_RECTIFIED_GATE_REPORT.md` 对应机器结果已通过（verdict=PASS）。
+- 校验输入 `PRD_RECTIFIED_GATE_REPORT.md` 对应机器结果已通过（`verdict=PASS`）。
+- 校验规则 2 自动生成的 `PRD_SOLUTION_PRECHECK_REPORT.md` 对应机器结果已通过（`verdict=PASS`）。
 - 任一不满足时输出 `BLOCKED/FAIL` 并停止，不进入后续步骤。
 
 ### 步骤 1：初始化输出载体（冷启动）
@@ -227,8 +231,9 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 
 根据结果在设计中强制落地：
 
-- 单端：`admin-service`
-- 多端：`admin-service + app-service`
+- 服务命名必须与 `ARCHITECTURE.md` 保持一致。
+- 单端默认示例：`admin-service`
+- 多端默认示例：`admin-service + app-service`
 
 ### 步骤 3：输出 `ARCHITECTURE.md`
 
@@ -245,7 +250,7 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 9. 系统上下文图（System Context）。
 10. 组件架构图（Component）。
 11. 部署架构图（Deployment）。
-12. 追溯矩阵（`F -> API -> T -> TC`）。
+12. 引用步骤 6 输出的追溯矩阵（`F -> API -> T -> TC`）。
 
 ### 步骤 4：输出 `API_CONTRACT.md`
 
@@ -323,4 +328,5 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 - 不得在本阶段实现代码。
 - 不得新增 PRD 未定义的业务能力。
 - 增量场景应局部更新，保留历史基线可追溯性。
+- `openspec/project.md` 仅在项目启用 OpenSpec 时读取；未启用时忽略，不构成阻塞。
 - 本 Skill 负责产出设计草案或更新设计版本；设计问题关闭与冻结由 `architecture-rectify` 负责。

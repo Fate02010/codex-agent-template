@@ -26,7 +26,7 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 7. `docs/01-requirements/MVP_SCOPE.md`（如有）
 8. `docs/01-requirements/OUT_OF_SCOPE.md`（如有）
 9. `docs/01-requirements/FEATURE_PRIORITY.md`（如有）
-10. `openspec/project.md`（如有）
+10. `openspec/project.md`（如项目启用 OpenSpec，则用于补充项目边界、变更上下文与约束来源）
 
 ## 输出
 
@@ -35,6 +35,13 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 - 更新后的 `docs/02-architecture/DATA_MODEL.md`
 - 回写后的 `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md`
 
+## 执行层级导读（Progressive Disclosure）
+
+- `P0 必检（阻塞）`：评审问题清单、需求基线与设计文档可用，且冻结判定与重评条件明确。
+- `P1 扩展（覆盖）`：阻塞与重要问题闭环、追溯链修复、整改状态回写一致。
+- `P2 参考（说明）`：建议项归档、正文标记与审计说明完整。
+- 执行顺序必须为：先过 `P0 Gate`，再进入 `P1`；`P2` 不得覆盖 `P0` 结论。
+
 ## 规则
 
 1. 整改必须仅针对评审问题和其直接关联项，不得扩展需求范围或重做整套设计。
@@ -42,6 +49,8 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 3. 不允许新增 `ARCHITECTURE_RECTIFIED.md`、`API_CONTRACT_RECTIFIED.md`、`DATA_MODEL_RECTIFIED.md` 等副本文件，整改直接更新现有基线文档。
 4. 整改只能使用现有正文标记：`【修改】`、`【变更】`、`【待确认】`、`【风险】`。
 5. 若无法关闭的问题仍影响实现，必须保留在评审问题清单中，并将设计文档状态置为 `已整改`，不得强行冻结。
+6. 冻结时默认保留正文中的 `【修改】` / `【变更】` 标记，作为审计线索；同时必须在 `变更记录` 中归档本轮整改说明。
+7. `🟡 建议` 问题不得悬空，必须在问题清单中明确处置方式：已关闭，或附改进项编号，或附搁置原因（不阻塞冻结）。
 
 ## 执行流程
 
@@ -51,6 +60,13 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 2. 读取 `docs/02-architecture/ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`。
 3. 校验 `PRD_RECTIFIED.md` 状态为 `已冻结`。
 4. 若评审问题清单不存在、设计文档不存在或需求基线未冻结，则终止并返回对应上游阶段。
+
+### 步骤 0.5：P0 Gate（阻塞）
+
+1. `ARCHITECTURE_REVIEW_ISSUES.md` 必须存在且可读取。
+2. `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 必须存在且可写。
+3. `PRD_RECTIFIED.md` 必须为 `已冻结`。
+4. 任一不满足时，结论必须为 `BLOCKED/FAIL`，并停止后续整改判定。
 
 ### 步骤 1：逐条映射问题到设计文档
 
@@ -105,10 +121,15 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 
 对三份设计基线执行冻结判定：
 
-1. 若仍有未关闭 `🔴 阻塞`，将 `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 状态置为 `已整改`，中止下游阶段。
-2. 若无 `🔴 阻塞`，但仍存在影响实现的 `【待确认】` / `【冲突】`，将三份设计文档状态置为 `已整改`。
-3. 若阻塞问题全部关闭，且无影响实现的 `【待确认】` / `【冲突】`，将三份设计文档状态更新为 `已冻结`。
-4. 在三份设计文档的 `变更记录` 中增加冻结或整改记录（示例：`v1.1 / YYYY-MM-DD / 完成 architecture-review 问题整改并冻结设计基线`）。
+1. 若整改涉及以下任一重大变更，不得直接冻结，必须重新执行 `architecture-review`：
+   - 新增接口
+   - 新增或修改关键表结构 / 关键索引
+   - 修改核心状态流转、事务、幂等、并发边界
+   - 显著调整非功能量化基线
+2. 若仍有未关闭 `🔴 阻塞`，将 `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 状态置为 `已整改`，中止下游阶段。
+3. 若无 `🔴 阻塞`，但仍存在影响实现的 `【待确认】` / `【冲突】`，将三份设计文档状态置为 `已整改`。
+4. 若阻塞问题全部关闭，且无影响实现的 `【待确认】` / `【冲突】`，将三份设计文档状态更新为 `已冻结`。
+5. 在三份设计文档的 `变更记录` 中增加冻结或整改记录（示例：`v1.1 / YYYY-MM-DD / 完成 architecture-review 问题整改并冻结设计基线`）。
 
 ## 整改后文档要求
 
@@ -144,12 +165,35 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 
 - [ ] 所有 `🔴 阻塞` 问题均已整改并回写状态
 - [ ] 所有 `🟠 重要` 问题已整改、关闭或显式保留为不阻塞冻结的改进项
+- [ ] 所有 `🟡 建议` 问题已关闭，或已附改进项编号，或已附搁置原因
 - [ ] `ARCHITECTURE.md` 已补齐模块职责、关键边界、非功能量化目标和追溯矩阵
 - [ ] `API_CONTRACT.md` 已补齐参数约束、示例、错误码、兼容策略和写操作边界
 - [ ] `DATA_MODEL.md` 已补齐字段、约束、索引、SQL 和索引用途说明
 - [ ] 三份设计基线文档状态已按规则更新为 `已整改` 或 `已冻结`
 - [ ] `ARCHITECTURE_REVIEW_ISSUES.md` 的问题状态与实际整改结果一致
+- [ ] 若本轮整改触发重大设计变更，已重新执行 `architecture-review`
 - [ ] 未新增任何设计基线副本文件名
+
+## Quality Gate（分层）
+
+### P0 Gate（阻塞，最小必检）
+
+- [ ] `PRD_RECTIFIED.md` 状态为 `已冻结`。
+- [ ] `ARCHITECTURE_REVIEW_ISSUES.md` 存在且可读取。
+- [ ] `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 存在且可写。
+- [ ] 若存在重大设计变更，已重新执行 `architecture-review`，不得跳过重评直接冻结。
+- [ ] 若仍有未关闭 `🔴 阻塞` 或影响实现的 `【待确认】` / `【冲突】`，结论必须为 `FAIL/BLOCKED`。
+
+### P1 Coverage Checklist（扩展覆盖）
+
+- [ ] `🔴 阻塞` 与 `🟠 重要` 问题状态回写完整，且与整改结果一致。
+- [ ] `F -> API -> T -> TC` 追溯链已同步修复，无断链。
+- [ ] 三份设计文档的整改内容与 `ARCHITECTURE_REVIEW_ISSUES.md` 中的关闭说明可相互印证。
+
+### P2 Reference Checklist（参考）
+
+- [ ] `🟡 建议` 已闭环到关闭、改进项编号或搁置说明。
+- [ ] 正文 `【修改】` / `【变更】` 标记与 `变更记录` 已形成审计闭环。
 
 ## 下游建议
 

@@ -29,19 +29,26 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 6. 相关增量变更文档（迭代场景）
 7. `docs/01-requirements/OUT_OF_SCOPE.md`（如有）
 8. `docs/01-requirements/FEATURE_PRIORITY.md`（如有）
-9. `openspec/project.md`（如有）
+9. `openspec/project.md`（如项目启用 OpenSpec，则用于补充项目边界、变更上下文与约束来源）
 
 ## 输出
 
 - `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md` — 架构设计评审问题清单
 
+## 执行层级导读（Progressive Disclosure）
+
+- `P0 必检（阻塞）`：需求与设计基线存在、状态正确、可进入结构化评审。
+- `P1 扩展（覆盖）`：需求覆盖、一致性、可实现性、可测试性、数据设计、架构约束与非功能设计完整。
+- `P2 参考（说明）`：模板、示例与说明文本仅作参考，不参与放行。
+- 执行顺序必须为：先过 `P0 Gate`，再进入 `P1`；`P2` 不得覆盖 `P0` 结论。
+
 ## 执行流程
 
-### 步骤 0：校验输入基线
+### 步骤 0：P0 Gate（阻塞）
 
 - `PRD_RECTIFIED.md` 必须存在且状态为 `已冻结`。
 - `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 必须存在，且不能仍为 `模板`。
-- 若设计文档缺失或仍是模板，占位终止并返回 `solution-design`。
+- 任一不满足时，结论必须为 `BLOCKED/FAIL`，并返回 `solution-design` 或 `architecture-rectify`。
 
 ### 步骤 1：建立需求-设计追溯映射
 
@@ -49,9 +56,19 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 
 - `F -> API`
 - `F -> T`
-- `F -> TC`（可接受 `TC-TBD` 占位，但必须有可测试入口）
+- `F -> TC`（可接受 `TC-TBD` 占位，但必须满足可测试路径条件）
 - 核心角色 -> 接口/模块/数据范围
 - 关键状态流转 -> 写操作边界 -> 数据持久化对象
+
+`TC-TBD` 可接受的前提：
+
+- 已存在明确接口测试路径，或
+- 该需求已完成 `F -> API -> T` 闭环，且 `qa-design` 是下一强制阶段并将补齐 TC 编号
+
+以下情况直接判定为评审风险，必要时升级为 `🔴 阻塞`：
+
+- `TC-TBD` 且无任何明确测试入口
+- `TC-TBD` 且接口、表、异常口径不足以支撑后续 `qa-design`
 
 若存在以下情况，优先标记为高风险：
 
@@ -188,6 +205,27 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 - 下一步使用 `architecture-rectify` 关闭评审问题并完成设计冻结
 - 在 `architecture-rectify` 完成前，不得进入 `qa-design` / `dev-implement`
 - 若需要校验文档元数据、引用和冻结状态一致性，继续使用 `doc-check`
+
+## Quality Gate（分层）
+
+### P0 Gate（阻塞，最小必检）
+
+- [ ] `PRD_RECTIFIED.md` 状态为 `已冻结`。
+- [ ] `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 均存在且不为 `模板`。
+- [ ] 任一基线缺失、不可读或状态错误时，评审结论必须为 `BLOCKED/FAIL`。
+
+### P1 Coverage Checklist（扩展覆盖）
+
+- [ ] `F -> API -> T -> TC` 追溯关系可判定，且核心需求无断链。
+- [ ] 跨文档术语、字段、状态、错误码、角色权限口径一致。
+- [ ] 关键写操作已具备事务、幂等、并发与异常处理边界。
+- [ ] 接口参数级约束、成功/失败示例与错误码映射足够支撑 `qa-design`。
+- [ ] 数据模型已具备主键、约束、索引、可执行 SQL 与索引用途说明。
+- [ ] 非功能设计具备量化目标与验证口径。
+
+### P2 Reference Checklist（参考）
+
+- [ ] 模板、示例与说明文本已更新，且不改变 `P0/P1` 判定口径。
 
 ## 注意事项
 

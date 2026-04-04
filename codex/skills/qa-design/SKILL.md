@@ -7,7 +7,7 @@ description: 测试设计
 
 ## 触发条件
 
-当需求和设计基线已稳定，需要在开发前预分配可追溯的测试编号与测试范围时使用。通常在 `solution-design` 完成后、`dev-implement` 之前触发；如增量迭代扩大范围，可再次执行补充用例。
+当需求和设计基线已稳定，需要在开发前预分配可追溯的测试编号与测试范围时使用。仅在 `architecture-review` 已完成、`architecture-rectify` 已关闭阻塞问题且设计基线状态为 `已冻结` 后触发；如增量迭代扩大范围，可再次执行补充用例。
 
 ## 输入
 
@@ -48,6 +48,7 @@ description: 测试设计
 ### 步骤 0：P0 Gate（阻塞）
 
 - 校验 `PRD_RECTIFIED.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 可读且可追溯到需求/接口/表。
+- 校验设计文档状态为 `已冻结`；若设计基线未冻结，必须回退 `architecture-rectify`。
 - 任一缺失导致无法分配 TC 编号时，必须 `BLOCKED` 并停止。
 
 ### 步骤 0.5：初始化输出载体（冷启动）
