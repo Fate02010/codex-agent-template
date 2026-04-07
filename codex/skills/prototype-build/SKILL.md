@@ -26,6 +26,7 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 - 做原型验收门禁（使用 `prototype-check`）。
 - 做问题修复闭环（使用 `prototype-rectify`）。
 - 接入真实后端接口或实现业务状态管理。
+- 快速出图或轻量线框图（使用 `prototype-generator`；`prototype-generator` 是轻量快速原型工具，不适用于本 Skill 的高保真双轨产出场景）。
 
 ## Inputs
 
@@ -151,24 +152,23 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 21. 列表编辑入口与回填硬约束（强制）：
    - `BUILD-RULE-003`：列表行内必须有编辑入口
    - `BUILD-RULE-003`：编辑弹窗必须预填当前行数据
-22. 弹窗表单反馈闭环硬约束（强制）：
+22. 弹窗表单与交互效率硬约束（强制）：
    - `BUILD-RULE-004`：弹窗表单必须包含取消与确认动作
-   - `BUILD-RULE-006`：弹窗表单必须包含字段级校验反馈、全局失败反馈、提交成功状态回写
-23. 交互效率硬约束（强制）：
    - `BUILD-RULE-005`：关键任务路径必须无断链、无死路返回、无隐藏入口
    - `BUILD-RULE-005`：关键任务步数必须满足 `UX-TARGET-003` 定义的上限
-24. 后台高保真规范硬约束（强制）：
-   - 涉及后台管理页面时，必须满足 `BO-RULE-001~022`
+   - `BUILD-RULE-006`：弹窗表单必须包含字段级校验反馈、全局失败反馈、提交成功状态回写
+23. 后台高保真规范硬约束（强制）：
+   - 涉及后台管理页面时，必须满足 `BO-RULE-001~023`
    - 任一页面出现信息层级不清晰、主按钮不唯一、技术字段直出、状态语义缺失、反馈闭环缺失、表格/筛选/分页闭环缺失、主操作语义不一致、页面区块越界，直接判定 build FAIL
-25. 列表筛选闭环硬约束（强制）：
+24. 列表筛选闭环硬约束（强制）：
    - `BUILD-RULE-007`：含列表页面必须具备筛选区，且至少包含 1 个筛选字段
-   - `BUILD-RULE-007`：筛选区必须同时包含“查询”与“重置”动作
-26. 主操作语义一致性硬约束（强制）：
-   - `BUILD-RULE-008`：主操作文案含“选中/批量”时，页面必须存在选择机制（单选/多选）与已选反馈
-27. 页面区块白名单硬约束（强制）：
+   - `BUILD-RULE-007`：筛选区必须同时包含”查询”与”重置”动作
+25. 主操作语义一致性硬约束（强制）：
+   - `BUILD-RULE-008`：主操作文案含”选中/批量”时，页面必须存在选择机制（单选/多选）与已选反馈
+26. 页面区块白名单硬约束（强制）：
    - `BUILD-RULE-009`：页面出现的功能卡片/区块必须在 `UI_DESIGN_SPEC.md` 的页面区块白名单声明
-28. 任一硬约束未满足时，结论必须为 build FAIL，且必须阻塞进入 `prototype-check`。
-29. 后台排版结构硬约束（强制）：
+27. 任一硬约束未满足时，结论必须为 build FAIL，且必须阻塞进入 `prototype-check`。
+28. 后台排版结构硬约束（强制）：
    - `BUILD-RULE-010`：页面类型必须与布局模板匹配；当 `data-layout-template=列表主视图` 时，页面主结构必须为筛选区 -> 结果区 -> 分页区三段式，且主任务关键区块首屏可见
    - `BUILD-RULE-011`：列表主视图结果区下方不允许出现业务工作台/处理卡片/迁移面板/评估面板/映射维护面板等下置业务处理区；命中即 build FAIL
    - `BUILD-RULE-011`：禁入检测必须同时覆盖“命名枚举 + 语义识别”（含 `tag-evaluation`、`xxx-evaluation`、`assessment`、`workbench/workspace/action-panel/processing-panel/migrate-panel/mapping-panel` 及同义命名）
@@ -178,8 +178,8 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
    - `BUILD-RULE-013`：关键任务路径滚动预算默认 <= 1 屏，超限需有上游例外声明
    - `BUILD-RULE-014`：分页语义必须完整且筛选后默认重置到第 1 页
    - `BUILD-RULE-015`：同页不得并列双主流程（双主按钮/双主任务链）
-30. 任一 `BUILD-RULE-010~015` 不满足时，结论必须为 build FAIL 并阻塞进入 `prototype-check`。
-31. 视觉几何硬约束（layout deformation / geometric consistency）：
+29. 任一 `BUILD-RULE-010~015` 不满足时，结论必须为 build FAIL 并阻塞进入 `prototype-check`。
+30. 视觉几何硬约束（layout deformation / geometric consistency）：
    - 强制断点覆盖（breakpoint coverage）：`1440`、`1200`、`992`、`768`、`375`
    - 关键页面在任一强制断点下不得出现以下问题：
      - 横向滚动
@@ -188,38 +188,39 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
      - 文本溢出
      - 按钮 / 输入框高度异常
      - 表格列挤压不可读
-32. 构建后必须执行视觉几何自检：
+31. 构建后必须执行视觉几何自检：
    - 自检属于 build 阶段前置门禁，不是建议项
    - 任一关键页面在任一强制断点不满足 geometric consistency，或影响 readable/actionable，立即判定 build 未通过
    - build 未通过时，不得进入 `prototype-check`
-33. 当 `visual_gate=on` 时，必须执行自动化视觉门禁脚本（Playwright + Chromium）：
+32. 当 `visual_gate=on` 时，必须执行自动化视觉门禁脚本（Playwright + Chromium）：
    - 脚本入口：`scripts/run_visual_gate.sh --phase build --profile <build_profile>`
    - 自动安装策略：若 `playwright/chromium` 不存在，脚本必须先执行全局安装（`npm install -g playwright` + `playwright install chromium`）再执行检查
    - 自动安装失败时，结论必须为 `BLOCKED`，并输出失败原因与重试命令
    - 降级策略：
-     - 若脚本执行失败（包含安装失败、执行失败），且用户明确豁免，可降级为人工检查
+     - 若脚本**安装失败**（结论为 BLOCKED），且用户明确豁免，可降级为人工检查
+     - 若脚本**执行失败**（返回非 0，结论为 build FAIL），不得降级为人工检查（见规则 37）
      - 人工检查必须覆盖：五个断点截图（1440/1200/992/768/375）、几何检查（横向滚动、错位、重叠、文本溢出、控件高度异常、表格可读性）
      - 人工检查结果必须记录到 `PROTOTYPE_BUILD_NOTES.md`，并标记 `【人工检查】` + `【风险】`
      - 人工检查结果必须包含：检查人、检查时间、检查结论、证据（截图路径）
-34. 自动化视觉门禁脚本必须至少覆盖：
+33. 自动化视觉门禁脚本必须至少覆盖：
    - 五个断点截图：`1440/1200/992/768/375`
    - 几何检查：横向滚动、错位、重叠、文本溢出、控件高度异常、表格可读性
    - 点击检查：导航选中态、新建/编辑弹窗、筛选查询/重置、分页可点击闭环
-35. 自动化视觉门禁结果必须包含：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
-36. 自动化门禁结果写入 `docs/02-design/.visual-check/<run-id>/audit-result.json`，并同步生成 `VISUAL_GATE_REPORT.md`。
-37. `visual_gate_mode=strict` 时，`Major` 及以上问题均阻塞进入 `prototype-check`；`visual_gate_mode=build` 时，仅 `Blocker` 阻塞。
-38. 自动化门禁脚本返回非 0 时，结论必须为 build FAIL；不得以人工观察替代通过。
-39. `visual_gate=off` 仅允许在上游明确豁免时使用，并必须在 `PROTOTYPE_BUILD_NOTES.md` 标记 `【风险】`。
-40. 规则去重约束（强制）：
+34. 自动化视觉门禁结果必须包含：`layoutType`、`scrollCost`、`firstScreenCoverage`、`formDensityBeforeList`、`toolbarOrderCheck`、`pageResetCheck`。
+35. 自动化门禁结果写入 `docs/02-design/.visual-check/<run-id>/audit-result.json`，并同步生成 `VISUAL_GATE_REPORT.md`。
+36. `visual_gate_mode=strict` 时，`Major` 及以上问题均阻塞进入 `prototype-check`；`visual_gate_mode=build` 时，仅 `Blocker` 阻塞。
+37. 自动化门禁脚本返回非 0 时，结论必须为 build FAIL；不得以人工观察替代通过。
+38. `visual_gate=off` 仅允许在上游明确豁免时使用，并必须在 `PROTOTYPE_BUILD_NOTES.md` 标记 `【风险】`。
+39. 规则去重约束（强制）：
    - `Rules` 保留主定义，`Workflow` 与 `Quality Gate` 仅引用规则编号与结论，不重复整段规则文本。
-41. 原型样式必须基于生产环境组件库（`Element Plus`）：
+40. 原型样式必须基于生产环境组件库（`Element Plus`）：
    - 按钮样式必须与 `Element Plus ElButton` 一致
    - 表格样式必须与 `Element Plus ElTable` 一致
    - 分页样式必须与 `Element Plus ElPagination` 一致
    - 表单样式必须与 `Element Plus ElForm` 一致
    - 弹窗样式必须与 `Element Plus ElDialog` 一致
-42. 若组件库无法满足设计要求，必须在 `COMPONENT_GUIDELINES.md` 中标记 `【需要自定义】`
-43. 原型必须引入组件库 CDN 或等价静态样式来源，基于 `Element Plus` 组件库样式生成原型样式
+41. 若组件库无法满足设计要求，必须在 `COMPONENT_GUIDELINES.md` 中标记 `【需要自定义】`
+42. 原型必须引入组件库 CDN 或等价静态样式来源，基于 `Element Plus` 组件库样式生成原型样式
 
 ## Workflow
 
@@ -289,10 +290,9 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
   - `BUILD-RULE-002`：“新建”按钮打开模拟态弹窗
   - `BUILD-RULE-003`：列表行内“编辑”入口打开预填当前行数据的模拟态弹窗
   - `BUILD-RULE-004`：弹窗表单具备取消、确认动作
-  - `BUILD-RULE-006`：弹窗表单具备字段级校验反馈、全局失败反馈、提交成功状态回写
-- 对关键任务路径强制补齐：
   - `BUILD-RULE-005`：路径无断链、无死路返回、无隐藏入口
   - `BUILD-RULE-005`：关键任务步数不超过上游体验目标上限
+  - `BUILD-RULE-006`：弹窗表单具备字段级校验反馈、全局失败反馈、提交成功状态回写
 - 若上游明确声明使用抽屉或独立页，必须按 `PAGE_FLOW.md` 和 `UI_DESIGN_SPEC.md` 原样落地，不得自行改回弹窗或弱化流程。
 
 ### 步骤 5：记录构建说明
@@ -304,7 +304,7 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
   - 哪些动作在 display 被后置或隐藏
   - 页面清单、资产说明、已知限制
   - `BUILD-RULE-001~015` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
-  - `BO-RULE-001~022` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
+  - `BO-RULE-001~023` 结构化自检结果表（页面编号、规则编号、结果 PASS/FAIL、证据位置）
 
 ### 步骤 6：自检
 

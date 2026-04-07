@@ -57,7 +57,7 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 输入降级策略：
 
 - 缺失 acceptance 原型时，直接输出“不允许进入 `dev-implement`”。
-- display 原型仅作为一致性参考，不作为主门禁对象。
+- display 原型作为一致性参考，不作为主门禁对象；但视觉几何问题同样纳入量化门禁，影响 readable/actionable 者可触发 FAIL（见规则 6-7）。
 - 涉及后台管理页面但缺少 `BACKOFFICE_UI_SPEC.md` 时，结论必须为 FAIL 并阻塞进入 `dev-implement`。
 
 ## Outputs
@@ -169,10 +169,12 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
    - `BO-RULE-020` 表单复杂度分层：复杂表单无分层组织即 FAIL
    - `BO-RULE-021` 分页语义与可达性：分页核心语义缺失或不可达即 FAIL
    - `BO-RULE-022` 筛选后分页重置：筛选/排序后未回到第 1 页即 FAIL
-   - 列表主视图禁入检测必须覆盖“命名枚举 + 语义识别”（评估/处理/迁移/映射/执行/工作台）
+   - `BO-RULE-023` 认知负荷控制：筛选字段 > 8 个、操作按钮 > 5 个、表单字段 > 15 个或表格列 > 10 列，且无上游例外声明，即 FAIL
+   - 列表主视图禁入检测必须覆盖”命名枚举 + 语义识别”（评估/处理/迁移/映射/执行/工作台）
    - `data-block-whitelist` 不得豁免禁入项；白名单命中禁入词同样必须 FAIL
    - 列表主视图分页视觉一致性必须满足统一容器 `table-footer + summary + pagination`；不满足必须 FAIL
 15. 命中任一后台 Fail-fast 门禁项时，必须直接判定 `阻塞（Blocker）`，不得降级为建议。
+    - 注意：`UX-BLOCK` 命中时立即早停（early stop），不再继续收集其他问题；`BO-RULE Fail-fast` 命中时**不早停**，继续收集全部 BO-RULE 问题后统一输出 FAIL 结论。两套规则结论均为 FAIL/阻塞，但收集策略不同。
 16. 主问题清单中的阻塞项必须填写关联 `UX-TARGET`、关联 `BUILD-RULE` 与关联 `BO-RULE` 字段。
 17. 无法确认的信息必须标记 `【待确认】`。
 18. 基于上下文推断的结论必须标记 `【推断】`。

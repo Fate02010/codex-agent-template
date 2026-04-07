@@ -13,6 +13,9 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 
 ## When to Use
 
+前置依赖：
+- 若产品涉及后台管理页面，必须先完成 `backoffice-ui-spec`，输出 `BACKOFFICE_UI_SPEC.md`，再执行本 Skill。缺少该文档时，本 Skill 结论必须为 BLOCKED（见输入降级策略）。
+
 满足以下条件时触发：
 
 - `PRD_RECTIFIED.md` 已冻结，且需要进入前端设计阶段。

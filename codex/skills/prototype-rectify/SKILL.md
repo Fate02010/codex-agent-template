@@ -79,6 +79,7 @@ description: 当 prototype-check 已输出问题报告、需要在 current chang
    - 再修复流程与状态问题
    - 最后处理一般观感与建议项
 5. 复检必须执行强制断点覆盖（breakpoint coverage）：`1440`、`1200`、`992`、`768`、`375`。
+   - 复检方式：优先使用自动化视觉门禁脚本（`scripts/run_visual_gate.sh --phase check`）执行；若脚本不可用，使用人工截图验证，并在 `PROTOTYPE_FIX_LOG.md` 标记 `【人工复检】`。
 6. 未完成断点复检的问题，不得标记“已关闭”。
 7. 问题关闭必须附复检依据（页面、断点、结果、证据）。
 8. 文档和原型必须同步更新，禁止只改其一。
