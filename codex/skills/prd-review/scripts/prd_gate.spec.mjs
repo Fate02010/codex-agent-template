@@ -288,7 +288,7 @@ const scanReviewFailfast = (content) => {
       if (tokenCount > 1) pushFail("主按钮唯一性", `${section.id} 主操作疑似多个动作`, section.id);
     }
 
-    const technicalFieldHit = section.text.match(/\bfrom_status\b|\bto_status\b|\bbiz_id\b|\buser_id\b|\b\w+_(?:id|status)\b|\bbiz_\w+\b|\buser_\w+\b/gi);
+    const technicalFieldHit = section.text.match(/\bfrom_status\b|\bto_status\b|\bbiz_id\b|\buser_id\b|\b\w+_(?:id|status|time|date|at|by|flag|code|no|num)\b|\bbiz_\w+\b|\buser_\w+\b|\bis_\w+\b|\bhas_\w+\b|\bcreate[d]?_\w+\b|\bupdate[d]?_\w+\b|\bdelete[d]?_\w+\b/gi);
     if (technicalFieldHit && technicalFieldHit.length > 0) {
       pushFail("文案中文化", `${section.id} 存在技术字段直出: ${[...new Set(technicalFieldHit)].slice(0, 5).join(",")}`, section.id);
     }
@@ -340,6 +340,45 @@ const scanReviewFailfast = (content) => {
     if (!("筛选后分页重置规则" in uiMap) || isBlankLike(uiMap["筛选后分页重置规则"])) {
       pushFail("筛选后分页重置", `${section.id} 筛选后分页重置规则缺失`, section.id);
     }
+
+    // 主任务首屏可见检查
+    const firstScreen = uiMap["首屏主任务区块"] || "";
+    if (isBlankLike(firstScreen)) {
+      pushFail("主任务首屏可见", `${section.id} 首屏主任务区块缺失或未明确说明首屏可见信息`, section.id);
+    }
+
+    // 列表页前置重表单检查
+    if (pageType.includes("查看") && layoutTemplate.includes("列表主视图")) {
+      const decoupleStrategy = uiMap["列表/维护解耦策略"] || "";
+      // 检查主流程中是否存在"上重表单下长列表"相关描述且无解耦策略
+      const hasHeavyFormPattern = /上.*表单.*下.*列表|表单.*前置|表单.*压制/i.test(section.text);
+      if (hasHeavyFormPattern && isBlankLike(decoupleStrategy)) {
+        pushFail("列表页前置重表单", `${section.id} 列表页存在前置重表单布局且无解耦策略`, section.id);
+      }
+      if (isBlankLike(decoupleStrategy)) {
+        pushFail("列表页前置重表单", `${section.id} 列表主视图页面未定义列表/维护解耦策略`, section.id);
+      }
+    }
+
+    // 主任务跨屏依赖检查
+    const scrollBudget = uiMap["主任务滚动预算"] || "";
+    if (isBlankLike(scrollBudget)) {
+      pushFail("主任务跨屏依赖", `${section.id} 主任务滚动预算未定义`, section.id);
+    } else if (/超过\s*1\s*屏|[2-9]\s*屏|多屏/i.test(scrollBudget) && !/例外|补偿|原因|理由/i.test(scrollBudget)) {
+      pushFail("主任务跨屏依赖", `${section.id} 滚动预算超过1屏但未说明例外理由与补偿策略`, section.id);
+    }
+
+    // 双主流程冲突检查（补充：检测同页存在多个主动作链）
+    const primaryOps = [...section.text.matchAll(/^-\s*主操作[:：]\s*(.*)$/gm)];
+    if (primaryOps.length > 1) {
+      pushFail("双主流程冲突", `${section.id} 同页存在 ${primaryOps.length} 个主操作定义，疑似双主流程冲突`, section.id);
+    } else if (primaryOps.length === 1) {
+      const value = primaryOps[0][1] || "";
+      const actionChains = value.split(/[、，,;；]/).map((x) => x.trim()).filter((x) => x.length > 0);
+      if (actionChains.length > 1) {
+        pushFail("双主流程冲突", `${section.id} 主操作包含多个动作链（${actionChains.length}个），疑似双主流程冲突`, section.id);
+      }
+    }
   }
 
   const gates = [
@@ -349,6 +388,10 @@ const scanReviewFailfast = (content) => {
     "状态标签完整性",
     "交互闭环",
     "页面类型与布局模板匹配",
+    "主任务首屏可见",
+    "列表页前置重表单",
+    "主任务跨屏依赖",
+    "双主流程冲突",
     "工具栏顺序与分页语义",
     "筛选后分页重置",
   ];
@@ -435,7 +478,38 @@ const writeReport = async (report, reportMd, reportJson, title) => {
 };
 
 const runCompose = async (content) => {
-  const checks = scanCompose(content);
+  const checks = [];
+
+  // 前置校验：检查上游输入文件是否存在且非模板状态
+  const researchFile = path.join(repoRoot, "docs", "00-research", "RESEARCH_SUMMARY.md");
+  const clarifiedFile = path.join(repoRoot, "docs", "00-research", "REQUIREMENTS_CLARIFIED.md");
+
+  const researchContent = await readIfExists(researchFile);
+  const clarifiedContent = await readIfExists(clarifiedFile);
+
+  const isTemplateState = (text) => {
+    if (!text) return true;
+    const s = statusLine(text);
+    return !s || /模板|草稿|TBD|TODO/i.test(s);
+  };
+
+  const precondFail = [];
+  if (!researchContent) precondFail.push("RESEARCH_SUMMARY.md 不存在");
+  else if (isTemplateState(researchContent)) precondFail.push("RESEARCH_SUMMARY.md 处于模板状态");
+
+  if (!clarifiedContent) precondFail.push("REQUIREMENTS_CLARIFIED.md 不存在");
+  else if (isTemplateState(clarifiedContent)) precondFail.push("REQUIREMENTS_CLARIFIED.md 处于模板状态");
+
+  checks.push({
+    id: "COMPOSE-PRECOND-001",
+    name: "前置输入文件校验",
+    status: precondFail.length > 0 ? "FAIL" : "PASS",
+    message: precondFail.length > 0 ? precondFail.join("; ") : "上游输入文件就绪",
+    evidence: precondFail,
+  });
+
+  // 继续执行内容检查
+  checks.push(...scanCompose(content));
   return buildReport("compose", checks);
 };
 
@@ -466,6 +540,40 @@ const runRectify = async (rectifiedContent, reviewContent) => {
       details: unresolved,
     },
   ];
+
+  // 阻塞设计类待确认项检查
+  const blockDesignPattern = /【待确认】.*(?:影响接口|影响表结构|主流程|状态机|权限|接口拆分)|(?:影响接口|影响表结构|主流程|状态机|权限|接口拆分).*【待确认】/g;
+  const blockDesignHits = [...rectifiedContent.matchAll(blockDesignPattern)].map((m) => m[0].slice(0, 80));
+
+  // 检查待确认事项表格中类型为"阻塞设计"的行
+  const pendingTable = parseTableAfterHeading(rectifiedContent, /^##\s*(?:7\.\s*)?遗留待确认与风险|^##\s*(?:8\.\s*)?待确认事项/);
+  const blockDesignRows = [];
+  if (pendingTable) {
+    const typeIdx = getColumnIndex(pendingTable.header, ["类型"]);
+    const markIdx = getColumnIndex(pendingTable.header, ["标记"]);
+    if (typeIdx >= 0) {
+      for (const row of pendingTable.rows) {
+        const typeVal = (row[typeIdx] || "").trim();
+        const markVal = markIdx >= 0 ? (row[markIdx] || "").trim() : "";
+        if (typeVal.includes("阻塞设计") && (markVal.includes("待确认") || markVal.includes("【待确认】"))) {
+          blockDesignRows.push(row.join(" | "));
+        }
+      }
+    }
+  }
+
+  const allBlockDesign = [...blockDesignHits, ...blockDesignRows];
+  checks.push({
+    id: "RECTIFY-BLOCK-DESIGN-001",
+    name: "阻塞设计类待确认项检查",
+    status: allBlockDesign.length > 0 ? "FAIL" : "PASS",
+    message:
+      allBlockDesign.length > 0
+        ? `存在 ${allBlockDesign.length} 个未收敛的阻塞设计类待确认项`
+        : "无未收敛的阻塞设计类待确认项",
+    evidence: allBlockDesign.slice(0, 20),
+    details: allBlockDesign,
+  });
 
   return buildReport("rectify", checks);
 };
