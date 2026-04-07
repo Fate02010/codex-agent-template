@@ -68,6 +68,7 @@ description: 根据当前冻结需求与设计基线按功能点拆分前后端�
 
 提示词必须包含：
 
+- 调用的 Skill：Backend Prompt 引用 `backend-implement`，Frontend Prompt 引用 `frontend-implement`
 - 允许修改目录边界
 - 禁止越权修改项
 - 与 `TEST_CASES.md` 对应的 TC 编号

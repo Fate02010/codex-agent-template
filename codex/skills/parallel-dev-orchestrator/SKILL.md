@@ -55,8 +55,8 @@ description: 在同一迭代同时涉及前后端时，先完成并行可行性�
 
 ### 步骤 2：任务拆分与所有权
 
-- backend worker：仅负责 `backend/**` 的实现与测试
-- frontend worker：仅负责 `frontend/**` 的实现与测试
+- backend worker：调用 `backend-implement`，仅负责 `backend/**` 的实现与测试
+- frontend worker：调用 `frontend-implement`，仅负责 `frontend/**` 的实现与测试
 - 共享文档（需求/接口/数据/测试基线）仅允许主线串行更新，不进入并行改写
 - 从 `parallel-task-splitter` 读取模块时，展示统一为 `EN（中文）`，编号与目录归属判定仅使用英文缩写
 
@@ -76,5 +76,5 @@ description: 在同一迭代同时涉及前后端时，先完成并行可行性�
 
 ## 注意事项
 
-- 本 Skill 只负责编排和收口，不直接替代 `dev-implement`。
+- 本 Skill 只负责编排和收口，由 `dev-implement` 路由进入，不直接由用户触发。
 - 并行只是执行策略，不改变“文档先于代码”的主流程约束。
