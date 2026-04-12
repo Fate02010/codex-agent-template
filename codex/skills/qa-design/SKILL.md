@@ -15,6 +15,7 @@ description: 测试设计
 2. `docs/02-architecture/API_CONTRACT.md` — 接口契约
 3. `docs/02-architecture/DATA_MODEL.md` — 数据模型
 4. `tests/AGENTS.md`（可选）— 测试规范
+5. `docs/01-requirements/acceptance_harness.md`（如有，作为验收测试骨架参考）
 
 ## 输出
 

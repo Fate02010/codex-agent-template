@@ -94,7 +94,7 @@
 
 ```
 project-init → biz-research → scope-definition → prd-compose → prd-review → prd-rectify
-    → solution-design → architecture-review → architecture-rectify
+    → spec-freeze → solution-design → architecture-review → architecture-rectify
     → ui-design-spec → prototype-build → prototype-check
     → [prototype-rectify ⟲] → qa-design
     → dev-implement → qa-execute → [defect-fix ⟲] → [doc-check ✓]
@@ -111,6 +111,7 @@ project-init → biz-research → scope-definition → prd-compose → prd-revie
 | `prd-compose` | 调研、澄清与范围边界已形成结论 | 调研摘要 + 澄清记录 + 范围边界文档 + 设计稿 | 结构化输出原始 PRD，沉淀功能、流程、字段、规则、验收标准（含参数级约束） | `docs/01-requirements/PRD_RAW.md` | 每个功能点具备编号、描述、规则、异常和验收标准，且字段达到参数级约束粒度（长度/范围/精度/格式/枚举/空值策略/错误提示），不越出 In Scope |
 | `prd-review` | 原始 PRD 完成 | `PRD_RAW.md` | 从完整性、一致性、可实现性、可测试性角度执行严格门禁评审（含跨字段规则、关键流程、GWT 验收） | `PRD_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类；存在阻塞项则必须整改 |
 | `prd-rectify` | 评审存在问题 | `PRD_RAW.md` + `PRD_REVIEW_ISSUES.md` | 逐项整改并执行基线冻结（将状态从`已整改`推进为`已冻结`） | `PRD_RECTIFIED.md` | 阻塞问题全部关闭，关键规则与参数级约束补齐，且 `PRD_RECTIFIED.md` 状态=`已冻结` |
+| `spec-freeze` | `PRD_RECTIFIED.md` 已冻结且门禁通过 | `PRD_RECTIFIED.md` + `PRD_RECTIFIED_GATE_REPORT.md` | 将冻结 PRD 转化为精简规格书、结构化功能清单和验收骨架 | `product-spec.md` + `feature_list.json` + `acceptance_harness.md` | 三份产物齐备，JSON 可解析，功能数量与 PRD 一致 |
 | `solution-design` | `PRD_RECTIFIED.md` 已冻结 | `PRD_RECTIFIED.md` | 完成架构、接口、数据设计并建立追溯关系 | `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 接口、数据表、模块职责与需求一一对应，且 `DATA_MODEL.md` 包含建表 SQL 与索引 SQL |
 | `architecture-review` | 设计文档已产出，需要进入测试/开发前门禁 | `PRD_RECTIFIED.md` + `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` | 从需求覆盖、一致性、可实现性、可测试性、数据设计、非功能设计角度执行设计评审 | `ARCHITECTURE_REVIEW_ISSUES.md` | 评审结论明确，问题按级别归类；存在阻塞项则禁止进入下游 |
 | `architecture-rectify` | 设计评审已完成，需要关闭问题并冻结设计基线 | `PRD_RECTIFIED.md` + `ARCHITECTURE.md` + `API_CONTRACT.md` + `DATA_MODEL.md` + `ARCHITECTURE_REVIEW_ISSUES.md` | 按评审问题定点整改设计文档、回写问题状态并执行设计冻结 | 更新后的设计文档 + 更新后的 `ARCHITECTURE_REVIEW_ISSUES.md` | 阻塞问题全部关闭，且三份设计文档状态=`已冻结` |
@@ -131,7 +132,7 @@ project-init → biz-research → scope-definition → prd-compose → prd-revie
 ### 6.1 标准流程
 
 ```
-change-intake → iteration-plan → prd-rectify → solution-design（局部更新）
+change-intake → iteration-plan → prd-rectify → spec-freeze → solution-design（局部更新）
     → architecture-review → architecture-rectify
     → ui-design-spec（按需）→ prototype-build（按需）→ prototype-check（按需）
     → [prototype-rectify ⟲] → qa-design

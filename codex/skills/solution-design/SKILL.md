@@ -16,6 +16,9 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 3. 相关变更文档（迭代场景）
 4. `docs/01-requirements/PRD_RECTIFIED_GATE_REPORT.md`（冻结门禁报告，强制）
 5. `openspec/project.md`（如项目启用 OpenSpec，则作为项目元信息与变更上下文补充输入）
+6. `docs/01-requirements/product-spec.md`（如有，作为精简规格参考）
+7. `docs/01-requirements/feature_list.json`（如有，作为结构化功能清单参考）
+8. `docs/01-requirements/openapi.yaml`（如有，作为 OpenAPI 草稿起点；细化时必须保留已有字段约束，不得丢弃）
 
 ## 输出
 

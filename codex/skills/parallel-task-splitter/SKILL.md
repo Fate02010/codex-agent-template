@@ -23,6 +23,7 @@ description: 根据当前冻结需求与设计基线按功能点拆分前后端�
 4. `docs/03-testing/TEST_CASES.md`
 5. `backend/AGENTS.md`
 6. `frontend/AGENTS.md`
+7. `docs/01-requirements/feature_list.json`（如有，优先使用结构化数据替代手动解析 PRD）
 
 ## Outputs
 
