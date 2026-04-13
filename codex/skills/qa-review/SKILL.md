@@ -178,7 +178,7 @@ description: 在 qa-design 产出测试计划与用例后、dev-implement 开始
 评审完成后提示用户：
 
 - 通过/有条件通过：进入 `dev-implement` → `backend-implement` / `frontend-implement`
-- 不通过：返回 `qa-design` 修复阻塞问题，修复完成后重新执行 `qa-review`
+- 不通过：使用 `qa-rectify` 整改阻塞问题，整改完成后重新执行 `qa-review` 确认关闭
 - 若需验证文档追溯完整性，可运行 `doc-check`
 
 ## Quality Gate（分层）
