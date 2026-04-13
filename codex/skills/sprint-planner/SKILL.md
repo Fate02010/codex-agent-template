@@ -283,7 +283,8 @@ storyPoints:
 `SPRINT_PLAN.md`（开发排期视图）与 `ITERATION_PLAN.md`（版本管理视图）职责不重叠，互为补充：
 
 - 一个 ITER-NNN 通常对应 1-3 个 Sprint
-- `iteration-plan` 制定执行计划时，可将本文档 Sprint 明细作为"2.1 纳入项"的排期依据
+- `iteration-plan` 将 `SPRINT_PLAN.md` 作为可选输入，读取 Sprint 总览后输出到 `ITERATION_PLAN.md` 第 3 节 Sprint 分配摘要
+- `SPRINT_PLAN.md` 是两者之间唯一的 Sprint 数据来源，`ITERATION_PLAN.md` 引用而不重复维护
 
 ### 与 parallel-task-splitter 的关系
 
@@ -350,4 +351,4 @@ storyPoints:
 - Sprint 容量默认值（20 故事点/Sprint）基于"2 名工程师，2 周 Sprint"估算。团队规模不同时，应通过用户参数覆盖。
 - `pending: true` 功能的故事点含 1.5 的风险加权。确认规格后需重新执行 `spec-freeze` + `sprint-planner`。
 - 依赖检测基于共享表/API 的结构化推断，不能替代技术负责人的依赖评估。Sprint Planning 时应由技术负责人补充确认。
-- 本 Skill 与 `iteration-plan` 职责不重叠：`sprint-planner` 管"功能点如何分配到时间盒"，`iteration-plan` 管"版本基线与 ITER-NNN 冻结"。两者可并行维护，ITER-NNN 可参考 1-3 个 Sprint 的内容。
+- 本 Skill 与 `iteration-plan` 职责不重叠：`sprint-planner` 管"功能点如何分配到时间盒"，`iteration-plan` 管"版本基线与 ITER-NNN 冻结"。`SPRINT_PLAN.md` 是 Sprint 数据的唯一来源，`ITERATION_PLAN.md` 通过第 3 节引用，不重复维护 Sprint 细节。

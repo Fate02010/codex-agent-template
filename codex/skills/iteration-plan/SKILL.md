@@ -24,6 +24,7 @@ description: 版本迭代管理
    - `docs/05-retrospective/ITERATION_REVIEW.md`（结论须为 `PASS` 或 `PASS WITH WAIVER`）
    - 当前冻结文档：`PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`
    - 当前代码状态（如可获得）
+   - `docs/04-iteration/SPRINT_PLAN.md`（可选，如已由 `sprint-planner` 生成，用于填充 Sprint 分配摘要）
 2. **增量迭代规划/冻结模式**
    - `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求记录（状态为"已批准"的 CR）
    - `docs/04-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
@@ -33,6 +34,7 @@ description: 版本迭代管理
    - `docs/04-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
    - `docs/04-iteration/ITERATION_PLAN.md` — 已有迭代计划（如已存在）
    - `docs/01-requirements/PRD_RECTIFIED.md` — 当前需求基线
+   - `docs/04-iteration/SPRINT_PLAN.md`（可选，如已由 `sprint-planner` 生成，用于填充 Sprint 分配摘要）
 
 ## 输出
 
@@ -60,6 +62,7 @@ description: 版本迭代管理
 5. 首次交付冻结模式下，读取 `TEST_REPORT.md` 和当前冻结文档
 6. 增量模式下，读取 `CHANGE_REQUEST.md` 与 `CHANGE_IMPACT.md`
 7. 增量规划模式下，如存在 `IMPROVEMENT_BACKLOG.md`，读取未关闭/逾期改进项并纳入风险清单
+8. 若 `docs/04-iteration/SPRINT_PLAN.md` 存在，读取 Sprint 总览表，提取 Sprint 总数、各 Sprint 日期范围、功能数与故事点合计，用于填充 `ITERATION_PLAN.md` 第 3 节 Sprint 分配摘要；若不存在，第 3 节填写"暂无 Sprint 规划（可执行 `sprint-planner` 后重新生成）"
 
 ### 步骤 2：确定迭代范围或冻结对象
 
@@ -74,7 +77,7 @@ description: 版本迭代管理
   - 根据 `CHANGE_IMPACT.md` 中的工作量预估和优先级，确定本轮迭代纳入哪些 CR
   - 原则：优先纳入 P0、P1 级 CR；单轮迭代工作量不宜过大
   - 对已纳入本轮的 CR，回写 `CHANGE_REQUEST.md` 中对应条目的 `纳入迭代=ITER-NNN`
-  - 若存在逾期 `IMP-NNN`，必须写入 `6. 风险与阻塞` 并指定处理动作
+  - 若存在逾期 `IMP-NNN`，必须写入 `7. 风险与阻塞` 并指定处理动作
 - 增量迭代收尾冻结模式：
   - 根据当前迭代计划、测试结果和缺陷状态确定是否满足发布条件
   - 冻结前提：`DOC_CHECK_REPORT.md` 总体结果必须为 PASS
@@ -118,10 +121,22 @@ description: 版本迭代管理
 |---|---|
 | CR-NNN | 工作量超限 / 依赖未就绪 |
 
-## 3. 迭代目标
+## 3. Sprint 分配摘要
+> 来源：`docs/04-iteration/SPRINT_PLAN.md`；若未执行 `sprint-planner`，填写"暂无 Sprint 规划（可执行 `sprint-planner` 后重新生成）"。
+
+| Sprint | 日期范围 | 功能点数 | 故事点 | 关键功能 |
+|---|---|---|---|---|
+| Sprint-1 | YYYY-MM-DD ~ YYYY-MM-DD | N | N | F001、F002（示例） |
+| Sprint-2 | YYYY-MM-DD ~ YYYY-MM-DD | N | N | F003、F004（示例） |
+
+- **Sprint 总数**：N
+- **总故事点**：N
+- **详细排期**：见 `docs/04-iteration/SPRINT_PLAN.md`
+
+## 4. 迭代目标
 本轮迭代目标描述。
 
-## 4. 执行计划
+## 5. 执行计划
 | 步骤 | 任务 | 责任 Skill | 输出物 | 状态 |
 |---|---|---|---|---|
 | 1 | 更新需求基线 | prd-rectify | PRD_RECTIFIED.md | — |
@@ -138,7 +153,7 @@ description: 版本迭代管理
 | 12 | 迭代复盘 | iteration-retro | ITERATION_REVIEW.md / IMPROVEMENT_BACKLOG.md | — |
 | 13 | 版本冻结 | iteration-plan | RELEASE_BASELINE.md / CHANGELOG.md | — |
 
-## 5. 里程碑
+## 6. 里程碑
 | 里程碑 | 目标日期 | 完成标准 |
 |---|---|---|
 | 需求冻结 | YYYY-MM-DD | `PRD_RECTIFIED.md` 已冻结 |
@@ -148,11 +163,11 @@ description: 版本迭代管理
 | 复盘完成 | YYYY-MM-DD | `ITERATION_REVIEW.md` 门禁结论=`PASS/PASS WITH WAIVER` |
 | 版本冻结 | YYYY-MM-DD | `RELEASE_BASELINE.md` 与 `CHANGELOG.md` 已更新 |
 
-## 6. 风险与阻塞
+## 7. 风险与阻塞
 | 风险/阻塞 | 影响 | 应对措施 |
 |---|---|---|
 
-## 7. 历史迭代
+## 8. 历史迭代
 ### ITER-001: v1.0.0（首次交付）
 - 状态：已发布
 - 包含：全部初始功能（F001 - FNNN）
@@ -169,6 +184,7 @@ description: 版本迭代管理
 - [ ] 冻结场景下 `DOC_CHECK_REPORT.md` 总体结果为 PASS
 - [ ] 冻结场景下 `ITERATION_REVIEW.md` 门禁结论为 `PASS` 或 `PASS WITH WAIVER`
 - [ ] 可直接指导本轮执行与收尾
+- [ ] 若 `SPRINT_PLAN.md` 已存在，第 3 节 Sprint 分配摘要已与其 Sprint 总览表内容对齐
 
 ## 变更记录
 | 版本 | 日期 | 说明 |
