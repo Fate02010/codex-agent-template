@@ -165,7 +165,7 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 ### 🔴 阻塞问题
 
 #### ISSUE-001: [问题标题]
-- **定位**：设计章节标题路径（如：`ARCHITECTURE.md > 4. 关键流程实现边界`、`API_CONTRACT.md > 3. 接口明细 > API-USER-001`、`DATA_MODEL.md > 5. 建表 SQL > T-USER-001`）
+- **定位**：设计章节标题路径（如：`ARCHITECTURE.md > 4. 关键流程实现边界`、`API_CONTRACT.md > 4. 接口明细 > API-USER-001`、`DATA_MODEL.md > 6. 建表 SQL > T-USER-001`）
 - **问题描述**：具体说明问题
 - **影响**：对测试设计、实现、冻结的具体影响
 - **整改建议**：如何修改

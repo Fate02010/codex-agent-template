@@ -64,7 +64,7 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
    - 性能目标（响应时间、吞吐等）
    - 审计要求（关键操作审计字段与保留要求）
    - 可观测性要求（日志最小字段与告警触发条件）
-9. 必须输出 `F -> API -> T -> TC` 追溯矩阵；`TC` 可先占位，后续由 `qa-design` 补全。
+9. 必须输出 `F -> API -> T -> TC` 追溯矩阵（以 `API_CONTRACT.md` 第 9 节为主，`ARCHITECTURE.md` 第 10 节标注引用，不得重复维护两份独立矩阵）；`TC` 可先占位，后续由 `qa-design` 补全。
 10. `ARCHITECTURE.md` 必须包含以下架构图，且与正文一致：
    - 系统上下文图（System Context）
    - 组件架构图（Component）
@@ -154,6 +154,8 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 ## 9. 部署架构图（Deployment）
 
 ## 10. 追溯矩阵（F->API->T->TC）
+
+> 本节为引用指向，主矩阵见 `API_CONTRACT.md` 第 9 节；此处仅标注版本与变更日期，不得另行维护独立矩阵。
 
 ## 11. 核心业务流程序列图
 
@@ -365,7 +367,7 @@ sequenceDiagram
 9. 系统上下文图（System Context）。
 10. 组件架构图（Component）。
 11. 部署架构图（Deployment）。
-12. 引用步骤 6 输出的追溯矩阵（`F -> API -> T -> TC`）。
+12. 引用 `API_CONTRACT.md` 第 9 节的追溯矩阵（`F -> API -> T -> TC`），在 `ARCHITECTURE.md` 第 10 节标注引用说明（规则 9）。
 13. 核心业务流程序列图：覆盖所有关键写操作，展示 Controller → Service → Domain/Repository 完整调用链（规则 16）。
 14. 安全与鉴权设计：认证方式、Token 结构与有效期、接口权限矩阵（规则 17）。
 
@@ -413,7 +415,7 @@ sequenceDiagram
 - [ ] `ARCHITECTURE.md` 已输出系统上下文图、组件架构图、部署架构图，且与正文一致。
 - [ ] `DATA_MODEL.md` 每张表均有约束说明、建表 SQL 与索引 SQL。
 - [ ] 所有建表 SQL 字段均包含中文 `COMMENT` 注释（无缺失、无英文占位）。
-- [ ] 已输出 `F -> API -> T -> TC` 追溯矩阵。
+- [ ] `F -> API -> T -> TC` 追溯矩阵已在 `API_CONTRACT.md` 第 9 节输出，`ARCHITECTURE.md` 第 10 节标注引用。
 - [ ] 接口、数据表、需求编号可追溯。
 - [ ] `API_CONTRACT.md` 已输出全局约定（统一返回体、HTTP 状态码映射、认证方式、分页规范、时间格式）（规则 14）。
 - [ ] `DATA_MODEL.md` 已输出全局约定（公共字段规范、软删除策略、乐观锁策略、命名规范）（规则 15）。
