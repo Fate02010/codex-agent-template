@@ -61,10 +61,17 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 
 必须遵守：
 
-- Maven 多模块结构（父模块 + common + 业务服务）
+- 构建工具与多模块结构以 `ARCHITECTURE.md` 构建工具基线章节为准（Maven 或 Gradle，不得自行假设）
 - 外部 Controller 与内部 Controller 分离
 - MyBatis Mapper 接口与 Mapper XML 成对落地
 - 错误码和消息走 `resources/error/*.properties`
+
+实现前必须读取：
+
+- `ARCHITECTURE.md` 第 11 节（核心业务流程序列图）：以序列图为准实现 Controller → Service → Repository 调用链，不得自行推断调用顺序
+- `ARCHITECTURE.md` 第 12 节（安全与鉴权设计 / 接口权限矩阵）：按权限矩阵为各接口添加鉴权注解（如 `@PreAuthorize`），角色权限不得自行扩展
+- `API_CONTRACT.md` 第 1 节（全局约定）：统一返回体结构（`code/message/data/timestamp`）、HTTP 状态码映射须在所有 Controller 中一致落地
+- `DATA_MODEL.md` 第 1 节（全局约定）：公共字段、软删除策略、乐观锁字段须在所有 PO/实体中一致落地
 
 实现顺序：
 
@@ -88,7 +95,14 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 
 - [ ] 编译通过
 - [ ] Controller 与 `API_CONTRACT.md` 一致
+- [ ] 所有接口返回体符合统一包装结构（`code/message/data/timestamp`）
+- [ ] HTTP 状态码与 `API_CONTRACT.md` 第 1 节全局约定一致
+- [ ] 接口鉴权注解与 `ARCHITECTURE.md` 第 12 节权限矩阵一致
+- [ ] Controller → Service → Repository 调用链与 `ARCHITECTURE.md` 第 11 节序列图一致
 - [ ] PO/实体与 `DATA_MODEL.md` 一致
+- [ ] 所有 PO 包含公共字段（`created_by/created_at/updated_by/updated_at`）
+- [ ] 软删除字段与 `DATA_MODEL.md` 第 1 节全局约定一致
+- [ ] 乐观锁字段（`version`）按全局约定落地（如适用）
 - [ ] Mapper XML 路径和内容可加载
 - [ ] 错误码国际化配置已接入
 - [ ] 后端测试与 TC 编号映射通过
