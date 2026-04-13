@@ -12,10 +12,11 @@ description: 测试设计
 ## 输入
 
 1. `docs/01-requirements/PRD_RECTIFIED.md` — 整改后的需求文档
-2. `docs/02-architecture/API_CONTRACT.md` — 接口契约
-3. `docs/02-architecture/DATA_MODEL.md` — 数据模型
-4. `tests/AGENTS.md`（可选）— 测试规范
-5. `docs/01-requirements/acceptance_harness.md`（如有，作为验收测试骨架参考）
+2. `docs/02-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图用于生成调用链验证用例，第 12 节权限矩阵用于生成角色权限测试用例）
+3. `docs/02-architecture/API_CONTRACT.md` — 接口契约
+4. `docs/02-architecture/DATA_MODEL.md` — 数据模型
+5. `tests/AGENTS.md`（可选）— 测试规范
+6. `docs/01-requirements/acceptance_harness.md`（如有，作为验收测试骨架参考）
 
 ## 输出
 
@@ -64,7 +65,8 @@ description: 测试设计
 1. `docs/01-requirements/PRD_RECTIFIED.md` — 理解业务需求
 2. `docs/02-architecture/API_CONTRACT.md` — 理解接口设计
 3. `docs/02-architecture/DATA_MODEL.md` — 理解数据结构
-4. `tests/AGENTS.md`（可选）— 若存在则作为增强规范读取
+4. `docs/02-architecture/ARCHITECTURE.md` — 读取第 11 节序列图（生成调用链验证用例）和第 12 节安全与鉴权设计/接口权限矩阵（按权限矩阵覆盖各角色的接口访问权限测试用例）
+5. `tests/AGENTS.md`（可选）— 若存在则作为增强规范读取
 
 ### 步骤 2：输出测试计划（TEST_PLAN.md）
 
@@ -217,8 +219,10 @@ description: 测试设计
 | 主流程（正常路径） | ✅ |
 | 异常流（参数错误、权限不足、数据不存在） | ✅ |
 | 边界值（最大值、最小值、空值、特殊字符） | ✅ |
-| 权限（不同角色） | ✅ |
+| 角色权限（按 `ARCHITECTURE.md` 第 12 节权限矩阵覆盖各角色的接口访问权限） | ✅ |
 | 幂等性（重复提交） | ✅ |
+| 统一返回体（接口测试须断言外层结构 `code/message/data/timestamp` 符合全局约定） | ✅ |
+| 调用链（按 `ARCHITECTURE.md` 第 11 节序列图验证关键写操作的调用路径） | ✅ |
 
 ### 步骤 5：生成测试代码骨架映射表
 

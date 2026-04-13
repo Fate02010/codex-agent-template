@@ -74,8 +74,10 @@ description: 执行真实测试并回写报告；若失败则强制进入 defect
 
 ### 2. 执行后端测试
 
-- 单元测试：`mvn test`
-- 集成测试：`mvn verify -Dspring.profiles.active=test`
+按工程骨架判断构建工具，执行对应命令：
+- **Maven**（存在 `pom.xml`）：`mvn test`（单元测试）/ `mvn verify -Dspring.profiles.active=test`（集成测试）
+- **Gradle**（存在 `build.gradle`）：`./gradlew test`（单元测试）/ `./gradlew integrationTest`（集成测试，按项目配置）
+- 若工程中同时存在两种构建文件，以 `ARCHITECTURE.md` 构建工具基线章节为准
 
 若依赖不可用（如 MySQL/Redis），记录为 BLOCKED。
 

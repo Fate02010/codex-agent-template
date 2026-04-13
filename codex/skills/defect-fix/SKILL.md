@@ -16,7 +16,8 @@ description: 缺陷修复闭环
 3. `docs/01-requirements/PRD_RECTIFIED.md` — 需求基线
 4. `docs/02-architecture/API_CONTRACT.md` — 接口契约
 5. `docs/02-architecture/DATA_MODEL.md` — 数据模型
-6. `backend/` 和 `frontend/` 下的相关源代码
+6. `docs/02-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图用于核对根因分析时的调用链是否符合设计意图）
+7. `backend/` 和 `frontend/` 下的相关源代码
 
 ## 输出
 
@@ -96,7 +97,7 @@ description: 缺陷修复闭环
 
 对每个缺陷执行：
 
-1. **追踪代码路径**：从 Controller → Application Service → Domain Service → Repository，定位问题代码
+1. **追踪代码路径**：从 Controller → Application Service → Domain Service → Repository，定位问题代码，并与 `ARCHITECTURE.md` 第 11 节序列图对照；若调用链与序列图存在偏差，先判断偏差是代码实现问题还是设计问题，再决定修复路径
 2. **对比接口契约**：将实际行为与 `API_CONTRACT.md` 中定义的接口规格对比
 3. **检查数据模型**：确认实体/PO 是否与 `DATA_MODEL.md` 一致
 4. **定位具体原因**：记录具体的代码位置和逻辑错误
@@ -162,7 +163,9 @@ description: 缺陷修复闭环
 
 - **如果所有缺陷已验证且 P0 回归通过**：修复完成，提示用户质量门禁已达标
 - **如果发现新的失败**：回到步骤 2，处理新的失败
-- **最多 3 轮迭代**，超过 3 轮后上报用户决策
+- **最多 3 轮迭代**，超过 3 轮后上报用户决策，并给出以下选项：
+  1. 若根因为设计缺陷（接口定义错误、序列图流程错误、数据模型缺陷）→ 回退 `architecture-rectify` 重新整改设计基线
+  2. 若根因为复杂实现问题且设计无误 → 由用户授权后继续第 4 轮修复
 
 ### 步骤 10：文档同步检查
 
