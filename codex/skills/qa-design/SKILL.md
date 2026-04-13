@@ -261,7 +261,8 @@ description: 测试设计
 输出完成后告知用户：
 - 测试计划、用例和代码映射表已生成
 - 开发实现时，须按映射表中的类名和方法名编写测试代码，不得自行变更 TC 编号
-- 下一步进入开发实现（`dev-implement`），测试执行在代码完成后使用 `qa-execute`
+- 下一步进入 `qa-review` 对测试计划和用例执行工程化评审，评审通过后方可进入 `dev-implement`
+- 评审通过后进入开发实现（`dev-implement`），测试执行在代码完成后使用 `qa-execute`
 
 ## Quality Gate（分层）
 
