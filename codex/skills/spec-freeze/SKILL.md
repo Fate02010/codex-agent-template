@@ -263,6 +263,7 @@ description: 将冻结 PRD 转化为开发可消费的精简规格书、结构�
       ],
       "apis": ["POST /api/members"],
       "tables": ["t_member"],
+      "allowedRoles": ["管理员", "运营人员"],
       "testHints": ["接口测试：会员注册成功/失败"],
       "acceptanceCriteria": [
         {
@@ -314,6 +315,7 @@ description: 将冻结 PRD 转化为开发可消费的精简规格书、结构�
 4. 含 `【待确认】` 标记的功能 → `"pending": true`。
 5. `stateMachine` 为空数组时表示"无独立状态流转"。
 6. JSON 中所有字符串值使用 UTF-8 编码，中文内容原样保留。
+7. `allowedRoles`：从 PRD 角色-权限-动作矩阵提取可操作该功能的角色名称列表；若 PRD 无角色权限矩阵则置为空数组 `[]`。
 
 ### 步骤 4：生成 acceptance_harness.md
 
@@ -425,6 +427,10 @@ describe('F001: [功能名称]', () => {
 | 涉及权限校验（角色、操作权限） | 接口测试 | Integration |
 | 涉及并发/边界（乐观锁、超时） | 接口测试 | Integration |
 
+**多特征 AC 处理规则**：若一个 AC 同时涉及多种特征，按以下优先级选择主测试类型：
+`E2E 测试 > 接口测试 > 单元测试`；需要多层覆盖时，在"建议测试类型"列用 `+` 分隔，
+如 `接口测试 + 单元测试`，并在"判定理由"列分别说明。
+
 ### 步骤 4.5：生成 openapi.yaml
 
 将追溯矩阵中的计划接口和字段清单转化为 OpenAPI 3.0 草稿。此阶段生成的是**基于 PRD 的 stub 规格**，`solution-design` 阶段负责细化完整的请求/响应 schema 和错误码。
@@ -443,16 +449,25 @@ describe('F001: [功能名称]', () => {
    - 字段类型映射：`VARCHAR/TEXT → string`、`INT/BIGINT → integer`、`DECIMAL/FLOAT → number`、`DATETIME/DATE → string (format: date-time/date)`、`BOOLEAN → boolean`、`ENUM → string (enum: [...])`
    - 字段约束映射：`最大长度 → maxLength`、`最小长度 → minLength`、`正则 → pattern`、`最大值 → maximum`、`最小值 → minimum`、`精度 → multipleOf`
    - `description` = 字段清单中的"说明"列内容
-5. `responses`：每个 path 固定生成以下响应码骨架（供 `solution-design` 细化）：
+5. `responses`：每个 path 固定生成以下响应码骨架（供 `solution-design` 细化，与全局约定对齐）：
    - `200`：成功（schema 引用 `$ref: '#/components/schemas/[OperationId]Response'`）
    - `400`：参数错误
    - `401`：未授权（若 PRD 有权限控制需求）
    - `403`：无权限（若 PRD 有角色控制需求）
+   - `404`：资源不存在（GET / PUT / PATCH / DELETE 类接口必须包含）
+   - `409`：冲突（POST / PUT 写操作接口必须包含，覆盖幂等重复与唯一约束冲突场景）
+   - `422`：业务规则违反（写操作接口必须包含，覆盖参数合法但业务校验失败场景）
    - `500`：系统错误
 6. `components.schemas`：
-   - 每个 POST/PUT 接口生成 `[OperationId]Request` schema
-   - 每个接口生成 `[OperationId]Response` schema（body 为 `object`，待 `solution-design` 填充）
+   - 每个 POST/PUT/PATCH 接口生成 `[OperationId]Request` schema（提取字段约束）
+   - 每个接口生成 `[OperationId]Response` schema，统一包含以下外层结构（与 solution-design 全局约定对齐）：
+     - `code`（string）：业务状态码，SUCCESS 或错误码键
+     - `message`（string）：提示文案
+     - `data`（object）：业务数据体，待 `solution-design` 细化；列表类接口的 `data` 预置分页结构占位（`list / total / pageNo / pageSize`）
+     - `timestamp`（integer，format: int64）：Unix 毫秒时间戳
    - 含 `【待确认】` 的字段增加 `x-pending: true`
+
+7. 若 PRD 存在角色权限定义，在 `components.securitySchemes` 生成 Bearer Token 占位骨架，并在涉及权限控制的接口 path 下增加 `security: [{ BearerAuth: [] }]` 字段（供 `solution-design` 细化 Token 结构与有效期）。
 
 **输出格式（示例）：**
 
@@ -497,6 +512,12 @@ paths:
           description: 系统错误
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "待 solution-design 细化 Token 结构与有效期"
   schemas:
     CreateMemberRequest:
       type: object
@@ -515,8 +536,22 @@ components:
           description: 手机号
     CreateMemberResponse:
       type: object
-      description: "待 solution-design 细化"
-      properties: {}
+      description: "统一返回体，data 字段内容待 solution-design 细化"
+      properties:
+        code:
+          type: string
+          description: "业务状态码，SUCCESS 或错误码键"
+        message:
+          type: string
+          description: "提示文案（面向用户）"
+        data:
+          type: object
+          description: "业务数据体，待 solution-design 细化"
+          properties: {}
+        timestamp:
+          type: integer
+          format: int64
+          description: "Unix 毫秒时间戳"
 ```
 
 ### 步骤 5：交叉验证
@@ -586,3 +621,4 @@ components:
 - `openapi.yaml` 是 PRD 阶段的草稿规格（`version: 1.0.0-draft`），仅包含路径骨架和字段级约束。完整的请求/响应 schema、错误码、鉴权方案由 `solution-design` 负责细化。`solution-design` 应以此文件为起点，不得丢弃已有的字段约束。
 - `acceptance_harness.md` 中的测试代码骨架仅供参考，正式 TC 编号和测试实现由 `qa-design` 和 `dev-implement` 负责。
 - 含 `【待确认】` 标记的功能不会被排除，但会在 JSON 中以 `"pending": true` 标记、在 Markdown 中以"待确认项"小节显式列出，供下游 skill 识别和处理。
+- **重新执行覆盖警告**：若 `solution-design` 已基于 `openapi.yaml` 草稿完成细化，重新执行 `spec-freeze` 前必须先提交或备份 `openapi.yaml` 及三份设计文档（`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`），否则 `openapi.yaml` 的细化内容将被整体覆盖；`solution-design` 输入规则第 8 条（"细化时必须保留已有字段约束，不得丢弃"）仅适用于**在现有文件基础上细化**，不适用于 `spec-freeze` 重新生成后的覆盖场景。
