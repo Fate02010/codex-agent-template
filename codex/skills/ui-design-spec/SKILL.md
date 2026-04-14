@@ -155,6 +155,10 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 
 ### 步骤 0：初始化输出载体（冷启动）
 
+#### [断点恢复扫描]
+
+按 `## 断点恢复` 检查点表格从后向前扫描各步骤完成状态，确定续执起点后输出恢复摘要（格式见 `AGENTS.md` § 14.5 第 3 条），然后跳转到续执起点。若无断点，继续执行以下步骤 0 主体。
+
 - 确保 `docs/02-design/` 存在。
 - 对 10 份输出文档执行初始化（缺失则创建、模板则覆盖）。
 
@@ -455,3 +459,27 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 | v1.3.0 | 2026-04-03 | 【修改】接入 `BACKOFFICE_UI_SPEC.md` 与 `BO-RULE-001~008`，新增后台 Fail-fast 消费与 `UX-TARGET -> BUILD-RULE -> BO-RULE -> UX-BLOCK` 映射。 |
 | v1.2.0 | 2026-04-02 | 【修改】新增 UX-TARGET 编号与 `UX-TARGET -> BUILD-RULE -> UX-BLOCK` 闭环映射规则，强化追溯与门禁一致性。 |
 | v1.1.0 | 2026-04-02 | 【修改】补强产品体验目标与指标，新增可验证性与阻塞/FAIL 门禁约束。 |
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。本章节声明本 Skill 的步骤级检查点；未列出的项回退到 `AGENTS.md` § 14.4 默认规则。
+
+### 检查点表格
+
+| 步骤 | 步骤名称 | 完成判定条件 | 续执起点 |
+|---|---|---|---|
+| 步骤 0 | 初始化输出载体（冷启动） | `docs/02-design/` 目录存在，10 份输出文档均已初始化（存在且状态不为"模板"） | 步骤 0.5 |
+| 步骤 0.5 | P0 Gate | 范围边界输入校验通过，后台场景已具备 `BACKOFFICE_UI_SPEC.md`，未输出 BLOCKED | 步骤 1 |
+| 步骤 1 | 范围与双轨约束对齐 | 页面候选清单已生成，范围外页面已排除，共享基线与双轨差异已明确 | 步骤 2 |
+| 步骤 2 | 构建共享页面与流程基线 | `docs/02-design/SCREEN_INVENTORY.md`、`docs/02-design/PAGE_FLOW.md`、`docs/02-design/UI_DESIGN_SPEC.md` 均已填写，且后台管理页面额外声明已完整 | 步骤 3 |
+| 步骤 3 | 构建 acceptance 强约束基线 | `docs/02-design/STATE_MATRIX.md`、`docs/02-design/ACCEPTANCE_PROTOTYPE_SPEC.md` 均已填写 | 步骤 4 |
+| 步骤 4 | 构建 display 展示轨基线 | `docs/02-design/DISPLAY_PROTOTYPE_SPEC.md` 已填写，信息隐藏与动作后置规则已定义 | 步骤 5 |
+| 步骤 5 | 构建设计系统与双轨评审清单 | `docs/02-design/DESIGN_TOKENS.md`、`docs/02-design/COMPONENT_GUIDELINES.md`、`docs/02-design/UI_REVIEW_CHECKLIST.md` 均已填写，组件库映射表与体验闭环映射表已完整 | 步骤 5.5 |
+| 步骤 5.5 | 定义模拟数据规范 | `docs/02-design/MOCK_DATA_SPEC.md` 已填写，每个页面模拟数据清单与规则已完整 | 步骤 6 |
+| 步骤 6 | 交付下游输入 | 已标注"共享基线由两轨共用，双轨差异以专用文档为准"并确认可进入 `prototype-build` | — |
+
+### 默认恢复原则（兜底）
+
+1. 若所有输出文件均不存在，从步骤 0 全量执行。
+2. 若部分输出文件存在，从最早未完成步骤续执，已有内容按增量更新处理。
+3. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估（参见 `AGENTS.md` § 14.5 第 4 条）。

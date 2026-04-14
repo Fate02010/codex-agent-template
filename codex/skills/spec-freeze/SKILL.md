@@ -58,6 +58,10 @@ description: 将冻结 PRD 转化为开发可消费的精简规格书、结构�
 
 ### 步骤 0：P0 Gate（阻塞）
 
+#### [断点恢复扫描]
+
+按 `## 断点恢复` 检查点表格从后向前扫描各步骤完成状态，确定续执起点后输出恢复摘要（格式见 `AGENTS.md` § 14.5 第 3 条），然后跳转到续执起点。若无断点，继续执行以下步骤 0 主体。
+
 1. 校验 `PRD_RECTIFIED.md` 存在且文档信息中状态行包含 `已冻结`。
 2. 校验 `PRD_RECTIFIED_GATE_REPORT.md` 存在且门禁结论为 `✅ 通过`。
 3. 任一校验失败时输出 `BLOCKED/FAIL` 并停止，不进入步骤 1~6。
@@ -611,6 +615,29 @@ components:
 - [ ] `product-spec.md` 表格格式可扫描、对齐。
 - [ ] `acceptance_harness.md` 代码骨架使用项目一致的命名风格。
 - [ ] 示例模板与说明文本已更新，且不改变 P0 判定口径。
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。本章节声明本 Skill 的步骤级检查点；未列出的项回退到 `AGENTS.md` § 14.4 默认规则。
+
+### 检查点表格
+
+| 步骤 | 步骤名称 | 完成判定条件 | 续执起点 |
+|---|---|---|---|
+| 步骤 0 | P0 Gate | `PRD_RECTIFIED.md` 状态为已冻结，`PRD_RECTIFIED_GATE_REPORT.md` 门禁结论为 `✅ 通过`，未输出 BLOCKED/FAIL | 步骤 1 |
+| 步骤 1 | 解析 PRD 结构 | PRD 全局数据与逐 FNNN 数据已提取 | 步骤 2 |
+| 步骤 2 | 生成 product-spec.md | `docs/01-requirements/product-spec.md` 存在且包含所有 FNNN 对应章节 | 步骤 3 |
+| 步骤 3 | 生成 feature_list.json | `docs/01-requirements/feature_list.json` 存在且为合法 JSON，`meta.status = "frozen"` | 步骤 4 |
+| 步骤 4 | 生成 acceptance_harness.md | `docs/01-requirements/acceptance_harness.md` 存在且包含所有 AC 条目 | 步骤 4.5 |
+| 步骤 4.5 | 生成 openapi.yaml | `docs/01-requirements/openapi.yaml` 存在且为合法 YAML，paths 数量与追溯矩阵计划接口条数一致 | 步骤 5 |
+| 步骤 5 | 交叉验证 | 四份产物一致性校验通过，无 FNNN 缺失 | 步骤 6 |
+| 步骤 6 | 提示下一步 | 已输出下游消费提示 | — |
+
+### 默认恢复原则（兜底）
+
+1. 若所有输出文件均不存在，从步骤 0 全量执行。
+2. 若部分输出文件存在，从最早未完成步骤续执，已有内容按增量更新处理。
+3. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估（参见 `AGENTS.md` § 14.5 第 4 条）。
 
 ## 注意事项
 

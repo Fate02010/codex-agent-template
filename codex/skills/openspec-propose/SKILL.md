@@ -108,3 +108,17 @@ After completing all artifacts, summarize:
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。
+
+本 Skill 为工具驱动型，无显式步骤序列，不设步骤级检查点（参见 `AGENTS.md` § 14.6）。
+
+### 完成判定
+
+| 判定依据 | 说明 |
+|---|---|
+| `openspec/changes/<change-name>/` 目录已创建且包含 proposal 文件 | 视为本次提案已完成 |
+
+本 Skill 为幂等操作，重复调用安全，无需步骤级续执。

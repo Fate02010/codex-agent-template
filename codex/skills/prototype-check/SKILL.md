@@ -213,6 +213,10 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 
 ### 步骤 0：初始化输出载体（冷启动）
 
+#### [断点恢复扫描]
+
+按 `## 断点恢复` 检查点表格从后向前扫描各步骤完成状态，确定续执起点后输出恢复摘要（格式见 `AGENTS.md` § 14.5 第 3 条），然后跳转到续执起点。若无断点，继续执行以下步骤 0 主体。
+
 - 确保 `docs/02-design/` 存在。
 - 初始化 `PROTOTYPE_CHECK_REPORT.md`（缺失则创建、模板则覆盖）。
 
@@ -583,3 +587,27 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 | v1.3.0 | 2026-04-03 | 【修改】接入 `BACKOFFICE_UI_SPEC.md` 与 `BO-RULE-001~008` Fail-fast 门禁，主问题清单新增 `关联 BO-RULE` 字段。 |
 | v1.2.0 | 2026-04-02 | 【修改】新增 UX-BLOCK 命中 FAIL 早停规则、阻塞项追溯字段（UX-TARGET/BUILD-RULE）与关键路径效率门禁。 |
 | v1.1.0 | 2026-04-02 | 【修改】新增 UX-BLOCK-001/002/003 阻塞门禁，并将体验门禁失败统一提升为 FAIL 且禁止进入 `dev-implement`。 |
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。本章节声明本 Skill 的步骤级检查点；未列出的项回退到 `AGENTS.md` § 14.4 默认规则。
+
+### 检查点表格
+
+| 步骤 | 步骤名称 | 完成判定条件 | 续执起点 |
+|---|---|---|---|
+| 步骤 0 | 初始化输出载体（冷启动） | `docs/02-design/PROTOTYPE_CHECK_REPORT.md` 文件存在且状态不为"模板" | 步骤 0.2 |
+| 步骤 0.2 | P0 Gate | acceptance 目标资产与核心输入校验通过，未输出 BLOCKED/FAIL | 步骤 0.5 |
+| 步骤 0.5 | 加载或执行自动化视觉门禁 | `docs/02-design/.visual-check/<run-id>/audit-result.json` 文件存在且 verdict 字段有值 | 步骤 1 |
+| 步骤 1 | 建立验收边界 | 检查范围页面已确定，主门禁对象 `frontend/design-prototype/acceptance/**` 已锁定 | 步骤 2 |
+| 步骤 2 | 执行 acceptance 核心检查 | 视觉、页面流、状态、范围、断点、后台专项及体验门禁阻塞项检查已全部执行并记录 | 步骤 3 |
+| 步骤 3 | 执行契约一致性抽检 | 关键页面字段与 `API_CONTRACT.md` 一致性已抽检，不一致项已标记 | 步骤 4 |
+| 步骤 4 | 执行 display 量化门禁检查 | display 原型已执行断点覆盖与视觉检查，影响 readable/actionable 的问题已写入主问题清单 | 步骤 5 |
+| 步骤 5 | 输出问题清单 | `PROTOTYPE_CHECK_REPORT.md` 中问题清单已按阻塞 > 重要 > 建议排序，每条问题字段完整 | 步骤 6 |
+| 步骤 6 | 输出门禁结论 | `PROTOTYPE_CHECK_REPORT.md` 中主门禁结论已填写，acceptance 是否允许进入 `dev-implement` 有明确判定 | — |
+
+### 默认恢复原则（兜底）
+
+1. 若所有输出文件均不存在，从步骤 0 全量执行。
+2. 若部分输出文件存在，从最早未完成步骤续执，已有内容按增量更新处理。
+3. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估（参见 `AGENTS.md` § 14.5 第 4 条）。

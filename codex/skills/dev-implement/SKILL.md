@@ -66,3 +66,15 @@ parallel-task-splitter
 - 严格按文档实现，不越权扩展功能。
 - 发现设计缺口时先更新设计文档再改代码。
 - 本 Skill 不直接产出代码，具体实现规则见 `backend-implement` / `frontend-implement`。
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。
+
+本 Skill 为路由型，无显式步骤序列，不设步骤级检查点（参见 `AGENTS.md` § 14.6）。
+
+### 完成判定
+
+本 Skill 不直接产出代码或文档，其完成状态由子 Skill（`backend-implement` / `frontend-implement`）各自的断点恢复检查点负责。
+
+若需断点恢复，请直接调用对应子 Skill，子 Skill 会自动执行恢复扫描。

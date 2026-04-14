@@ -154,3 +154,18 @@ This skill supports the "actions on a change" model:
 
 - **Can be invoked anytime**: Before all artifacts are done (if tasks exist), after partial implementation, interleaved with other actions
 - **Allows artifact updates**: If implementation reveals design issues, suggest updating artifacts - not phase-locked, work fluidly
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。
+
+本 Skill 为工具驱动型，无显式步骤序列，不设步骤级检查点（参见 `AGENTS.md` § 14.6）。
+
+### 完成判定
+
+| 判定依据 | 说明 |
+|---|---|
+| `openspec/changes/<change-name>/` 目录下各 artifact 文件均已存在且非空 | 视为本次 apply-change 已完成 |
+| 如变更仍在进行中（文件部分存在），继续补齐缺失 artifact 即可 | 无需重新执行已完成的 artifact |
+
+本 Skill 设计为幂等，重复调用安全。若 artifact 文件已存在，继续从第一个缺失的 artifact 补齐。

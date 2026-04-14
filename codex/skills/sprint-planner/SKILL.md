@@ -70,6 +70,10 @@ description: 基于冻结的 feature_list.json 自动评估功能复杂度、检
 
 ### 步骤 0：P0 Gate（阻塞）
 
+#### [断点恢复扫描]
+
+按 `## 断点恢复` 检查点表格从后向前扫描各步骤完成状态，确定续执起点后输出恢复摘要（格式见 `AGENTS.md` § 14.5 第 3 条），然后跳转到续执起点。若无断点，继续执行以下步骤 0 主体。
+
 1. 校验 `docs/01-requirements/feature_list.json` 存在且可被 `JSON.parse()` 解析。
 2. 校验 `meta.status === "frozen"`，否则输出 `BLOCKED/FAIL`：`feature_list.json` 状态不为 frozen，请先执行 `spec-freeze`。
 3. 校验 `features` 数组非空，否则输出 `BLOCKED/FAIL`：`feature_list.json` 中无功能点。
@@ -343,6 +347,29 @@ storyPoints:
 - [ ] Sprint 总览表格式可扫描、列对齐。
 - [ ] 故事点估算说明充分，便于团队 Planning Poker 时参考。
 - [ ] 示例文本与模板已替换为真实数据，不影响 P0 判定口径。
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。本章节声明本 Skill 的步骤级检查点；未列出的项回退到 `AGENTS.md` § 14.4 默认规则。
+
+### 检查点表格
+
+| 步骤 | 步骤名称 | 完成判定条件 | 续执起点 |
+|---|---|---|---|
+| 步骤 0 | P0 Gate | `feature_list.json` 存在、合法 JSON、`meta.status = "frozen"`，未输出 BLOCKED/FAIL | 步骤 1 |
+| 步骤 1 | 读取上游输入 | `features[]` 全部功能点已读取，优先级/MVP 映射表已建立 | 步骤 2 |
+| 步骤 2 | 计算每个功能点的故事点 | 所有功能点均有原始分与斐波那契故事点计算结果 | 步骤 3 |
+| 步骤 3 | 依赖关系检测 | 共享表/API 依赖矩阵已构建 | 步骤 4 |
+| 步骤 4 | Sprint 分配 | 所有功能点均已分配到 Sprint（无漏分），容量与依赖约束已校验 | 步骤 5 |
+| 步骤 5 | 生成 SPRINT_PLAN.md | `docs/05-iteration/SPRINT_PLAN.md` 存在且包含总览表和每 Sprint 功能清单 | 步骤 6 |
+| 步骤 6 | 交叉校验 | 所有校验项通过（无漏分、无溢出、无依赖违反） | 步骤 7 |
+| 步骤 7 | 提示下一步 | 已输出下游消费提示 | — |
+
+### 默认恢复原则（兜底）
+
+1. 若所有输出文件均不存在，从步骤 0 全量执行。
+2. 若部分输出文件存在，从最早未完成步骤续执，已有内容按增量更新处理。
+3. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估（参见 `AGENTS.md` § 14.5 第 4 条）。
 
 ## 注意事项
 

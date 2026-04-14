@@ -234,6 +234,10 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 
 ### 步骤 0：解析构建参数
 
+#### [断点恢复扫描]
+
+按 `## 断点恢复` 检查点表格从后向前扫描各步骤完成状态，确定续执起点后输出恢复摘要（格式见 `AGENTS.md` § 14.5 第 3 条），然后跳转到续执起点。若无断点，继续执行以下步骤 0 主体。
+
 - 读取 `build_profile`。
 - 取值规则：
   - `display`：仅输出对外展示版
@@ -483,3 +487,30 @@ description: 当高保真设计基线文档已齐备、需要生成 display 或 
 | v1.3.0 | 2026-04-03 | 【修改】接入 `BACKOFFICE_UI_SPEC.md` 与 `BO-RULE-001~008` 构建期强制自检，命中即 build FAIL 并阻塞下游。 |
 | v1.2.0 | 2026-04-02 | 【修改】新增 BUILD-RULE-001~006、关键路径效率硬校验与结构化自检结果表，强化构建期可判定性。 |
 | v1.1.0 | 2026-04-02 | 【修改】将分页、模拟态弹窗、行内编辑预填、弹窗反馈闭环升级为构建阻塞规则并纳入 FAIL 门禁。 |
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。本章节声明本 Skill 的步骤级检查点；未列出的项回退到 `AGENTS.md` § 14.4 默认规则。
+
+### 检查点表格
+
+| 步骤 | 步骤名称 | 完成判定条件 | 续执起点 |
+|---|---|---|---|
+| 步骤 0 | 解析构建参数 | `build_profile`、`visual_gate`、`visual_gate_mode` 已读取，构建模式已确定 | 步骤 0.5 |
+| 步骤 0.5 | P0 Gate | 基线输入校验通过，后台页面时 `BACKOFFICE_UI_SPEC.md` 可用，未输出 build FAIL/BLOCKED | 步骤 1 |
+| 步骤 1 | 锁定构建范围 | 页面白名单已从 `SCREEN_INVENTORY.md` 与 `<current-change>` 提取，范围外页面已排除 | 步骤 2 |
+| 步骤 2 | 生成样式基线 | `display/assets/` 和/或 `acceptance/assets/` 下的 CSS 文件（`styles.css`、`tokens.css`、`layout.css`、`components.css`）均已生成 | 步骤 3 |
+| 步骤 3 | 按模式逐页生成 HTML | `frontend/design-prototype/display/*.html` 和/或 `frontend/design-prototype/acceptance/*.html` 均已生成 | 步骤 3.5 |
+| 步骤 3.5 | 生成模拟数据 | `frontend/design-prototype/<side>/data/*.json` 文件已生成，且覆盖典型值、边界值、空值 | 步骤 4 |
+| 步骤 4 | 补齐静态跳转与真实感交互 | 主流程页面间跳转可达，BUILD-RULE-001~006 强制交互已补齐 | 步骤 5 |
+| 步骤 5 | 记录构建说明 | `docs/02-design/PROTOTYPE_BUILD_NOTES.md` 文件存在，包含构建模式、页面清单与 BUILD-RULE/BO-RULE 结构化自检结果表 | 步骤 6 |
+| 步骤 6 | 自检 | 页面可打开、样式一致、交互链路检查已完成 | 步骤 7 |
+| 步骤 7 | 构建后硬规则自检（阻塞） | BUILD-RULE-001~016 与 BO-RULE-001~024 全部通过自检，结论非 build FAIL | 步骤 8 |
+| 步骤 8 | 视觉几何门禁自检（阻塞） | 关键页面在五个强制断点（1440/1200/992/768/375）均无 layout deformation | 步骤 9 |
+| 步骤 9 | 执行自动化视觉门禁 | `docs/02-design/.visual-check/<run-id>/audit-result.json` 文件存在且 verdict 字段有值，`VISUAL_GATE_REPORT.md` 已生成 | — |
+
+### 默认恢复原则（兜底）
+
+1. 若所有输出文件均不存在，从步骤 0 全量执行。
+2. 若部分输出文件存在，从最早未完成步骤续执，已有内容按增量更新处理。
+3. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估（参见 `AGENTS.md` § 14.5 第 4 条）。

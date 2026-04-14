@@ -286,3 +286,13 @@ But this summary is optional. Sometimes the thinking IS the value.
 - **Do visualize** - A good diagram is worth many paragraphs
 - **Do explore the codebase** - Ground discussions in reality
 - **Do question assumptions** - Including the user's and your own
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。
+
+本 Skill 为探索/发现模式，无固定步骤序列，不设步骤级检查点（参见 `AGENTS.md` § 14.6）。
+
+### 完成判定
+
+探索过程结果存于对话上下文，无持久化文件产物。断点恢复以"对话中是否已输出探索摘要（What We Figured Out）"为依据；若已输出，可直接从当前上下文继续讨论，无需重新探索。

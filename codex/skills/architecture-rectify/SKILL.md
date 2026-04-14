@@ -56,6 +56,10 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 
 ### 步骤 0：校验评审问题清单与设计基线
 
+#### [断点恢复扫描]
+
+按 `## 断点恢复` 检查点表格从后向前扫描各步骤完成状态，确定续执起点后输出恢复摘要（格式见 `AGENTS.md` § 14.5 第 3 条），然后跳转到续执起点。若无断点，继续执行以下步骤 0 主体。
+
 1. 读取 `docs/03-architecture/ARCHITECTURE_REVIEW_ISSUES.md`，提取所有 `🔴 阻塞` 和 `🟠 重要` 问题。
 2. 读取 `docs/03-architecture/ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`。
 3. 校验 `PRD_RECTIFIED.md` 状态为 `已冻结`。
@@ -220,4 +224,25 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 - `architecture-review` 负责结构化评审，不直接修改设计文档
 - `architecture-rectify` 负责关闭评审问题、更新设计基线、判定并完成设计冻结
 - `doc-check` 负责文档规范性、元数据、追溯形式完整性和流程符合性，不替代本 Skill 的设计整改
-- 整改逻辑必须体现“问题驱动、定点修订、完成冻结”，不得退化为重新设计整套系统
+- 整改逻辑必须体现”问题驱动、定点修订、完成冻结”，不得退化为重新设计整套系统
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。本章节声明本 Skill 的步骤级检查点；未列出的项回退到 `AGENTS.md` § 14.4 默认规则。
+
+### 检查点表格
+
+| 步骤 | 步骤名称 | 完成判定条件 | 续执起点 |
+|---|---|---|---|
+| 步骤 0 | 校验评审问题清单与设计基线 | `docs/03-architecture/ARCHITECTURE_REVIEW_ISSUES.md` 已可读取，且三份设计文档均存在 | 步骤 0.5 |
+| 步骤 0.5 | P0 Gate | 上述校验通过，无 BLOCKED/FAIL 结论写入 | 步骤 1 |
+| 步骤 1 | 逐条映射问题到设计文档 | `ARCHITECTURE_REVIEW_ISSUES.md` 中各问题已标注对应落点文档（有”整改状态”字段更新记录） | 步骤 2 |
+| 步骤 2 | 按文档整改并补齐缺口 | `ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md` 中存在 `【修改】`/`【变更】` 标记 | 步骤 3 |
+| 步骤 3 | 回写整改状态与残留风险 | `ARCHITECTURE_REVIEW_ISSUES.md` 中所有 🔴/🟠 问题整改状态已更新（非空） | 步骤 4 |
+| 步骤 4 | 重新判定是否可冻结 | 三份设计文档状态字段为 `已整改` 或 `已冻结` | — |
+
+### 默认恢复原则（兜底）
+
+1. 若所有输出文件均不存在，从步骤 0 全量执行。
+2. 若部分文件存在，从最早未完成步骤续执，已有内容按增量更新处理。
+3. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估（参见 `AGENTS.md` § 14.5 第 4 条）。

@@ -112,3 +112,17 @@ All artifacts complete. All tasks complete.
 - Show clear summary of what happened
 - If sync is requested, use openspec-sync-specs approach (agent-driven)
 - If delta specs exist, always run the sync assessment and show the combined summary before prompting
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。
+
+本 Skill 为工具驱动型，无显式步骤序列，不设步骤级检查点（参见 `AGENTS.md` § 14.6）。
+
+### 完成判定
+
+| 判定依据 | 说明 |
+|---|---|
+| 归档目录（`openspec/archive/<change-name>/`）已存在且包含变更文件 | 视为本次归档已完成 |
+
+本 Skill 为幂等操作，重复调用安全，无需步骤级续执。

@@ -55,6 +55,10 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 
 ### 1. 读取基线并提取项目参数
 
+#### [断点恢复扫描]
+
+按 `## 断点恢复` 检查点表格从后向前扫描各步骤完成状态，确定续执起点后输出恢复摘要（格式见 `AGENTS.md` § 14.5 第 3 条），然后跳转到续执起点。若无断点，继续执行以下步骤 1 主体。
+
 提取：`project-name`、`groupId`、Java 版本、是否多端。
 
 ### 2. 判定当前状态
@@ -116,3 +120,25 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - [ ] 至少一个 Mapper 继承 `BaseMapper<T>`
 - [ ] DDD 分层目录齐全
 - [ ] 后续可直接衔接 `dev-implement`
+
+## 断点恢复
+
+> 通用恢复原则见根目录 `AGENTS.md` § 14。本章节声明本 Skill 的步骤级检查点；未列出的项回退到 `AGENTS.md` § 14.4 默认规则。
+
+### 检查点表格
+
+| 步骤 | 步骤名称 | 完成判定条件 | 续执起点 |
+|---|---|---|---|
+| 步骤 1 | 读取基线并提取项目参数 | `project-name`、`groupId`、Java 版本已提取 | 步骤 2 |
+| 步骤 2 | 判定当前状态 | 已判定 `create` / `patch` / `skip` 状态 | 步骤 3 |
+| 步骤 3 | 创建/补齐父模块 | `backend/<project-name>-parent/pom.xml` 存在且 `packaging=pom` | 步骤 4 |
+| 步骤 4 | 创建/补齐 common 模块 | `backend/<project-name>-parent/<project-name>-common/` 目录存在，含 `Result<T>`、通用异常占位 | 步骤 5 |
+| 步骤 5 | 创建/补齐业务服务模块 | 各服务模块的 `pom.xml`、`application.yml`、`mapper/**/*.xml`、`resources/error/*.properties` 均存在 | 步骤 6 |
+| 步骤 6 | 创建测试目录 | 各服务模块的 `src/test/java/.../ApplicationTests.java` 存在 | 步骤 7 |
+| 步骤 7 | 结果说明 | 已输出已创建/补齐项清单 | — |
+
+### 默认恢复原则（兜底）
+
+1. 若所有输出文件均不存在，从步骤 0 全量执行。
+2. 若部分输出文件存在，从最早未完成步骤续执，已有内容按增量更新处理。
+3. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估（参见 `AGENTS.md` § 14.5 第 4 条）。
