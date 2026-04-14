@@ -96,20 +96,31 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 ### 步骤 2：注释与规范检查（含阿里规范合规）
 
 **注释要求（强制）：**
-- 类/接口/枚举 Javadoc 必须包含：类用途说明、`@author`（优先读取环境变量 `$GIT_AUTHOR_NAME`，其次 `$USER`，均不可用时填 `unknown`）、`@since`（创建日期）、`@updated`（最近更新日期，初次创建与 `@since` 相同）
-- 实体类/DTO/PO/领域模型（`domain.model`）每个字段必须有注释，说明字段含义
-- **所有方法**（无论 public/protected/private，无论是否抽象）Javadoc 至少说明功能；对外可见方法（public/protected）还必须包含 `@param`、`@return`、`@throws`（如适用）
-- 枚举类型每个常量必须有注释说明用途
-- 复杂业务分支必须有行内注释（`//`，另起一行与代码对齐）
+- 类/接口/枚举 Javadoc 必须使用**中文**描述类用途，并包含：`@author`（优先读取环境变量 `$GIT_AUTHOR_NAME`，其次 `$USER`，均不可用时填 `unknown`）、`@since`（创建日期）、`@updated`（最近更新日期，初次创建与 `@since` 相同）
+- 实体类/DTO/PO/领域模型（`domain.model`）每个字段必须有**中文**注释，说明字段含义
+- **所有方法**（无论 public/protected/private，无论是否抽象）Javadoc 至少用**中文**说明功能；对外可见方法（public/protected）还必须包含 `@param`、`@return`、`@throws`，描述内容使用**中文**
+- 枚举类型每个常量必须有**中文**注释说明用途
+- 复杂业务逻辑在**关键节点**必须有**中文**行内注释（`//`，另起一行与代码对齐），说明该步骤的业务意图
 
 **类/接口/枚举 Javadoc 标准模板（强制）：**
 ```java
 /**
- * <类/接口/枚举用途一行说明>
+ * <中文一句话说明类/接口/枚举的职责>
  *
  * @author ${GIT_AUTHOR_NAME:-${USER:-unknown}}
  * @since YYYY-MM-DD
  * @updated YYYY-MM-DD
+ */
+```
+
+**方法 Javadoc 示例：**
+```java
+/**
+ * 根据订单 ID 查询订单详情
+ *
+ * @param orderId 订单唯一标识
+ * @return 订单详情，不存在时返回 null
+ * @throws OrderNotFoundException 订单不存在时抛出
  */
 ```
 
@@ -133,8 +144,8 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 - [ ] 异常日志包含现场信息 + 堆栈（log.error("msg={}", msg, e)）
 
 ## 注释
-- [ ] 所有类/接口/枚举有完整 Javadoc（含用途说明、`@author` 环境变量取值、`@since` 创建日期、`@updated` 更新日期）
-- [ ] 所有方法（含 private）有 Javadoc，public/protected 方法含 `@param`/`@return`/`@throws`
+- [ ] 所有类/接口/枚举有完整**中文** Javadoc（含中文用途说明、`@author` 环境变量取值、`@since`、`@updated`）
+- [ ] 所有方法（含 private）有**中文** Javadoc，public/protected 方法的 `@param`/`@return`/`@throws` 描述使用中文
 - [ ] 实体类/DTO/PO/领域模型每个字段有注释
 - [ ] 枚举每个常量有注释
 
@@ -186,7 +197,7 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 - [ ] 命名符合阿里规范（类名 UpperCamelCase / 方法名 lowerCamelCase / 常量 UPPER_SNAKE_CASE）
 - [ ] 日志使用 SLF4J 门面且使用占位符输出，无 System.out/err 和 e.printStackTrace()
 - [ ] 异常处理符合规范（不以 catch 控制流、finally 关闭资源、事务场景手动回滚）
-- [ ] 注释完整（类/接口/枚举 Javadoc 含 `@author`[环境变量]/`@since`/`@updated`/用途；所有方法有 Javadoc；实体/模型字段有注释；枚举常量有注释）
+- [ ] 注释完整且使用**中文**（类/接口/枚举 Javadoc 含中文用途/`@author`[环境变量]/`@since`/`@updated`；所有方法有中文 Javadoc；实体/模型字段有中文注释；枚举常量有中文注释；复杂业务关键节点有中文行内注释）
 - [ ] 包结构符合单包约束（mapper XML 单层、repository/domain.model/domain.service 各自单包，超 5 个时才分子包）
 - [ ] `backend/{module-name}/.std_check.md` 中间产物已确认删除
 
