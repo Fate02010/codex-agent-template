@@ -47,7 +47,7 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - 公共能力必须集中在 `common` 模块
 - 服务模块必须使用 DDD 目录
 - 服务模块必须接入 MyBatis-Plus（依赖 + Mapper 扫描 + 分页插件）
-- 每个服务模块必须有 `mapper/**/*.xml`
+- 每个服务模块必须有 `mapper/*.xml`
 - 每个服务模块必须有 `resources/error/*.properties`
 - 外部接口与内部接口必须分开目录和 URL 前缀
 
@@ -89,7 +89,7 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - DDD 分层目录
 - `pom.xml`（包含 `mybatis-plus-spring-boot3-starter` 依赖，版本由父模块管理）
 - `application.yml`
-- `src/main/resources/mapper/**/*.xml`
+- `src/main/resources/mapper/*.xml`
 - `src/main/resources/error/error-codes.properties`
 - `src/main/resources/error/error-messages_zh_CN.properties`
 - `src/main/resources/error/error-messages_en_US.properties`
@@ -98,9 +98,15 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - `infrastructure/config/MybatisPlusConfig.java`（注册 `MybatisPlusInterceptor` + `PaginationInnerInterceptor`）
 - 至少一个 `infrastructure/persistence/mapper/*Mapper.java`（继承 `BaseMapper<T>`）
 
+**包结构约定（强制）：**
+- mapper XML 统一存于 `src/main/resources/mapper/`（单层，不建子目录）
+- repository 接口统一存于 `infrastructure.persistence.repository`（≤5 个时单包，超过 5 个才按领域建子包）
+- 领域模型统一存于 `domain.model`（≤5 个时单包，超过 5 个才建子包）
+- 领域服务统一存于 `domain.service`（≤5 个时单包，超过 5 个才建子包）
+
 `application.yml` 至少包含：
 
-- `mybatis-plus.mapper-locations: classpath:mapper/**/*.xml`
+- `mybatis-plus.mapper-locations: classpath:mapper/*.xml`
 - `mybatis-plus.type-aliases-package: ...infrastructure.persistence.po`
 
 ### 6. 创建测试目录
@@ -119,6 +125,8 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - [ ] 服务模块可识别 mapper XML 与 error 目录
 - [ ] 至少一个 Mapper 继承 `BaseMapper<T>`
 - [ ] DDD 分层目录齐全
+- [ ] mapper XML 存于单层 `mapper/` 目录（无子目录）
+- [ ] repository/domain.model/domain.service 各自单包（≤5 个时无子包）
 - [ ] 后续可直接衔接 `dev-implement`
 
 ## 断点恢复
@@ -133,7 +141,7 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 | 步骤 2 | 判定当前状态 | 已判定 `create` / `patch` / `skip` 状态 | 步骤 3 |
 | 步骤 3 | 创建/补齐父模块 | `backend/<project-name>-parent/pom.xml` 存在且 `packaging=pom` | 步骤 4 |
 | 步骤 4 | 创建/补齐 common 模块 | `backend/<project-name>-parent/<project-name>-common/` 目录存在，含 `Result<T>`、通用异常占位 | 步骤 5 |
-| 步骤 5 | 创建/补齐业务服务模块 | 各服务模块的 `pom.xml`、`application.yml`、`mapper/**/*.xml`、`resources/error/*.properties` 均存在 | 步骤 6 |
+| 步骤 5 | 创建/补齐业务服务模块 | 各服务模块的 `pom.xml`、`application.yml`、`mapper/*.xml`、`resources/error/*.properties` 均存在 | 步骤 6 |
 | 步骤 6 | 创建测试目录 | 各服务模块的 `src/test/java/.../ApplicationTests.java` 存在 | 步骤 7 |
 | 步骤 7 | 结果说明 | 已输出已创建/补齐项清单 | — |
 

@@ -87,14 +87,31 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 3. `application`：命令/查询与应用服务
 4. `interfaces`：DTO、Assembler、Controller
 
+**包结构约束（强制）：**
+- `mapper XML` 统一放 `src/main/resources/mapper/`（单层目录，禁止在 `mapper/` 下再建子目录）
+- `repository` 接口统一放 `infrastructure.persistence.repository` 包（单包）；同一模块 repository 接口超过 5 个时才允许在 repository 下按领域建子包
+- 领域模型（domain model）统一放 `domain.model` 包（单包）；同一模块领域模型超过 5 个时才允许在 model 下建子包
+- 领域服务（domain service）统一放 `domain.service` 包（单包）；同一模块领域服务超过 5 个时才允许在 service 下建子包
+
 ### 步骤 2：注释与规范检查（含阿里规范合规）
 
 **注释要求（强制）：**
-- 类/接口 Javadoc 必须包含：`@author`、创建日期、类用途说明
-- 实体类/DTO/PO 每个字段必须有注释
-- 抽象方法 Javadoc 必须说明功能、`@param`、`@return`、`@throws`
-- 枚举类型每个字段必须注释说明用途
+- 类/接口/枚举 Javadoc 必须包含：类用途说明、`@author`（优先读取环境变量 `$GIT_AUTHOR_NAME`，其次 `$USER`，均不可用时填 `unknown`）、`@since`（创建日期）、`@updated`（最近更新日期，初次创建与 `@since` 相同）
+- 实体类/DTO/PO/领域模型（`domain.model`）每个字段必须有注释，说明字段含义
+- **所有方法**（无论 public/protected/private，无论是否抽象）Javadoc 至少说明功能；对外可见方法（public/protected）还必须包含 `@param`、`@return`、`@throws`（如适用）
+- 枚举类型每个常量必须有注释说明用途
 - 复杂业务分支必须有行内注释（`//`，另起一行与代码对齐）
+
+**类/接口/枚举 Javadoc 标准模板（强制）：**
+```java
+/**
+ * <类/接口/枚举用途一行说明>
+ *
+ * @author ${GIT_AUTHOR_NAME:-${USER:-unknown}}
+ * @since YYYY-MM-DD
+ * @updated YYYY-MM-DD
+ */
+```
 
 **阿里规范合规检查（逐层生成中间产物）：**
 
@@ -116,20 +133,25 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 - [ ] 异常日志包含现场信息 + 堆栈（log.error("msg={}", msg, e)）
 
 ## 注释
-- [ ] 所有类有 @author + 创建日期的 Javadoc
-- [ ] 抽象方法/接口方法有完整 Javadoc（功能/参数/返回值/异常）
-- [ ] 枚举字段有注释
+- [ ] 所有类/接口/枚举有完整 Javadoc（含用途说明、`@author` 环境变量取值、`@since` 创建日期、`@updated` 更新日期）
+- [ ] 所有方法（含 private）有 Javadoc，public/protected 方法含 `@param`/`@return`/`@throws`
+- [ ] 实体类/DTO/PO/领域模型每个字段有注释
+- [ ] 枚举每个常量有注释
 
 ## 【infrastructure 层】
 - [ ] 布尔字段命名 is_xxx，unsigned tinyint 类型
 - [ ] 小数用 decimal，无 float/double
 - [ ] 禁止 SELECT *，禁止循环中执行 SQL
 - [ ] 索引命名：pk_ / uk_ / idx_ 前缀
+- [ ] mapper XML 存放于 `src/main/resources/mapper/`（单层，无子目录）
+- [ ] repository 接口集中在 `infrastructure.persistence.repository` 包（≤5 个时不分子包）
 
 ## 【domain 层】
 - [ ] 所有覆写方法有 @Override
 - [ ] equals 和 hashCode 成对实现
 - [ ] 集合判空用 isEmpty()，整型包装类比较用 equals
+- [ ] 领域模型集中在 `domain.model` 包（≤5 个时不分子包）
+- [ ] 领域服务集中在 `domain.service` 包（≤5 个时不分子包）
 
 ## 【application 层】
 - [ ] 无直接 new Thread()，线程通过 ThreadPoolExecutor 管理
@@ -164,7 +186,8 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 - [ ] 命名符合阿里规范（类名 UpperCamelCase / 方法名 lowerCamelCase / 常量 UPPER_SNAKE_CASE）
 - [ ] 日志使用 SLF4J 门面且使用占位符输出，无 System.out/err 和 e.printStackTrace()
 - [ ] 异常处理符合规范（不以 catch 控制流、finally 关闭资源、事务场景手动回滚）
-- [ ] 注释完整（Javadoc 含 @author + 日期 + 用途、抽象方法说明、枚举字段说明）
+- [ ] 注释完整（类/接口/枚举 Javadoc 含 `@author`[环境变量]/`@since`/`@updated`/用途；所有方法有 Javadoc；实体/模型字段有注释；枚举常量有注释）
+- [ ] 包结构符合单包约束（mapper XML 单层、repository/domain.model/domain.service 各自单包，超 5 个时才分子包）
 - [ ] `backend/{module-name}/.std_check.md` 中间产物已确认删除
 
 ### 步骤 5：提示下一步
