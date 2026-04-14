@@ -12,16 +12,16 @@ description: 测试设计
 ## 输入
 
 1. `docs/01-requirements/PRD_RECTIFIED.md` — 整改后的需求文档
-2. `docs/02-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图用于生成调用链验证用例，第 12 节权限矩阵用于生成角色权限测试用例）
-3. `docs/02-architecture/API_CONTRACT.md` — 接口契约
-4. `docs/02-architecture/DATA_MODEL.md` — 数据模型
+2. `docs/03-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图用于生成调用链验证用例，第 12 节权限矩阵用于生成角色权限测试用例）
+3. `docs/03-architecture/API_CONTRACT.md` — 接口契约
+4. `docs/03-architecture/DATA_MODEL.md` — 数据模型
 5. `tests/AGENTS.md`（可选）— 测试规范
 6. `docs/01-requirements/acceptance_harness.md`（如有，作为验收测试骨架参考）
 
 ## 输出
 
-1. `docs/03-testing/TEST_PLAN.md` — 测试计划
-2. `docs/03-testing/TEST_CASES.md` — 测试用例
+1. `docs/04-testing/TEST_PLAN.md` — 测试计划
+2. `docs/04-testing/TEST_CASES.md` — 测试用例
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -55,7 +55,7 @@ description: 测试设计
 
 ### 步骤 0.5：初始化输出载体（冷启动）
 
-- 确保 `docs/03-testing/` 存在。
+- 确保 `docs/04-testing/` 存在。
 - 初始化 `TEST_PLAN.md` 与 `TEST_CASES.md`（缺失则创建、模板则覆盖）。
 
 ### 步骤 1：读取输入文档
@@ -63,9 +63,9 @@ description: 测试设计
 按以下顺序读取：
 
 1. `docs/01-requirements/PRD_RECTIFIED.md` — 理解业务需求
-2. `docs/02-architecture/API_CONTRACT.md` — 理解接口设计
-3. `docs/02-architecture/DATA_MODEL.md` — 理解数据结构
-4. `docs/02-architecture/ARCHITECTURE.md` — 读取第 11 节序列图（生成调用链验证用例）和第 12 节安全与鉴权设计/接口权限矩阵（按权限矩阵覆盖各角色的接口访问权限测试用例）
+2. `docs/03-architecture/API_CONTRACT.md` — 理解接口设计
+3. `docs/03-architecture/DATA_MODEL.md` — 理解数据结构
+4. `docs/03-architecture/ARCHITECTURE.md` — 读取第 11 节序列图（生成调用链验证用例）和第 12 节安全与鉴权设计/接口权限矩阵（按权限矩阵覆盖各角色的接口访问权限测试用例）
 5. `tests/AGENTS.md`（可选）— 若存在则作为增强规范读取
 
 ### 步骤 2：输出测试计划（TEST_PLAN.md）

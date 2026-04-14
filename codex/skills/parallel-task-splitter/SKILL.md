@@ -18,9 +18,9 @@ description: 根据当前冻结需求与设计基线按功能点拆分前后端�
 ## Inputs
 
 1. `docs/01-requirements/PRD_RECTIFIED.md`
-2. `docs/02-architecture/API_CONTRACT.md`
-3. `docs/02-architecture/DATA_MODEL.md`
-4. `docs/03-testing/TEST_CASES.md`
+2. `docs/03-architecture/API_CONTRACT.md`
+3. `docs/03-architecture/DATA_MODEL.md`
+4. `docs/04-testing/TEST_CASES.md`
 5. `backend/AGENTS.md`
 6. `frontend/AGENTS.md`
 7. `docs/01-requirements/feature_list.json`（如有，优先使用结构化数据替代手动解析 PRD）

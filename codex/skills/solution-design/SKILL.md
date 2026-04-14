@@ -22,9 +22,9 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 
 ## 输出
 
-1. `docs/02-architecture/ARCHITECTURE.md`
-2. `docs/02-architecture/API_CONTRACT.md`
-3. `docs/02-architecture/DATA_MODEL.md`
+1. `docs/03-architecture/ARCHITECTURE.md`
+2. `docs/03-architecture/API_CONTRACT.md`
+3. `docs/03-architecture/DATA_MODEL.md`
 4. `docs/01-requirements/PRD_SOLUTION_PRECHECK_REPORT.md`（由 `scripts/run_prd_gate.sh --mode solution-precheck` 自动生成）
 
 ## 执行层级导读（Progressive Disclosure）
@@ -115,7 +115,7 @@ description: 基于冻结 PRD 输出架构、接口、数据模型设计，强�
 
 ### 步骤 1：初始化输出载体（冷启动）
 
-- 确保 `docs/02-architecture/` 存在。
+- 确保 `docs/03-architecture/` 存在。
 - 初始化 3 份输出文件（若缺失则创建；若为模板则覆盖）。
 
 `ARCHITECTURE.md` 最小结构：

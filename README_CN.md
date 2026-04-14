@@ -31,11 +31,11 @@
 │   ├── AGENTS.md
 │   ├── 00-research/
 │   ├── 01-requirements/
-│   ├── 02-architecture/
+│   ├── 03-architecture/
 │   ├── 02-design/
-│   ├── 03-testing/
-│   ├── 04-iteration/
-│   └── 05-retrospective/
+│   ├── 04-testing/
+│   ├── 05-iteration/
+│   └── 06-retrospective/
 ├── backend/
 │   └── AGENTS.md
 ├── frontend/
@@ -113,8 +113,8 @@ docs/01-requirements/CAPABILITY_CANDIDATES.md（如有）与 openspec/project.md
 
 ```text
 使用 dev-implement Skill。
-以 docs/01-requirements/PRD_RECTIFIED.md、docs/02-architecture/ARCHITECTURE.md、
-docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯一输入源，
+以 docs/01-requirements/PRD_RECTIFIED.md、docs/03-architecture/ARCHITECTURE.md、
+docs/03-architecture/API_CONTRACT.md、docs/03-architecture/DATA_MODEL.md 为唯一输入源，
 在 backend/ 和 frontend/ 中完成实现，并补充与 TC 编号对应的测试代码。
 ```
 
@@ -290,9 +290,9 @@ docs/02-architecture/API_CONTRACT.md、docs/02-architecture/DATA_MODEL.md 为唯
 1. [AGENTS.md](./AGENTS.md)
 2. [docs/AGENTS.md](./docs/AGENTS.md)
 3. [docs/01-requirements/PRD_RECTIFIED.md](./docs/01-requirements/PRD_RECTIFIED.md)
-4. [docs/02-architecture/ARCHITECTURE.md](./docs/02-architecture/ARCHITECTURE.md)
-5. [docs/02-architecture/API_CONTRACT.md](./docs/02-architecture/API_CONTRACT.md)
-6. [docs/02-architecture/DATA_MODEL.md](./docs/02-architecture/DATA_MODEL.md)
+4. [docs/03-architecture/ARCHITECTURE.md](./docs/03-architecture/ARCHITECTURE.md)
+5. [docs/03-architecture/API_CONTRACT.md](./docs/03-architecture/API_CONTRACT.md)
+6. [docs/03-architecture/DATA_MODEL.md](./docs/03-architecture/DATA_MODEL.md)
 7. 局部目录下的 `AGENTS.md`
 
 ## 适用团队形态

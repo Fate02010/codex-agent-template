@@ -57,7 +57,7 @@ description: 当需要基于业务目标、需求输入、当前产品状态、�
 5. `docs/01-requirements/FEATURE_PRIORITY.md`（如存在）
 6. `docs/01-requirements/CAPABILITY_CANDIDATES.md`（如存在）
 7. `openspec/project.md`（如存在）
-8. 当前版本基线 / 当前已交付能力清单（如 `docs/04-iteration/RELEASE_BASELINE.md`、既有发布记录、历史路线图）
+8. 当前版本基线 / 当前已交付能力清单（如 `docs/05-iteration/RELEASE_BASELINE.md`、既有发布记录、历史路线图）
 9. 业务目标、资源约束、时间窗口、依赖信息（如输入材料中存在）
 
 输入降级策略：
@@ -70,10 +70,10 @@ description: 当需要基于业务目标、需求输入、当前产品状态、�
 
 必须输出以下文件：
 
-1. `docs/04-iteration/PRODUCT_ROADMAP.md`
-2. `docs/04-iteration/ROADMAP_PHASES.md`
-3. `docs/04-iteration/ROADMAP_DEPENDENCIES.md`
-4. `docs/04-iteration/ROADMAP_RISKS.md`
+1. `docs/05-iteration/PRODUCT_ROADMAP.md`
+2. `docs/05-iteration/ROADMAP_PHASES.md`
+3. `docs/05-iteration/ROADMAP_DEPENDENCIES.md`
+4. `docs/05-iteration/ROADMAP_RISKS.md`
 
 输出边界：
 
@@ -116,7 +116,7 @@ description: 当需要基于业务目标、需求输入、当前产品状态、�
 
 ### 步骤 0：初始化输出载体（冷启动）
 
-- 确保 `docs/04-iteration/` 存在。
+- 确保 `docs/05-iteration/` 存在。
 - 对 4 份输出文档执行初始化（缺失则创建、模板则覆盖）。
 
 每份文档最小章节要求：

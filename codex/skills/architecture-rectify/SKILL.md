@@ -7,7 +7,7 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 
 ## 触发条件
 
-当 `architecture-review` 已输出 `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md`，且需要在进入 `qa-design` / `dev-implement` 前关闭设计问题并完成设计冻结时使用。
+当 `architecture-review` 已输出 `docs/03-architecture/ARCHITECTURE_REVIEW_ISSUES.md`，且需要在进入 `qa-design` / `dev-implement` 前关闭设计问题并完成设计冻结时使用。
 
 以下场景不触发本 Skill：
 
@@ -18,10 +18,10 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 ## 输入
 
 1. `docs/01-requirements/PRD_RECTIFIED.md`
-2. `docs/02-architecture/ARCHITECTURE.md`
-3. `docs/02-architecture/API_CONTRACT.md`
-4. `docs/02-architecture/DATA_MODEL.md`
-5. `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md`
+2. `docs/03-architecture/ARCHITECTURE.md`
+3. `docs/03-architecture/API_CONTRACT.md`
+4. `docs/03-architecture/DATA_MODEL.md`
+5. `docs/03-architecture/ARCHITECTURE_REVIEW_ISSUES.md`
 6. 相关增量变更文档（迭代场景）
 7. `docs/01-requirements/MVP_SCOPE.md`（如有）
 8. `docs/01-requirements/OUT_OF_SCOPE.md`（如有）
@@ -30,10 +30,10 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 
 ## 输出
 
-- 更新后的 `docs/02-architecture/ARCHITECTURE.md`
-- 更新后的 `docs/02-architecture/API_CONTRACT.md`
-- 更新后的 `docs/02-architecture/DATA_MODEL.md`
-- 回写后的 `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md`
+- 更新后的 `docs/03-architecture/ARCHITECTURE.md`
+- 更新后的 `docs/03-architecture/API_CONTRACT.md`
+- 更新后的 `docs/03-architecture/DATA_MODEL.md`
+- 回写后的 `docs/03-architecture/ARCHITECTURE_REVIEW_ISSUES.md`
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -56,8 +56,8 @@ description: 基于 architecture-review 输出的问题清单整改并冻结架�
 
 ### 步骤 0：校验评审问题清单与设计基线
 
-1. 读取 `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md`，提取所有 `🔴 阻塞` 和 `🟠 重要` 问题。
-2. 读取 `docs/02-architecture/ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`。
+1. 读取 `docs/03-architecture/ARCHITECTURE_REVIEW_ISSUES.md`，提取所有 `🔴 阻塞` 和 `🟠 重要` 问题。
+2. 读取 `docs/03-architecture/ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`。
 3. 校验 `PRD_RECTIFIED.md` 状态为 `已冻结`。
 4. 若评审问题清单不存在、设计文档不存在或需求基线未冻结，则终止并返回对应上游阶段。
 

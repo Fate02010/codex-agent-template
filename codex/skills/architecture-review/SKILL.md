@@ -9,9 +9,9 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 
 当 `solution-design` 已产出或更新以下设计基线，且需要在进入 `qa-design` / `dev-implement` 前做设计评审时使用本 Skill：
 
-- `docs/02-architecture/ARCHITECTURE.md`
-- `docs/02-architecture/API_CONTRACT.md`
-- `docs/02-architecture/DATA_MODEL.md`
+- `docs/03-architecture/ARCHITECTURE.md`
+- `docs/03-architecture/API_CONTRACT.md`
+- `docs/03-architecture/DATA_MODEL.md`
 
 以下场景不触发本 Skill：
 
@@ -22,9 +22,9 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 ## 输入
 
 1. `docs/01-requirements/PRD_RECTIFIED.md`
-2. `docs/02-architecture/ARCHITECTURE.md`
-3. `docs/02-architecture/API_CONTRACT.md`
-4. `docs/02-architecture/DATA_MODEL.md`
+2. `docs/03-architecture/ARCHITECTURE.md`
+3. `docs/03-architecture/API_CONTRACT.md`
+4. `docs/03-architecture/DATA_MODEL.md`
 5. `docs/01-requirements/MVP_SCOPE.md`（如有）
 6. 相关增量变更文档（迭代场景）
 7. `docs/01-requirements/OUT_OF_SCOPE.md`（如有）
@@ -33,7 +33,7 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 
 ## 输出
 
-- `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md` — 架构设计评审问题清单
+- `docs/03-architecture/ARCHITECTURE_REVIEW_ISSUES.md` — 架构设计评审问题清单
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -126,7 +126,7 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 
 ### 步骤 4：输出问题清单与结论
 
-将所有问题按以下格式写入 `docs/02-architecture/ARCHITECTURE_REVIEW_ISSUES.md`：
+将所有问题按以下格式写入 `docs/03-architecture/ARCHITECTURE_REVIEW_ISSUES.md`：
 
 ```markdown
 # 架构设计评审问题清单
@@ -143,9 +143,9 @@ description: 在 solution-design 产出或更新架构、接口、数据模型�
 - 评审日期：YYYY-MM-DD
 - 需求基线：`docs/01-requirements/PRD_RECTIFIED.md`
 - 设计文档：
-  - `docs/02-architecture/ARCHITECTURE.md`
-  - `docs/02-architecture/API_CONTRACT.md`
-  - `docs/02-architecture/DATA_MODEL.md`
+  - `docs/03-architecture/ARCHITECTURE.md`
+  - `docs/03-architecture/API_CONTRACT.md`
+  - `docs/03-architecture/DATA_MODEL.md`
 - 评审目标：验证设计基线是否满足一致性、可实现性、可测试性与冻结门禁
 
 ## 总体结论

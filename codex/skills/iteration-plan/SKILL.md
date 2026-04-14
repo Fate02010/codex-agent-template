@@ -19,29 +19,29 @@ description: 版本迭代管理
 分两种模式读取输入：
 
 1. **首次交付冻结模式**
-   - `docs/03-testing/TEST_REPORT.md`
+   - `docs/04-testing/TEST_REPORT.md`
    - `docs/DOC_CHECK_REPORT.md`（结果须为 PASS）
-   - `docs/05-retrospective/ITERATION_REVIEW.md`（结论须为 `PASS` 或 `PASS WITH WAIVER`）
+   - `docs/06-retrospective/ITERATION_REVIEW.md`（结论须为 `PASS` 或 `PASS WITH WAIVER`）
    - 当前冻结文档：`PRD_RECTIFIED.md`、`ARCHITECTURE.md`、`API_CONTRACT.md`、`DATA_MODEL.md`
    - 当前代码状态（如可获得）
-   - `docs/04-iteration/SPRINT_PLAN.md`（可选，如已由 `sprint-planner` 生成，用于填充 Sprint 分配摘要）
+   - `docs/05-iteration/SPRINT_PLAN.md`（可选，如已由 `sprint-planner` 生成，用于填充 Sprint 分配摘要）
 2. **增量迭代规划/冻结模式**
-   - `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求记录（状态为"已批准"的 CR）
-   - `docs/04-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
-   - `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` — 历史改进项（如已存在）
+   - `docs/05-iteration/CHANGE_REQUEST.md` — 变更请求记录（状态为"已批准"的 CR）
+   - `docs/05-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
+   - `docs/06-retrospective/IMPROVEMENT_BACKLOG.md` — 历史改进项（如已存在）
    - `docs/DOC_CHECK_REPORT.md`（收尾冻结时必需，结果须为 PASS）
-   - `docs/05-retrospective/ITERATION_REVIEW.md`（收尾冻结时必需，结论须为 `PASS` 或 `PASS WITH WAIVER`）
-   - `docs/04-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
-   - `docs/04-iteration/ITERATION_PLAN.md` — 已有迭代计划（如已存在）
+   - `docs/06-retrospective/ITERATION_REVIEW.md`（收尾冻结时必需，结论须为 `PASS` 或 `PASS WITH WAIVER`）
+   - `docs/05-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
+   - `docs/05-iteration/ITERATION_PLAN.md` — 已有迭代计划（如已存在）
    - `docs/01-requirements/PRD_RECTIFIED.md` — 当前需求基线
-   - `docs/04-iteration/SPRINT_PLAN.md`（可选，如已由 `sprint-planner` 生成，用于填充 Sprint 分配摘要）
+   - `docs/05-iteration/SPRINT_PLAN.md`（可选，如已由 `sprint-planner` 生成，用于填充 Sprint 分配摘要）
 
 ## 输出
 
-1. `docs/04-iteration/ITERATION_PLAN.md` — 迭代计划（新建或更新）
-2. `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求（仅回写纳入迭代字段）
-3. `docs/04-iteration/RELEASE_BASELINE.md` — 版本基线（迭代冻结时更新）
-4. `docs/04-iteration/CHANGELOG.md` — 变更日志（迭代完成时追加）
+1. `docs/05-iteration/ITERATION_PLAN.md` — 迭代计划（新建或更新）
+2. `docs/05-iteration/CHANGE_REQUEST.md` — 变更请求（仅回写纳入迭代字段）
+3. `docs/05-iteration/RELEASE_BASELINE.md` — 版本基线（迭代冻结时更新）
+4. `docs/05-iteration/CHANGELOG.md` — 变更日志（迭代完成时追加）
 
 ## 执行流程
 
@@ -55,14 +55,14 @@ description: 版本迭代管理
 
 读取对应输入：
 
-1. 读取 `docs/04-iteration/RELEASE_BASELINE.md` — 了解当前版本号和基线状态（如存在）
-2. 读取 `docs/04-iteration/ITERATION_PLAN.md` — 了解已有迭代历史（如存在）
+1. 读取 `docs/05-iteration/RELEASE_BASELINE.md` — 了解当前版本号和基线状态（如存在）
+2. 读取 `docs/05-iteration/ITERATION_PLAN.md` — 了解已有迭代历史（如存在）
 3. 若为“首次交付冻结模式”或“增量收尾冻结模式”，读取 `docs/DOC_CHECK_REPORT.md` — 校验结果必须为 PASS
-4. 若为“首次交付冻结模式”或“增量收尾冻结模式”，读取 `docs/05-retrospective/ITERATION_REVIEW.md` — 门禁结论必须为 `PASS` 或 `PASS WITH WAIVER`
+4. 若为“首次交付冻结模式”或“增量收尾冻结模式”，读取 `docs/06-retrospective/ITERATION_REVIEW.md` — 门禁结论必须为 `PASS` 或 `PASS WITH WAIVER`
 5. 首次交付冻结模式下，读取 `TEST_REPORT.md` 和当前冻结文档
 6. 增量模式下，读取 `CHANGE_REQUEST.md` 与 `CHANGE_IMPACT.md`
 7. 增量规划模式下，如存在 `IMPROVEMENT_BACKLOG.md`，读取未关闭/逾期改进项并纳入风险清单
-8. 若 `docs/04-iteration/SPRINT_PLAN.md` 存在，读取 Sprint 总览表，提取 Sprint 总数、各 Sprint 日期范围、功能数与故事点合计，用于填充 `ITERATION_PLAN.md` 第 3 节 Sprint 分配摘要；若不存在，第 3 节填写"暂无 Sprint 规划（可执行 `sprint-planner` 后重新生成）"
+8. 若 `docs/05-iteration/SPRINT_PLAN.md` 存在，读取 Sprint 总览表，提取 Sprint 总数、各 Sprint 日期范围、功能数与故事点合计，用于填充 `ITERATION_PLAN.md` 第 3 节 Sprint 分配摘要；若不存在，第 3 节填写"暂无 Sprint 规划（可执行 `sprint-planner` 后重新生成）"
 
 ### 步骤 2：确定迭代范围或冻结对象
 
@@ -122,7 +122,7 @@ description: 版本迭代管理
 | CR-NNN | 工作量超限 / 依赖未就绪 |
 
 ## 3. Sprint 分配摘要
-> 来源：`docs/04-iteration/SPRINT_PLAN.md`；若未执行 `sprint-planner`，填写"暂无 Sprint 规划（可执行 `sprint-planner` 后重新生成）"。
+> 来源：`docs/05-iteration/SPRINT_PLAN.md`；若未执行 `sprint-planner`，填写"暂无 Sprint 规划（可执行 `sprint-planner` 后重新生成）"。
 
 | Sprint | 日期范围 | 功能点数 | 故事点 | 关键功能 |
 |---|---|---|---|---|
@@ -131,7 +131,7 @@ description: 版本迭代管理
 
 - **Sprint 总数**：N
 - **总故事点**：N
-- **详细排期**：见 `docs/04-iteration/SPRINT_PLAN.md`
+- **详细排期**：见 `docs/05-iteration/SPRINT_PLAN.md`
 
 ## 4. 迭代目标
 本轮迭代目标描述。

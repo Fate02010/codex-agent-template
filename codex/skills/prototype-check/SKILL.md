@@ -39,7 +39,7 @@ description: 当 acceptance 高保真原型已构建、需要在开发前执行�
 11. `docs/02-design/DISPLAY_PROTOTYPE_SPEC.md`
 12. `docs/02-design/ACCEPTANCE_PROTOTYPE_SPEC.md`
 13. `docs/02-design/BACKOFFICE_UI_SPEC.md`（后台管理页面强制）
-14. `docs/02-architecture/API_CONTRACT.md`
+14. `docs/03-architecture/API_CONTRACT.md`
 15. `frontend/design-prototype/acceptance/*.html`
 16. `frontend/design-prototype/acceptance/assets/*.css`
 17. `frontend/design-prototype/acceptance/data/*.json`

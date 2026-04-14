@@ -13,15 +13,15 @@ description: 增量变更受理
 
 1. 增量需求资料（Word/PDF/设计稿/口头记录/变更单）
 2. `docs/01-requirements/PRD_RECTIFIED.md` — 当前需求基线
-3. `docs/02-architecture/ARCHITECTURE.md` — 当前架构设计
-4. `docs/02-architecture/API_CONTRACT.md` — 当前接口契约
-5. `docs/02-architecture/DATA_MODEL.md` — 当前数据模型
-6. `docs/04-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
+3. `docs/03-architecture/ARCHITECTURE.md` — 当前架构设计
+4. `docs/03-architecture/API_CONTRACT.md` — 当前接口契约
+5. `docs/03-architecture/DATA_MODEL.md` — 当前数据模型
+6. `docs/05-iteration/RELEASE_BASELINE.md` — 当前版本基线（如已存在）
 
 ## 输出
 
-1. `docs/04-iteration/CHANGE_REQUEST.md` — 变更请求单（追加或更新）
-2. `docs/04-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
+1. `docs/05-iteration/CHANGE_REQUEST.md` — 变更请求单（追加或更新）
+2. `docs/05-iteration/CHANGE_IMPACT.md` — 变更影响分析报告
 
 ## 执行流程
 
@@ -30,10 +30,10 @@ description: 增量变更受理
 按以下顺序读取：
 
 1. `docs/01-requirements/PRD_RECTIFIED.md` — 理解当前需求范围
-2. `docs/02-architecture/API_CONTRACT.md` — 理解当前接口
-3. `docs/02-architecture/DATA_MODEL.md` — 理解当前数据结构
-4. `docs/04-iteration/RELEASE_BASELINE.md` — 了解当前版本（如已存在）
-5. `docs/04-iteration/CHANGE_REQUEST.md` — 了解已有变更记录（如已存在）
+2. `docs/03-architecture/API_CONTRACT.md` — 理解当前接口
+3. `docs/03-architecture/DATA_MODEL.md` — 理解当前数据结构
+4. `docs/05-iteration/RELEASE_BASELINE.md` — 了解当前版本（如已存在）
+5. `docs/05-iteration/CHANGE_REQUEST.md` — 了解已有变更记录（如已存在）
 
 ### 步骤 2：解析增量需求资料
 

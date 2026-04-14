@@ -183,8 +183,8 @@ error/
 
 ## 9. 变更要求
 
-- 改接口前：先更新 `docs/02-architecture/API_CONTRACT.md`
-- 改表结构前：先更新 `docs/02-architecture/DATA_MODEL.md`
+- 改接口前：先更新 `docs/03-architecture/API_CONTRACT.md`
+- 改表结构前：先更新 `docs/03-architecture/DATA_MODEL.md`
 - 改业务规则前：先更新 `docs/01-requirements/PRD_RECTIFIED.md`
 - 改原型映射接口前：先确认 `docs/02-design/UI_DESIGN_SPEC.md` / `PAGE_FLOW.md`
 

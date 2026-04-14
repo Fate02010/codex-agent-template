@@ -19,18 +19,18 @@ description: 基于 qa-review 输出的问题清单，以 ISSUE 编号为驱动�
 
 ## 输入
 
-1. `docs/03-testing/TEST_REVIEW_ISSUES.md` — 测试用例评审问题清单（qa-review 输出）
-2. `docs/03-testing/TEST_PLAN.md` — 现有测试计划
-3. `docs/03-testing/TEST_CASES.md` — 现有测试用例
+1. `docs/04-testing/TEST_REVIEW_ISSUES.md` — 测试用例评审问题清单（qa-review 输出）
+2. `docs/04-testing/TEST_PLAN.md` — 现有测试计划
+3. `docs/04-testing/TEST_CASES.md` — 现有测试用例
 4. `docs/01-requirements/PRD_RECTIFIED.md` — 整改后的需求文档（已冻结）
-5. `docs/02-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图、第 12 节权限矩阵）
-6. `docs/02-architecture/API_CONTRACT.md` — 接口契约（第 1 节全局约定）
+5. `docs/03-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图、第 12 节权限矩阵）
+6. `docs/03-architecture/API_CONTRACT.md` — 接口契约（第 1 节全局约定）
 
 ## 输出
 
-1. 更新后的 `docs/03-testing/TEST_CASES.md`
-2. 更新后的 `docs/03-testing/TEST_PLAN.md`（如涉及计划层问题）
-3. 回写整改状态后的 `docs/03-testing/TEST_REVIEW_ISSUES.md`
+1. 更新后的 `docs/04-testing/TEST_CASES.md`
+2. 更新后的 `docs/04-testing/TEST_PLAN.md`（如涉及计划层问题）
+3. 回写整改状态后的 `docs/04-testing/TEST_REVIEW_ISSUES.md`
 
 ## 执行层级导读（Progressive Disclosure）
 

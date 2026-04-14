@@ -15,9 +15,9 @@ description: 初始化项目可运行骨架（后端 Maven 多模块 + MyBatis-P
 2. `backend/AGENTS.md`
 3. `frontend/AGENTS.md`
 4. `docs/01-requirements/PRD_RECTIFIED.md`（如有）
-5. `docs/02-architecture/ARCHITECTURE.md`（如有）
-6. `docs/02-architecture/API_CONTRACT.md`（如有）
-7. `docs/02-architecture/DATA_MODEL.md`（如有）
+5. `docs/03-architecture/ARCHITECTURE.md`（如有）
+6. `docs/03-architecture/API_CONTRACT.md`（如有）
+7. `docs/03-architecture/DATA_MODEL.md`（如有）
 8. `docs/01-requirements/MVP_SCOPE.md`（如有）
 
 ## 输出

@@ -23,9 +23,9 @@ description: 在关键节点执行跨文档追溯与门禁校验；当存在阻�
 3. `docs/01-requirements/MVP_SCOPE.md`（如存在）
 4. `docs/01-requirements/PRD_RAW.md`（如存在）
 5. `docs/01-requirements/PRD_RECTIFIED.md`（如存在）
-6. `docs/02-architecture/ARCHITECTURE.md`（如存在）
-7. `docs/02-architecture/API_CONTRACT.md`（如存在）
-8. `docs/02-architecture/DATA_MODEL.md`（如存在）
+6. `docs/03-architecture/ARCHITECTURE.md`（如存在）
+7. `docs/03-architecture/API_CONTRACT.md`（如存在）
+8. `docs/03-architecture/DATA_MODEL.md`（如存在）
 9. `docs/02-design/UI_DESIGN_SPEC.md`（如存在）
 10. `docs/02-design/PAGE_FLOW.md`（如存在）
 11. `docs/02-design/SCREEN_INVENTORY.md`（如存在）
@@ -36,16 +36,16 @@ description: 在关键节点执行跨文档追溯与门禁校验；当存在阻�
 16. `docs/02-design/PROTOTYPE_BUILD_NOTES.md`（如存在）
 17. `docs/02-design/PROTOTYPE_CHECK_REPORT.md`（如存在）
 18. `docs/02-design/PROTOTYPE_FIX_LOG.md`（如存在）
-19. `docs/03-testing/TEST_CASES.md`（如存在）
-20. `docs/03-testing/TEST_REPORT.md`（如存在）
-21. `docs/03-testing/DEFECT_LOG.md`（如存在）
-22. `docs/04-iteration/CHANGE_REQUEST.md`（如存在）
-23. `docs/04-iteration/CHANGE_IMPACT.md`（如存在）
-24. `docs/04-iteration/ITERATION_PLAN.md`（如存在）
-25. `docs/04-iteration/RELEASE_BASELINE.md`（如存在）
-26. `docs/04-iteration/CHANGELOG.md`（如存在）
-27. `docs/05-retrospective/ITERATION_REVIEW.md`（如存在）
-28. `docs/05-retrospective/IMPROVEMENT_BACKLOG.md`（如存在）
+19. `docs/04-testing/TEST_CASES.md`（如存在）
+20. `docs/04-testing/TEST_REPORT.md`（如存在）
+21. `docs/04-testing/DEFECT_LOG.md`（如存在）
+22. `docs/05-iteration/CHANGE_REQUEST.md`（如存在）
+23. `docs/05-iteration/CHANGE_IMPACT.md`（如存在）
+24. `docs/05-iteration/ITERATION_PLAN.md`（如存在）
+25. `docs/05-iteration/RELEASE_BASELINE.md`（如存在）
+26. `docs/05-iteration/CHANGELOG.md`（如存在）
+27. `docs/06-retrospective/ITERATION_REVIEW.md`（如存在）
+28. `docs/06-retrospective/IMPROVEMENT_BACKLOG.md`（如存在）
 29. `docs/AGENTS.md` — 引用规则参考
 
 ## 输出

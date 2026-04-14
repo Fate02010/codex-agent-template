@@ -15,17 +15,17 @@ description: 迭代复盘与持续改进闭环
 
 ## 输入
 
-1. `docs/04-iteration/ITERATION_PLAN.md` — 本轮迭代范围与里程碑
-2. `docs/03-testing/TEST_REPORT.md` — 测试执行结果
-3. `docs/03-testing/DEFECT_LOG.md` — 缺陷状态（如存在）
+1. `docs/05-iteration/ITERATION_PLAN.md` — 本轮迭代范围与里程碑
+2. `docs/04-testing/TEST_REPORT.md` — 测试执行结果
+3. `docs/04-testing/DEFECT_LOG.md` — 缺陷状态（如存在）
 4. `docs/DOC_CHECK_REPORT.md` — 文档校验结果
-5. `docs/04-iteration/RELEASE_BASELINE.md` / `CHANGELOG.md`（如存在）— 上一版本对照
-6. `docs/05-retrospective/IMPROVEMENT_BACKLOG.md`（如存在）— 历史改进项
+5. `docs/05-iteration/RELEASE_BASELINE.md` / `CHANGELOG.md`（如存在）— 上一版本对照
+6. `docs/06-retrospective/IMPROVEMENT_BACKLOG.md`（如存在）— 历史改进项
 
 ## 输出
 
-1. `docs/05-retrospective/ITERATION_REVIEW.md` — 本轮复盘结论
-2. `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` — 改进项台账（新增/更新）
+1. `docs/06-retrospective/ITERATION_REVIEW.md` — 本轮复盘结论
+2. `docs/06-retrospective/IMPROVEMENT_BACKLOG.md` — 改进项台账（新增/更新）
 
 ## 执行流程
 

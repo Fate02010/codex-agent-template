@@ -18,15 +18,15 @@ description: 在 qa-design 产出测试计划与用例后、dev-implement 开始
 
 ## 输入
 
-1. `docs/03-testing/TEST_PLAN.md` — 测试计划
-2. `docs/03-testing/TEST_CASES.md` — 测试用例
+1. `docs/04-testing/TEST_PLAN.md` — 测试计划
+2. `docs/04-testing/TEST_CASES.md` — 测试用例
 3. `docs/01-requirements/PRD_RECTIFIED.md` — 整改后的需求文档（已冻结）
-4. `docs/02-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图、第 12 节权限矩阵）
-5. `docs/02-architecture/API_CONTRACT.md` — 接口契约（第 1 节全局约定）
+4. `docs/03-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图、第 12 节权限矩阵）
+5. `docs/03-architecture/API_CONTRACT.md` — 接口契约（第 1 节全局约定）
 
 ## 输出
 
-- `docs/03-testing/TEST_REVIEW_ISSUES.md` — 测试用例评审问题清单
+- `docs/04-testing/TEST_REVIEW_ISSUES.md` — 测试用例评审问题清单
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -99,7 +99,7 @@ description: 在 qa-design 产出测试计划与用例后、dev-implement 开始
 
 ### 步骤 4：输出问题清单
 
-将所有问题写入 `docs/03-testing/TEST_REVIEW_ISSUES.md`：
+将所有问题写入 `docs/04-testing/TEST_REVIEW_ISSUES.md`：
 
 ```markdown
 # 测试用例评审问题清单
@@ -114,10 +114,10 @@ description: 在 qa-design 产出测试计划与用例后、dev-implement 开始
 
 ## 评审范围
 - 评审日期：YYYY-MM-DD
-- 测试计划：`docs/03-testing/TEST_PLAN.md`
-- 测试用例：`docs/03-testing/TEST_CASES.md`
+- 测试计划：`docs/04-testing/TEST_PLAN.md`
+- 测试用例：`docs/04-testing/TEST_CASES.md`
 - 需求基线：`docs/01-requirements/PRD_RECTIFIED.md`
-- 架构基线：`docs/02-architecture/ARCHITECTURE.md`
+- 架构基线：`docs/03-architecture/ARCHITECTURE.md`
 
 ## 总体结论
 - 评审结论：[通过 / 有条件通过 / 不通过]

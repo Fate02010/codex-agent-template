@@ -44,11 +44,11 @@ description: 当需要对代码变更做工程化评审、输出问题清单并�
 2. 需求基线：
    - `docs/01-requirements/PRD_RECTIFIED.md`
 3. 设计与契约基线：
-   - `docs/02-architecture/ARCHITECTURE.md`
-   - `docs/02-architecture/API_CONTRACT.md`
-   - `docs/02-architecture/DATA_MODEL.md`
+   - `docs/03-architecture/ARCHITECTURE.md`
+   - `docs/03-architecture/API_CONTRACT.md`
+   - `docs/03-architecture/DATA_MODEL.md`
 4. 测试基线与结果：
-   - `docs/03-testing/TEST_CASES.md`
+   - `docs/04-testing/TEST_CASES.md`
    - 相关测试结果（如有）
 5. OpenSpec 工件（如项目启用）：
    - current change artifact
@@ -62,8 +62,8 @@ description: 当需要对代码变更做工程化评审、输出问题清单并�
 
 必须输出以下文件：
 
-1. `docs/03-testing/CODE_REVIEW_REPORT.md`
-2. `docs/03-testing/CODE_REVIEW_ISSUES.md`
+1. `docs/04-testing/CODE_REVIEW_REPORT.md`
+2. `docs/04-testing/CODE_REVIEW_ISSUES.md`
 
 输出要求：
 
@@ -113,7 +113,7 @@ description: 当需要对代码变更做工程化评审、输出问题清单并�
 
 ### 步骤 0：初始化输出载体（冷启动）
 
-- 确保 `docs/03-testing/` 存在。
+- 确保 `docs/04-testing/` 存在。
 - 初始化 `CODE_REVIEW_ISSUES.md` 与 `CODE_REVIEW_REPORT.md`（缺失则创建、模板则覆盖）。
 
 `CODE_REVIEW_ISSUES.md` 最小结构：
@@ -244,7 +244,7 @@ description: 当需要对代码变更做工程化评审、输出问题清单并�
 
 ### 示例输出思路
 
-#### A. `docs/03-testing/CODE_REVIEW_ISSUES.md`
+#### A. `docs/04-testing/CODE_REVIEW_ISSUES.md`
 
 1) `CRI-001`（P1，阻塞）
 - 文件位置：`backend/member-admin-service/src/main/java/.../PointsService.java:142`
@@ -267,7 +267,7 @@ description: 当需要对代码变更做工程化评审、输出问题清单并�
 > 若“积分过期策略”在需求文档中未冻结，需在问题中标注 `【待确认】`。
 > 若“重试窗口 5 秒”来自历史经验而非基线文档，需标注 `【推断】`。
 
-#### B. `docs/03-testing/CODE_REVIEW_REPORT.md`
+#### B. `docs/04-testing/CODE_REVIEW_REPORT.md`
 
 - 门禁结论：`REJECT`（存在未缓解 `P1`）
 - 结论优先展示：

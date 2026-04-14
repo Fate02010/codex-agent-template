@@ -22,11 +22,11 @@ description: 开发实现入口：判断变更范围后路由到 backend-impleme
 ## Inputs
 
 1. `docs/01-requirements/PRD_RECTIFIED.md`
-2. `docs/02-architecture/ARCHITECTURE.md`
-3. `docs/02-architecture/API_CONTRACT.md`
-4. `docs/02-architecture/DATA_MODEL.md`
-5. `docs/03-testing/TEST_PLAN.md`
-6. `docs/03-testing/TEST_CASES.md`
+2. `docs/03-architecture/ARCHITECTURE.md`
+3. `docs/03-architecture/API_CONTRACT.md`
+4. `docs/03-architecture/DATA_MODEL.md`
+5. `docs/04-testing/TEST_PLAN.md`
+6. `docs/04-testing/TEST_CASES.md`
 7. `backend/AGENTS.md`（涉及后端时）
 8. `frontend/AGENTS.md`（涉及前端时）
 

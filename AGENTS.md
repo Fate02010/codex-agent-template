@@ -69,9 +69,9 @@
 
 1. 本文件 `AGENTS.md`
 2. `docs/01-requirements/PRD_RECTIFIED.md`
-3. `docs/02-architecture/ARCHITECTURE.md`
-4. `docs/02-architecture/API_CONTRACT.md`
-5. `docs/02-architecture/DATA_MODEL.md`
+3. `docs/03-architecture/ARCHITECTURE.md`
+4. `docs/03-architecture/API_CONTRACT.md`
+5. `docs/03-architecture/DATA_MODEL.md`
 6. 对应目录下的 `AGENTS.md`
 
 若上述文档仍是模板或未冻结，则回到上游阶段补齐，不得继续假设。
@@ -124,7 +124,7 @@ project-init → biz-research → scope-definition → prd-compose → prd-revie
 | `qa-execute` | 测试计划与用例已齐备 | `TEST_PLAN.md` + `TEST_CASES.md` + 源代码 | 执行测试并回写结果、覆盖率、风险和准出建议 | `TEST_REPORT.md` | 结果真实可追溯，可明确是否准出 |
 | `defect-fix` | 测试失败或缺陷新增 | `TEST_REPORT.md` + 代码 + 设计文档 | 修复缺陷、补回归测试、更新缺陷状态 | 修复代码 + `DEFECT_LOG.md` | 缺陷闭环，回归结果已记录 |
 | `doc-check` | 任意关键节点 | 全部文档 | 校验追溯链、元数据、冻结状态、参数级约束与引用有效性 | `DOC_CHECK_REPORT.md` | 严格门禁：任一阻塞性问题存在即 FAIL，必须先修复 |
-| `iteration-retro` | 文档校验通过，准备收尾冻结 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` | 产出复盘结论、RCA、改进项和豁免记录 | `docs/05-retrospective/ITERATION_REVIEW.md` + `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` | 复盘门禁结论为 `PASS` 或 `PASS WITH WAIVER` |
+| `iteration-retro` | 文档校验通过，准备收尾冻结 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` | 产出复盘结论、RCA、改进项和豁免记录 | `docs/06-retrospective/ITERATION_REVIEW.md` + `docs/06-retrospective/IMPROVEMENT_BACKLOG.md` | 复盘门禁结论为 `PASS` 或 `PASS WITH WAIVER` |
 | `iteration-plan` | 首次交付完成并通过复盘门禁 | 已通过测试报告 + `DOC_CHECK_REPORT.md` + `ITERATION_REVIEW.md` + 当前冻结文档 + 代码状态 | 冻结版本、记录计划和变更日志 | `ITERATION_PLAN.md` + `RELEASE_BASELINE.md` + `CHANGELOG.md` | 版本基线明确，可作为后续增量迭代起点 |
 
 ## 6. 增量迭代支链
@@ -157,7 +157,7 @@ change-intake → iteration-plan → prd-rectify → spec-freeze → solution-de
 | `qa-design` | 为增量范围预分配 TC 并补测试策略 | 增量需求 + 受影响接口/数据模型 | 更新测试文档 | 新增功能和回归范围均具备可执行 TC |
 | `dev-implement` | 仅修改批准范围内的代码 | 更新后的设计文档 + 更新后的 `TEST_CASES.md` + 代码基线 | 代码与增量测试；满足条件时先执行 `parallel-task-splitter` 再执行 `parallel-dev-orchestrator` 后并行开发 | 变更范围受控，无越权开发，测试代码绑定有效 TC |
 | `qa-execute` | 覆盖新增功能、受影响回归和高风险路径 | 更新测试文档 + 源代码 | 新测试结果 | 新功能通过，受影响旧功能回归通过 |
-| `iteration-retro` | 迭代执行收尾复盘 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` + 现有改进项清单 | 输出 KPI、根因、改进行动与豁免记录 | `docs/05-retrospective/ITERATION_REVIEW.md` + `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` | 复盘门禁结论可追溯，阻塞项已关闭或豁免 |
+| `iteration-retro` | 迭代执行收尾复盘 | `ITERATION_PLAN.md` + `TEST_REPORT.md` + `DEFECT_LOG.md` + `DOC_CHECK_REPORT.md` + 现有改进项清单 | 输出 KPI、根因、改进行动与豁免记录 | `docs/06-retrospective/ITERATION_REVIEW.md` + `docs/06-retrospective/IMPROVEMENT_BACKLOG.md` | 复盘门禁结论可追溯，阻塞项已关闭或豁免 |
 | `iteration-plan`（收尾） | 冻结新版本 | 全量通过结果 + `DOC_CHECK_REPORT.md` + `ITERATION_REVIEW.md` + 当前基线 | 更新版本基线和变更日志 | 新版本可发布、可追溯 |
 
 ## 7. 文档状态与冻结规则
@@ -223,14 +223,14 @@ change-intake → iteration-plan → prd-rectify → spec-freeze → solution-de
 
 | 变更类型 | 必须先更新的文档 | 再修改的对象 |
 |---|---|---|
-| 接口变更 | `docs/02-architecture/API_CONTRACT.md` | 后端 Controller / 前端 API 调用 |
-| 表结构变更 | `docs/02-architecture/DATA_MODEL.md` | Entity / Mapper / SQL |
+| 接口变更 | `docs/03-architecture/API_CONTRACT.md` | 后端 Controller / 前端 API 调用 |
+| 表结构变更 | `docs/03-architecture/DATA_MODEL.md` | Entity / Mapper / SQL |
 | 业务规则变更 | `docs/01-requirements/PRD_RECTIFIED.md` | 对应业务代码 |
-| 架构调整 | `docs/02-architecture/ARCHITECTURE.md` | 对应模块代码 |
+| 架构调整 | `docs/03-architecture/ARCHITECTURE.md` | 对应模块代码 |
 | 原型或页面交互变更 | `docs/02-design/UI_DESIGN_SPEC.md` + `docs/02-design/PAGE_FLOW.md` + `docs/02-design/DESIGN_TOKENS.md` + `docs/02-design/COMPONENT_GUIDELINES.md` + `docs/02-design/STATE_MATRIX.md` + `docs/02-design/DISPLAY_PROTOTYPE_SPEC.md` + `docs/02-design/ACCEPTANCE_PROTOTYPE_SPEC.md` | 前端页面 / 组件 / 原型文件 |
-| 新增需求/变更 | `docs/04-iteration/CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` | 受影响文档和代码 |
-| 过程改进/复盘豁免 | `docs/05-retrospective/ITERATION_REVIEW.md` + `docs/05-retrospective/IMPROVEMENT_BACKLOG.md` | 下轮迭代计划、对应整改文档与代码 |
-| 发布基线变化 | `docs/04-iteration/RELEASE_BASELINE.md` + `CHANGELOG.md` | Tag / 版本号 / 发布说明 |
+| 新增需求/变更 | `docs/05-iteration/CHANGE_REQUEST.md` + `CHANGE_IMPACT.md` | 受影响文档和代码 |
+| 过程改进/复盘豁免 | `docs/06-retrospective/ITERATION_REVIEW.md` + `docs/06-retrospective/IMPROVEMENT_BACKLOG.md` | 下轮迭代计划、对应整改文档与代码 |
+| 发布基线变化 | `docs/05-iteration/RELEASE_BASELINE.md` + `CHANGELOG.md` | Tag / 版本号 / 发布说明 |
 
 ## 10. 质量门槛
 

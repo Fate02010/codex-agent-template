@@ -39,9 +39,9 @@ description: 当需求与架构基线已冻结、需要产出高保真设计基�
 1. `docs/01-requirements/PRD_RECTIFIED.md`
 2. `docs/01-requirements/MVP_SCOPE.md`
 3. `docs/01-requirements/OUT_OF_SCOPE.md`
-4. `docs/02-architecture/ARCHITECTURE.md`
-5. `docs/02-architecture/API_CONTRACT.md`
-6. `docs/02-architecture/DATA_MODEL.md`
+4. `docs/03-architecture/ARCHITECTURE.md`
+5. `docs/03-architecture/API_CONTRACT.md`
+6. `docs/03-architecture/DATA_MODEL.md`
 7. `docs/02-design/BACKOFFICE_UI_SPEC.md`（后台管理项目强制）
 8. current change artifact（如项目启用 OpenSpec）：`<current-change>`
 9. 现有设计稿/页面截图（如有）

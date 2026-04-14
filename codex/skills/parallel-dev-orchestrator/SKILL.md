@@ -25,11 +25,11 @@ description: 在同一迭代同时涉及前后端时，先完成并行可行性�
 ## Inputs
 
 1. `docs/01-requirements/PRD_RECTIFIED.md`
-2. `docs/02-architecture/ARCHITECTURE.md`
-3. `docs/02-architecture/API_CONTRACT.md`
-4. `docs/02-architecture/DATA_MODEL.md`
-5. `docs/03-testing/TEST_PLAN.md`
-6. `docs/03-testing/TEST_CASES.md`
+2. `docs/03-architecture/ARCHITECTURE.md`
+3. `docs/03-architecture/API_CONTRACT.md`
+4. `docs/03-architecture/DATA_MODEL.md`
+5. `docs/04-testing/TEST_PLAN.md`
+6. `docs/04-testing/TEST_CASES.md`
 7. `backend/AGENTS.md`
 8. `frontend/AGENTS.md`
 9. `parallel-task-splitter` 在终端输出的功能拆分结果与提示词

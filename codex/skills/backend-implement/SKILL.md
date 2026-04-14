@@ -24,11 +24,11 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 ## Inputs
 
 1. `docs/01-requirements/PRD_RECTIFIED.md`
-2. `docs/02-architecture/ARCHITECTURE.md`
-3. `docs/02-architecture/API_CONTRACT.md`
-4. `docs/02-architecture/DATA_MODEL.md`
-5. `docs/03-testing/TEST_PLAN.md`
-6. `docs/03-testing/TEST_CASES.md`
+2. `docs/03-architecture/ARCHITECTURE.md`
+3. `docs/03-architecture/API_CONTRACT.md`
+4. `docs/03-architecture/DATA_MODEL.md`
+5. `docs/04-testing/TEST_PLAN.md`
+6. `docs/04-testing/TEST_CASES.md`
 7. `backend/AGENTS.md`
 8. `codex/standards/ALI_JAVA_STANDARDS.md` — 阿里巴巴 Java 开发规范摘要（按层按需读取）
 9. 并行模式下额外：`parallel-task-splitter` 生成的 Backend Prompt（功能范围与边界）

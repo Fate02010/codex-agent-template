@@ -29,7 +29,7 @@ docs/
 │   ├── PRD_RAW.md
 │   ├── PRD_REVIEW_ISSUES.md
 │   └── PRD_RECTIFIED.md
-├── 02-architecture/
+├── 03-architecture/
 │   ├── ARCHITECTURE.md
 │   ├── ARCHITECTURE_REVIEW_ISSUES.md
 │   ├── API_CONTRACT.md
@@ -48,12 +48,12 @@ docs/
 │   ├── PROTOTYPE_CHECK_REPORT.md
 │   ├── PROTOTYPE_FIX_LOG.md
 │   └── PROTOTYPE_SKILLS_UPGRADE_NOTES.md
-├── 03-testing/
+├── 04-testing/
 │   ├── TEST_PLAN.md
 │   ├── TEST_CASES.md
 │   ├── TEST_REPORT.md
 │   └── DEFECT_LOG.md
-├── 04-iteration/
+├── 05-iteration/
 │   ├── CHANGE_REQUEST.md
 │   ├── CHANGE_IMPACT.md
 │   ├── PRODUCT_ROADMAP.md
@@ -63,7 +63,7 @@ docs/
 │   ├── ITERATION_PLAN.md
 │   ├── RELEASE_BASELINE.md
 │   └── CHANGELOG.md
-└── 05-retrospective/
+└── 06-retrospective/
     ├── ITERATION_REVIEW.md
     └── IMPROVEMENT_BACKLOG.md
 ```

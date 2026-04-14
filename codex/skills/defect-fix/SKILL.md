@@ -11,17 +11,17 @@ description: 缺陷修复闭环
 
 ## 输入
 
-1. `docs/03-testing/TEST_REPORT.md` — 失败用例和失败分析
-2. `docs/03-testing/TEST_CASES.md` — 完整测试用例详情
+1. `docs/04-testing/TEST_REPORT.md` — 失败用例和失败分析
+2. `docs/04-testing/TEST_CASES.md` — 完整测试用例详情
 3. `docs/01-requirements/PRD_RECTIFIED.md` — 需求基线
-4. `docs/02-architecture/API_CONTRACT.md` — 接口契约
-5. `docs/02-architecture/DATA_MODEL.md` — 数据模型
-6. `docs/02-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图用于核对根因分析时的调用链是否符合设计意图）
+4. `docs/03-architecture/API_CONTRACT.md` — 接口契约
+5. `docs/03-architecture/DATA_MODEL.md` — 数据模型
+6. `docs/03-architecture/ARCHITECTURE.md` — 架构设计（第 11 节序列图用于核对根因分析时的调用链是否符合设计意图）
 7. `backend/` 和 `frontend/` 下的相关源代码
 
 ## 输出
 
-1. `docs/03-testing/DEFECT_LOG.md` — 缺陷记录（新建或追加）
+1. `docs/04-testing/DEFECT_LOG.md` — 缺陷记录（新建或追加）
 2. 修复后的源代码
 3. 更新后的文档（如修复涉及设计变更）
 4. 回归测试结果追加到 `TEST_REPORT.md`
@@ -37,7 +37,7 @@ description: 缺陷修复闭环
 
 ### 步骤 2：登记缺陷
 
-对每个失败，在 `docs/03-testing/DEFECT_LOG.md` 中创建或追加缺陷记录：
+对每个失败，在 `docs/04-testing/DEFECT_LOG.md` 中创建或追加缺陷记录：
 
 - 若 `DEFECT_LOG.md` 不存在，先创建最小台账结构（文档信息、缺陷明细、变更记录），状态设为`草稿`
 - 若 `DEFECT_LOG.md` 仍为模板，先补全文档信息（文档类型/生成 Skill/上游输入/版本/日期/状态）并将状态更新为`草稿`

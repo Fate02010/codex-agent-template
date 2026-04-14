@@ -20,7 +20,7 @@ description: 初始化或补齐前端后台工程骨架（frontend/<project-name
 1. `AGENTS.md`
 2. `frontend/AGENTS.md`
 3. `docs/01-requirements/PRD_RECTIFIED.md`（如有）
-4. `docs/02-architecture/API_CONTRACT.md`（如有）
+4. `docs/03-architecture/API_CONTRACT.md`（如有）
 5. `docs/02-design/UI_DESIGN_SPEC.md`（如有）
 6. `docs/02-design/PAGE_FLOW.md`（如有）
 7. `docs/01-requirements/MVP_SCOPE.md`（如有）

@@ -27,9 +27,9 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 1. `AGENTS.md`
 2. `backend/AGENTS.md`
 3. `docs/01-requirements/PRD_RECTIFIED.md`（如有）
-4. `docs/02-architecture/ARCHITECTURE.md`（如有）
-5. `docs/02-architecture/API_CONTRACT.md`（如有）
-6. `docs/02-architecture/DATA_MODEL.md`（如有）
+4. `docs/03-architecture/ARCHITECTURE.md`（如有）
+5. `docs/03-architecture/API_CONTRACT.md`（如有）
+6. `docs/03-architecture/DATA_MODEL.md`（如有）
 7. `docs/01-requirements/MVP_SCOPE.md`（如有）
 
 ## Outputs

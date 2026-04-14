@@ -31,11 +31,11 @@ Expected outputs:
 │   ├── AGENTS.md
 │   ├── 00-research/
 │   ├── 01-requirements/
-│   ├── 02-architecture/
+│   ├── 03-architecture/
 │   ├── 02-design/
-│   ├── 03-testing/
-│   ├── 04-iteration/
-│   └── 05-retrospective/
+│   ├── 04-testing/
+│   ├── 05-iteration/
+│   └── 06-retrospective/
 ├── backend/
 │   └── AGENTS.md
 ├── frontend/
@@ -112,8 +112,8 @@ Close all blocking issues and complete acceptance criteria, exception flows, and
 
 ```text
 Use the dev-implement Skill.
-Treat docs/01-requirements/PRD_RECTIFIED.md, docs/02-architecture/ARCHITECTURE.md,
-docs/02-architecture/API_CONTRACT.md, and docs/02-architecture/DATA_MODEL.md as the only source of truth.
+Treat docs/01-requirements/PRD_RECTIFIED.md, docs/03-architecture/ARCHITECTURE.md,
+docs/03-architecture/API_CONTRACT.md, and docs/03-architecture/DATA_MODEL.md as the only source of truth.
 Implement the changes in backend/ and frontend/, and add tests mapped to TC IDs.
 ```
 
@@ -289,9 +289,9 @@ If you add or remove skills in `codex/skills/`, update this section and the mini
 1. [AGENTS.md](./AGENTS.md)
 2. [docs/AGENTS.md](./docs/AGENTS.md)
 3. [docs/01-requirements/PRD_RECTIFIED.md](./docs/01-requirements/PRD_RECTIFIED.md)
-4. [docs/02-architecture/ARCHITECTURE.md](./docs/02-architecture/ARCHITECTURE.md)
-5. [docs/02-architecture/API_CONTRACT.md](./docs/02-architecture/API_CONTRACT.md)
-6. [docs/02-architecture/DATA_MODEL.md](./docs/02-architecture/DATA_MODEL.md)
+4. [docs/03-architecture/ARCHITECTURE.md](./docs/03-architecture/ARCHITECTURE.md)
+5. [docs/03-architecture/API_CONTRACT.md](./docs/03-architecture/API_CONTRACT.md)
+6. [docs/03-architecture/DATA_MODEL.md](./docs/03-architecture/DATA_MODEL.md)
 7. local `AGENTS.md` files under target directories
 
 ## License

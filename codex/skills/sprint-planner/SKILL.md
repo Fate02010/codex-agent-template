@@ -29,7 +29,7 @@ description: 基于冻结的 feature_list.json 自动评估功能复杂度、检
 
 ## 输出
 
-1. `docs/04-iteration/SPRINT_PLAN.md` — Sprint 规划主文档
+1. `docs/05-iteration/SPRINT_PLAN.md` — Sprint 规划主文档
 
 ## 执行层级导读（Progressive Disclosure）
 
@@ -41,7 +41,7 @@ description: 基于冻结的 feature_list.json 自动评估功能复杂度、检
 ## 执行规则
 
 1. 冷启动规则（强制）：
-   - 若 `docs/04-iteration/` 不存在，先创建目录。
+   - 若 `docs/05-iteration/` 不存在，先创建目录。
    - 若 `SPRINT_PLAN.md` 不存在，创建完整文档。
    - 若 `SPRINT_PLAN.md` 已存在且状态不为 `模板`，整文件覆盖重新生成（与冻结的 `feature_list.json` 严格绑定，不支持增量更新）。
 2. 复杂度评分（强制，详见步骤 2）：

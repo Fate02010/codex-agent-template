@@ -11,16 +11,16 @@ description: 执行真实测试并回写报告；若失败则强制进入 defect
 
 ## 输入
 
-1. `docs/03-testing/TEST_PLAN.md`
-2. `docs/03-testing/TEST_CASES.md`
+1. `docs/04-testing/TEST_PLAN.md`
+2. `docs/04-testing/TEST_CASES.md`
 3. `backend/` 代码
 4. `frontend/` 代码
 5. `tests/AGENTS.md`
 
 ## 输出
 
-1. `docs/03-testing/TEST_REPORT.md`
-2. 更新后的 `docs/03-testing/TEST_CASES.md`
+1. `docs/04-testing/TEST_REPORT.md`
+2. 更新后的 `docs/04-testing/TEST_CASES.md`
 
 ## 执行规则
 
@@ -33,11 +33,11 @@ description: 执行真实测试并回写报告；若失败则强制进入 defect
 ### 0. 前置校验与阻塞回写
 
 - 检查 `TEST_PLAN.md` 与 `TEST_CASES.md` 是否存在且可读取。
-- 若 `docs/03-testing/TEST_REVIEW_ISSUES.md` 存在且总体结论为 `不通过`，
+- 若 `docs/04-testing/TEST_REVIEW_ISSUES.md` 存在且总体结论为 `不通过`，
   输出警告：测试用例评审尚未通过，建议先返回 `qa-design` + `qa-review` 完成整改，
   再执行测试；用户可选择强制继续，但须在 TEST_REPORT.md 中注明跳过评审风险。
 - 若任一缺失：
-  - 生成或更新 `docs/03-testing/TEST_REPORT.md`。
+  - 生成或更新 `docs/04-testing/TEST_REPORT.md`。
   - 写入结论：`BLOCKED`。
   - 写入缺失输入清单、影响范围、回退建议（回到 `qa-design`）。
   - 终止后续测试执行步骤。

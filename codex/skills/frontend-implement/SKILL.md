@@ -24,10 +24,10 @@ description: 按冻结需求与设计文档实现前端代码，严格遵循 Ele
 ## Inputs
 
 1. `docs/01-requirements/PRD_RECTIFIED.md`
-2. `docs/02-architecture/API_CONTRACT.md`
-3. `docs/02-architecture/DATA_MODEL.md`
-4. `docs/03-testing/TEST_PLAN.md`
-5. `docs/03-testing/TEST_CASES.md`
+2. `docs/03-architecture/API_CONTRACT.md`
+3. `docs/03-architecture/DATA_MODEL.md`
+4. `docs/04-testing/TEST_PLAN.md`
+5. `docs/04-testing/TEST_CASES.md`
 6. `frontend/AGENTS.md`
 7. 并行模式下额外：`parallel-task-splitter` 生成的 Frontend Prompt（功能范围与边界）
 
