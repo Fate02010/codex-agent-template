@@ -100,9 +100,11 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 
 **包结构约定（强制）：**
 - mapper XML 统一存于 `src/main/resources/mapper/`（单层，不建子目录）
-- repository 接口统一存于 `infrastructure.persistence.repository`（≤5 个时单包，超过 5 个才按领域建子包）
-- 领域模型统一存于 `domain.model`（≤5 个时单包，超过 5 个才建子包）
-- 领域服务统一存于 `domain.service`（≤5 个时单包，超过 5 个才建子包）
+- Mapper 接口统一存于 `infrastructure.persistence.mapper`（单层根包）；同一领域/功能超过 5 个时才允许按领域建子包；禁止为每个功能单独建子包
+- repository 实现统一存于 `infrastructure.persistence.repository`（单包）；若采用接口与实现分离，实现类放 `infrastructure.persistence.repository.impl`；同一领域超过 5 个时才允许在对应包下按领域建子包
+- MyBatis-Plus `IService`/`ServiceImpl` 可在 `infrastructure.persistence.repository`（含 impl）内作为 repository 的扩展接口与实现基类，不对外暴露
+- 领域模型统一存于 `domain.model` 根包；禁止为每个领域或每个模型单独建子包；同一业务域模型超过 5 个时才允许在 `model/` 下按业务域建子包
+- 领域服务统一存于 `domain.service` 根包；禁止为每个领域或每个 Service 单独建子包；同一业务域服务超过 5 个时才允许在 `service/` 下按业务域建子包
 
 `application.yml` 至少包含：
 
@@ -126,7 +128,9 @@ description: 初始化或补齐后端 Maven 多模块骨架（父模块 + common
 - [ ] 至少一个 Mapper 继承 `BaseMapper<T>`
 - [ ] DDD 分层目录齐全
 - [ ] mapper XML 存于单层 `mapper/` 目录（无子目录）
-- [ ] repository/domain.model/domain.service 各自单包（≤5 个时无子包）
+- [ ] Mapper 接口位于 `infrastructure.persistence.mapper` 单层根包（未按功能建子包）
+- [ ] repository 实现位于 `infrastructure.persistence.repository`（或 `.impl`），未违规分包（≤5 个时无子包）
+- [ ] domain.model/domain.service 各自存于根包（未按领域/实体/Service 单独建子包；同一业务域 ≤5 个时无子包）
 - [ ] 后续可直接衔接 `dev-implement`
 
 ## 断点恢复

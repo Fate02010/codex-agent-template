@@ -89,9 +89,11 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 
 **包结构约束（强制）：**
 - `mapper XML` 统一放 `src/main/resources/mapper/`（单层目录，禁止在 `mapper/` 下再建子目录）
-- `repository` 接口统一放 `infrastructure.persistence.repository` 包（单包）；同一模块 repository 接口超过 5 个时才允许在 repository 下按领域建子包
-- 领域模型（domain model）统一放 `domain.model` 包（单包）；同一模块领域模型超过 5 个时才允许在 model 下建子包
-- 领域服务（domain service）统一放 `domain.service` 包（单包）；同一模块领域服务超过 5 个时才允许在 service 下建子包
+- Mapper 接口（`*Mapper.java`）统一放 `infrastructure.persistence.mapper`（单层根包）；同一领域/功能 Mapper 超过 5 个时才允许在 `mapper/` 下按领域建子包；禁止为每个功能单独建 mapper 子包
+- `repository` 实现统一放 `infrastructure.persistence.repository` 包（单包）；若采用接口与实现分离风格，实现类统一放 `infrastructure.persistence.repository.impl`；同一领域超过 5 个时才允许在 `repository/`（或 `repository/impl/`）下按领域建子包
+- MyBatis-Plus `IService` 可作为 repository 内部扩展接口、`ServiceImpl` 可作为 repository 实现的扩展基类，但均不对外暴露至 `application` 或 `domain`
+- 领域模型（domain model）统一放 `domain.model` 根包；禁止为每个领域或每个模型单独建子包；同一业务域模型超过 5 个时才允许在 `model/` 下按业务域建子包
+- 领域服务（domain service）统一放 `domain.service` 根包；禁止为每个领域或每个 Service 单独建子包；同一业务域服务超过 5 个时才允许在 `service/` 下按业务域建子包
 
 ### 步骤 2：注释与规范检查（含阿里规范合规）
 
@@ -155,14 +157,16 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 - [ ] 禁止 SELECT *，禁止循环中执行 SQL
 - [ ] 索引命名：pk_ / uk_ / idx_ 前缀
 - [ ] mapper XML 存放于 `src/main/resources/mapper/`（单层，无子目录）
-- [ ] repository 接口集中在 `infrastructure.persistence.repository` 包（≤5 个时不分子包）
+- [ ] Mapper 接口存于 `infrastructure.persistence.mapper` 单层根包（同一领域 ≤5 个时无子包，未按功能单独建子包）
+- [ ] repository 实现集中在 `infrastructure.persistence.repository`（或 `.impl` 子包），未按功能单独分包（≤5 个时不分子包）
+- [ ] IService/ServiceImpl 未对外暴露至 application/domain
 
 ## 【domain 层】
 - [ ] 所有覆写方法有 @Override
 - [ ] equals 和 hashCode 成对实现
 - [ ] 集合判空用 isEmpty()，整型包装类比较用 equals
-- [ ] 领域模型集中在 `domain.model` 包（≤5 个时不分子包）
-- [ ] 领域服务集中在 `domain.service` 包（≤5 个时不分子包）
+- [ ] 领域模型集中在 `domain.model` 根包（未按领域/模型单独建子包；同一业务域 ≤5 个时无子包）
+- [ ] 领域服务集中在 `domain.service` 根包（未按领域/Service 单独建子包；同一业务域 ≤5 个时无子包）
 
 ## 【application 层】
 - [ ] 无直接 new Thread()，线程通过 ThreadPoolExecutor 管理
@@ -198,7 +202,7 @@ description: 按冻结需求与设计文档实现后端代码，严格遵循 Mav
 - [ ] 日志使用 SLF4J 门面且使用占位符输出，无 System.out/err 和 e.printStackTrace()
 - [ ] 异常处理符合规范（不以 catch 控制流、finally 关闭资源、事务场景手动回滚）
 - [ ] 注释完整且使用**中文**（类/接口/枚举 Javadoc 含中文用途/`@author`[环境变量]/`@since`/`@updated`；所有方法有中文 Javadoc；实体/模型字段有中文注释；枚举常量有中文注释；复杂业务关键节点有中文行内注释）
-- [ ] 包结构符合单包约束（mapper XML 单层、repository/domain.model/domain.service 各自单包，超 5 个时才分子包）
+- [ ] 包结构符合单包约束（mapper XML 单层；mapper 接口/repository/domain.model/domain.service 各自根包，禁止按功能/领域单独建子包，同一业务域超 5 个时才分子包）
 - [ ] `backend/{module-name}/.std_check.md` 中间产物已确认删除
 
 ### 步骤 5：提示下一步
