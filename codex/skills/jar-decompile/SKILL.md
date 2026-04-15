@@ -1,6 +1,6 @@
 ---
 name: jar-decompile
-description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行内注释，可选生成 Maven 骨架并执行编译验证。
+description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行内注释，根据代码重建 README 文档，可选生成 Maven 骨架并执行编译验证。
 ---
 
 # Skill: jar-decompile — JAR 反编译与注释补全
@@ -13,6 +13,7 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
 
 - 从无源码的 JAR 包还原可阅读的 Java 源码文件。
 - 对还原出的所有类/接口/枚举、方法、字段补写中文 Javadoc 和行内注释。
+- 根据反编译后的代码重建 `README.md`，覆盖项目概述、模块说明、核心类列表、主要业务流程等。
 - 可选生成 Maven 标准目录骨架，使输出可直接被 IDE 导入并尝试编译。
 - 输出注释覆盖率报告，为后续阅读和二次开发提供基础。
 
@@ -41,8 +42,9 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
 ## Outputs
 
 1. `{OUTPUT_DIR}/src/`（或 Maven 骨架下的 `src/main/java/`）：带注释的 `.java` 源文件，按包名组织目录层次。
-2. `{OUTPUT_DIR}/DECOMPILE_REPORT.md`：反编译与注释完成报告，包含统计、覆盖率、编译验证结果、已知限制。
-3. `{OUTPUT_DIR}/pom.xml`（仅当 `MAVEN_SCAFFOLD=yes`）：Maven 骨架 POM。
+2. `{OUTPUT_DIR}/README.md`：根据反编译代码重建的项目说明文档。
+3. `{OUTPUT_DIR}/DECOMPILE_REPORT.md`：反编译与注释完成报告，包含统计、覆盖率、编译验证结果、已知限制。
+4. `{OUTPUT_DIR}/pom.xml`（仅当 `MAVEN_SCAFFOLD=yes`）：Maven 骨架 POM。
 
 ## Rules
 
@@ -54,6 +56,7 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
 6. 经过强混淆的文件，必须在文件顶部添加 `// [WARN] 疑似混淆类，注释为推断，请人工复核` 警告注释。
 7. 不得修改反编译产物的类结构、方法签名、包名；仅允许添加注释与 `import` 整理。
 8. Maven 编译验证为可选步骤，失败不阻塞输出，但须在报告中标记失败原因。
+9. 步骤 3 每批处理完毕后，批次摘要必须写入 `.tmp/class_index.md` 和 `.tmp/coverage_stats.md`，不得在对话中保留文件内容用于跨批次传递信息，以防上下文溢出。
 
 ## Workflow
 
@@ -82,7 +85,38 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
 
 4. **准备输出目录**：若 `OUTPUT_DIR` 不存在，创建该目录及子目录 `src/`（或 Maven 骨架结构，若 `MAVEN_SCAFFOLD=yes`）。
 
-5. **初始化报告文件**：在 `OUTPUT_DIR` 创建 `DECOMPILE_REPORT.md` 最小结构，状态设为 `进行中`。
+5. **初始化中间产物目录**：在 `OUTPUT_DIR` 下创建 `.tmp/` 目录，并初始化以下两个中间文件（若已存在则跳过，用于断点续执）：
+
+   **`.tmp/class_index.md`**（类索引表，步骤 3 逐批写入，步骤 5 读取，步骤 6 末尾删除）：
+   ```markdown
+   # 类索引（中间产物）
+   > 由步骤 3 逐批写入，步骤 5 读取，步骤 6 末尾随 .tmp/ 目录一起删除。
+
+   | 类名 | 包名 | 类型 | URL前缀 | 是否混淆 | 一句话用途 |
+   |---|---|---|---|---|---|
+   ```
+   类型取值：`Controller` / `Service` / `Repository` / `Entity` / `Enum` / `Util` / `Config` / `Other`
+
+   **`.tmp/coverage_stats.md`**（覆盖率累计表，步骤 3 逐批累加，步骤 6 读取，步骤 6 末尾删除）：
+   ```markdown
+   # 覆盖率累计（中间产物）
+   > 由步骤 3 逐批累加，步骤 6 读取汇总，步骤 6 末尾随 .tmp/ 目录一起删除。
+
+   ## 累计数值
+   - 类/接口/枚举总数：0
+   - 已有 Javadoc 的类数：0
+   - public 方法总数：0
+   - 已有 Javadoc 的 public 方法数：0
+   - 字段总数：0
+   - 已有注释的字段数：0
+   - 混淆文件数：0
+
+   ## 批次明细
+   | 批次 | 处理文件数 | 新增类数 | 新增Javadoc类数 | 新增public方法数 | 新增Javadoc方法数 | 新增字段数 | 新增注释字段数 |
+   |---|---|---|---|---|---|---|---|
+   ```
+
+6. **初始化报告文件**：在 `OUTPUT_DIR` 创建 `DECOMPILE_REPORT.md` 最小结构，状态设为 `进行中`。
 
 `DECOMPILE_REPORT.md` 最小结构：
 
@@ -249,7 +283,12 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
 3. 逐文件按 A→F 顺序补写注释。
 4. 将修改后的文件写回原路径。
 5. 在 `DECOMPILE_REPORT.md` § 2 追加本批次记录（批次号、文件数、状态、混淆文件数）。
-6. 输出本批次处理摘要（处理文件数、主要业务模式、遇到的困难）。
+6. 将本批次每个文件的类索引信息**追加写入** `.tmp/class_index.md`（每个顶级类一行）：
+   - 类型识别：`@Controller`/`@RestController` → `Controller`；`@Service` → `Service`；`@Repository` → `Repository`；`@Entity`/`@Table` → `Entity`；`enum` 关键字 → `Enum`；含 `static final` 常量 ≥ 5 个 → `Config`/`Util`/`Other` 自行判断。
+   - URL 前缀：从 `@RequestMapping`/`@GetMapping`/`@PostMapping` 等注解提取；无则填 `-`。
+   - 一句话用途：使用已补写的类 Javadoc 第一句（去掉 `/**` 和 `*/`）。
+7. 将本批次统计数值累加**写入** `.tmp/coverage_stats.md`：追加一行批次明细，并更新文件顶部"累计数值"区块中各计数字段。
+8. 输出本批次处理摘要（处理文件数、识别到的主要类型分布）。**摘要仅输出统计数字和类型分布，不在对话中重复展示文件内容，避免已处理文件内容残留在上下文中。**
 
 ### 步骤 4：编译验证（可选，推荐）
 
@@ -266,13 +305,123 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
 
 3. **更新报告**：将编译结果填入 `DECOMPILE_REPORT.md` § 3。
 
-### 步骤 5：输出报告
+### 步骤 5：重建 README 文档
 
-1. **统计注释覆盖率**：扫描所有 `.java` 文件，统计：
-   - 顶级类/接口/枚举总数 vs 有 Javadoc 数 → 覆盖率百分比。
-   - `public` 方法总数 vs 有 Javadoc 数 → 覆盖率百分比。
-   - 字段总数 vs 有注释数 → 覆盖率百分比。
-   - 混淆类数量及占比。
+基于注释补全后的全量 `.java` 文件，Claude 分析代码结构并生成 `{OUTPUT_DIR}/README.md`。
+
+#### 5.1 分析阶段
+
+**读取 `.tmp/class_index.md`（轻量，几 KB）按"类型"列分组汇总；禁止重新批量读取 `.java` 文件。**
+
+1. **顶层包结构**：从"包名"列提取所有唯一顶层包，推断模块划分。
+2. **入口类识别**：在 `class_index.md` 中查找类型为 `Config` 且名称含 `Application` 的类；若需确认是否含 `@SpringBootApplication`，仅读该单个 `.java` 文件。
+3. **Controller 汇总**：过滤类型 = `Controller` 的行，提取类名、URL 前缀、一句话用途。若需具体方法签名，**仅针对性读取该 Controller 的单个文件**（每次不超过 3 个文件）。
+4. **Service 层汇总**：过滤类型 = `Service` 的行，提取类名、一句话用途。
+5. **实体汇总**：过滤类型 = `Entity` 的行。
+6. **枚举汇总**：过滤类型 = `Enum` 的行。
+7. **依赖推断**（仅当 `MAVEN_SCAFFOLD=yes` 时）：读取 `{OUTPUT_DIR}/pom.xml`。
+
+> **禁止**：步骤 5 禁止批量读取 `.java` 文件；所有类结构信息来自 `.tmp/class_index.md`。
+
+#### 5.2 README.md 结构（强制）
+
+```markdown
+# {项目名称}
+
+> ⚠️ 本文档由 `jar-decompile` Skill 根据反编译代码自动生成，内容为推断结果，请以原始系统行为为准。
+
+## 项目概述
+
+<根据包名、入口类、Controller 路径推断的 2-4 句中文描述，说明该项目/JAR 的主要用途和业务领域>
+
+## 模块说明
+
+| 模块（包） | 说明 |
+|---|---|
+| `com.example.xxx` | <根据该包下类的功能推断的中文描述> |
+| ... | ... |
+
+## 核心类列表
+
+### Controller（对外接口层）
+
+| 类名 | 路径前缀 | 主要功能 |
+|---|---|---|
+| `XxxController` | `/api/v1/xxx` | <中文功能描述> |
+
+### Service（业务逻辑层）
+
+| 类名 | 主要功能 |
+|---|---|
+| `XxxService` | <中文功能描述> |
+
+### 实体 / 数据模型
+
+| 类名 | 说明 |
+|---|---|
+| `XxxEntity` | <中文说明> |
+
+### 枚举 / 常量
+
+| 类名 | 说明 |
+|---|---|
+| `XxxStatus` | <中文说明> |
+
+## 主要业务流程
+
+<根据 Controller → Service 调用链推断的 1-3 个核心业务流程，以编号列表描述，每条流程 3-6 步>
+
+示例格式：
+1. **[流程名称]**
+   1. 客户端请求 `POST /api/v1/xxx`
+   2. `XxxController.create()` 校验入参
+   3. `XxxService.doCreate()` 执行业务逻辑
+   4. 持久化到数据库，返回结果
+
+## 依赖说明
+
+<仅当 MAVEN_SCAFFOLD=yes 时生成此节；列出 pom.xml 中的主要 dependency，标注用途>
+
+| 依赖 | 版本 | 用途 |
+|---|---|---|
+| `spring-boot-starter-web` | x.x.x | Web MVC 框架 |
+
+## 快速开始
+
+### 环境要求
+
+- Java {推断的版本，默认 8+}
+- Maven 3.6+（仅当 MAVEN_SCAFFOLD=yes）
+
+### 导入 IDE
+
+1. 用 IntelliJ IDEA / Eclipse 打开 `{OUTPUT_DIR}` 目录。
+2. 识别为 Maven 项目（仅当 `MAVEN_SCAFFOLD=yes`）。
+3. 若存在编译错误，参考 `DECOMPILE_REPORT.md` § 3 补充缺失依赖。
+
+### 编译（可选）
+
+```bash
+cd {OUTPUT_DIR}
+mvn compile
+```
+
+## 已知限制
+
+- 本源码由 CFR 反编译器还原，**非原始源码**，可能存在还原偏差（如泛型擦除、匿名类、Lambda 还原不完整）。
+- 混淆类（共 N 个）的注释为推断内容，可信度较低，详见 `DECOMPILE_REPORT.md` § 5。
+- 部分依赖库缺失可能导致编译失败，需手动补充 `pom.xml`。
+```
+
+#### 5.3 写入规则
+
+- README 内容使用**中文**，代码块、类名、包名、路径保持原始大小写。
+- 若某节内容无法从代码中推断（如无 Controller），该节标注 `（未检测到相关类）` 并保留节标题，不得删除节。
+- 混淆严重（`obfuscated_files` 占比超 50%）时，在文档顶部增加额外警告：`> ⚠️ 超过 50% 的类疑似混淆，以下描述可信度极低，建议仅作参考。`
+
+### 步骤 6：输出报告
+
+1. **读取覆盖率统计**：读取 `.tmp/coverage_stats.md` 的"累计数值"区块，直接计算各项覆盖率百分比。无需重新扫描 `.java` 文件。
 
 2. **完成报告填写**：将所有统计数据填入 `DECOMPILE_REPORT.md`，状态更新为 `已完成`，在 § 5 列出混淆文件清单和编译失败修复建议。
 
@@ -288,6 +437,7 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
      字段注释：N%
    混淆文件（需人工复核）：N 个
    编译验证：通过 / 失败（N 个错误）
+   README：{OUTPUT_DIR}/README.md
    报告路径：{OUTPUT_DIR}/DECOMPILE_REPORT.md
    ```
 
@@ -295,6 +445,8 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
    - 若存在混淆文件：建议人工复核报告 § 5 中的混淆文件清单。
    - 若编译失败且原因为缺失依赖：参考报告 § 5 的推断依赖列表，补充 `pom.xml` 后重新执行 `mvn compile`。
    - 若编译失败且原因为语法错误：建议检查具体文件，考虑改用 Fernflower（IntelliJ 内置）或 Procyon 反编译器。
+
+5. **清理中间产物**：删除 `{OUTPUT_DIR}/.tmp/` 目录（含 `class_index.md` 和 `coverage_stats.md`）。输出：`[清理完成] .tmp/ 中间产物已删除`。
 
 ## Quality Gate
 
@@ -306,6 +458,9 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
 - [ ] `public` 方法 Javadoc 覆盖率 ≥ 85%（混淆类方法除外）。
 - [ ] 字段注释覆盖率 ≥ 80%。
 - [ ] 混淆文件已在报告中列出并标注 `[WARN]`。
+- [ ] `{OUTPUT_DIR}/README.md` 已生成，包含项目概述、模块说明、核心类列表、主要业务流程四节。
+- [ ] `{OUTPUT_DIR}/.tmp/` 目录已在步骤 6 完成后删除（不得残留中间产物）。
+- [ ] README 中无法推断的节已标注 `（未检测到相关类）`，未直接删除节标题。
 - [ ] `DECOMPILE_REPORT.md` 状态已更新为 `已完成`，所有统计数据已填入。
 - [ ] 编译验证结果已记录（即使跳过也须注明原因）。
 - [ ] 注释内容为中文，未修改任何类结构、方法签名或包名。
@@ -321,13 +476,16 @@ description: 将 JAR 包反编译为 Java 源码，自动补全 Javadoc 与行�
 | 步骤 0 | 验证前置 | `OUTPUT_DIR` 已存在，`DECOMPILE_REPORT.md` 已创建（状态为进行中），CFR 工具与 Java 运行时已确认可用，`jar_list` 已确认 | 步骤 1 |
 | 步骤 1 | 反编译 JAR | `DECOMPILE_REPORT.md` § 1 表格中所有 JAR 均有记录，且 `OUTPUT_DIR/src/` 下存在 `.java` 文件 | 步骤 2 |
 | 步骤 2 | 整理目录结构 | 包名目录与 `package` 声明一致，Maven 骨架（若启用）已生成，`java_files` 清单已完整汇总 | 步骤 3 |
-| 步骤 3 | 注释补全 | `DECOMPILE_REPORT.md` § 2 记录显示所有批次状态均为"完成"，且 `java_files` 中所有文件已含 Javadoc | 步骤 4 |
+| 步骤 3 | 注释补全 | `DECOMPILE_REPORT.md` § 2 记录显示所有批次状态均为"完成"，且 `.tmp/class_index.md` 数据行数与 `java_files` 数量一致 | 步骤 4 |
 | 步骤 4 | 编译验证 | `DECOMPILE_REPORT.md` § 3 编译验证结果已填写（通过、失败或跳过均可） | 步骤 5 |
-| 步骤 5 | 输出报告 | `DECOMPILE_REPORT.md` 状态为 `已完成`，覆盖率统计已填入 § 4，向用户输出完成摘要 | — |
+| 步骤 5 | 重建 README 文档 | `{OUTPUT_DIR}/README.md` 已存在且包含项目概述、模块说明、核心类列表、主要业务流程四节 | 步骤 6 |
+| 步骤 6 | 输出报告 | `DECOMPILE_REPORT.md` 状态为 `已完成`，覆盖率统计已填入 § 4，`.tmp/` 目录已删除，向用户输出完成摘要 | — |
 
 ### 默认恢复原则（兜底）
 
 1. 若 `OUTPUT_DIR` 不存在或 `DECOMPILE_REPORT.md` 不存在，从步骤 0 全量执行。
 2. 若 `DECOMPILE_REPORT.md` 存在且 § 2 有部分批次记录，从最后一个未完成批次续执注释补全（步骤 3），已完成批次不重复处理。
 3. 若反编译已完成（`.java` 文件存在）但注释批次记录全部缺失，跳过步骤 1，从步骤 2 续执。
-4. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估前置条件。
+4. 若注释补全已完成但 `README.md` 不存在，跳过步骤 1-4，从步骤 5 续执。
+5. 若 `.tmp/class_index.md` 存在且数据行数少于 `java_files` 总数，从最后一个已处理批次之后续执步骤 3；已写入 `class_index.md` 的文件不重复处理。
+6. Gate Report 结论为 `BLOCKED` 时，从步骤 0 重新评估前置条件。
